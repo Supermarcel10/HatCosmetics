@@ -1,31 +1,27 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
+    id "java"
+    id "maven-publish"
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
 }
 
 repositories {
     mavenCentral()
-    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    maven { url = 'https://repo.codemc.org/repository/maven-public/' }
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
-    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = "https://repo.codemc.org/repository/maven-public/" }
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
+    maven { url = "https://oss.sonatype.org/content/repositories/central" }
     mavenLocal()
 }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:24.1.0'
-    compileOnly 'de.tr7zw:item-nbt-api-plugin:2.12.3'
-    compileOnly 'org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT'
-    compileOnly 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
+    implementation "org.jetbrains:annotations:24.1.0"
+    compileOnly "de.tr7zw:item-nbt-api-plugin:2.12.3"
+    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
 }
 
-group = 'me.Tonus_'
-version = '2.0.0'
 tasks.register("copyToTestServer", Copy) {
     dependsOn "build"
     mustRunAfter "build"
@@ -42,3 +38,6 @@ tasks.register("runOnTestServer", Exec) {
     workingDir "${project.projectDir}/src/main/test/server/"
     commandLine "java", "-Xms1G", "-Xmx1G", "-Dpaper.log-level=WARN", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "paper-1.20.4-496.jar", "--nogui"
 }
+
+group = "me.Tonus_"
+version = "2.0.0"
