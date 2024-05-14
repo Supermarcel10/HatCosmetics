@@ -28,6 +28,8 @@ HatCosmetics is a plugin that provides a simple and user-friendly way to impleme
 
 [![GitHub](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/github_vector.svg)](https://github.com/ItsTonus/HatCosmetics/releases)
 [![SpigotMC](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/supported/spigot_vector.svg)](https://www.spigotmc.org/resources/83111/)
+[![CurseForge](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/curseforge_vector.svg)](https://www.curseforge.com/minecraft/bukkit-plugins/hatcosmetics)
+[![BuiltByBit](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/builtbybit_vector.svg)](https://builtbybit.com/resources/hatcosmetics.44686/)
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/modrinth_vector.svg)](https://modrinth.com/plugin/hatcosmetics)
 
 1. Download the latest release for your server version.
