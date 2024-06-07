@@ -4,7 +4,7 @@
 
 ## About
 
-HatCosmetics is a plugin that provides a simple and user-friendly way to implement custom hat resource pack models on your server.
+HatCosmetics is a plugin that provides a simple and user-friendly way to implement custom hat models on your server.
 
 ## Features
 
@@ -54,13 +54,13 @@ HatCosmetics is a plugin that provides a simple and user-friendly way to impleme
 
 **Aliases**: `/hats`, `/hatcosmetics`
 
-| Command         | Description                                    |
-|:----------------|:-----------------------------------------------|
-| `/hats`         | Opens the main GUI                             |
-| `/hats help`    | Opens the command list for the plugin          |
-| `/hats unequip` | Removes the hat (if the player is wearing one) |
-| `/hats equip`   | Equips the specified hat                       |
-| `/hats reload`  | Reloads the plugin configuration               |
+| Command         | Description                           |
+|:----------------|:--------------------------------------|
+| `/hats`         | Opens the main GUI                    |
+| `/hats help`    | Opens the command list for the plugin |
+| `/hats unequip` | Unequips hat                          |
+| `/hats equip`   | Equips the specified hat              |
+| `/hats reload`  | Reloads the plugin configuration      |
 
 ### Permissions
 
@@ -80,6 +80,7 @@ TO BE DOCUMENTED FURTHER
 ### Contributing Guide
 
 Anyone and everyone is welcome to contribute and help out with the project!
+Feel free to open a PR and look at the issues.
 
 ### Contributors
 [![Contributors](https://contrib.rocks/image?repo=ItsTonus/HatCosmetics)](https://github.com/ItsTonus/HatCosmetics/graphs/contributors)
