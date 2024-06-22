@@ -12,6 +12,12 @@ import java.net.URL;
 
 
 public class ModrinthAPIClient {
+	/**
+	 * Retrieves the latest version number of a plugin from Modrinth.
+	 *
+	 * @param projectID The ID of the project on Modrinth.
+	 * @return The latest version number of the plugin, or null if unable to retrieve.
+	 */
 	public static @Nullable String getLatestPluginVersion(String projectID) {
 		try {
 			String response = makeRequest("https://api.modrinth.com/v2/project/" + projectID);
@@ -34,6 +40,13 @@ public class ModrinthAPIClient {
 		return null;
 	}
 
+	/**
+	 * Makes an HTTP GET request to the specified URL
+	 *
+	 * @param url The URL to send the request to.
+	 * @return The response body as a String, or null if the request failed.
+	 * @throws IOException If an I/O error occurs during the request.
+	 */
 	private static @Nullable String makeRequest(String url) throws IOException {
 		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 		connection.setRequestMethod("GET");
@@ -47,6 +60,13 @@ public class ModrinthAPIClient {
 		return readResponse(connection);
 	}
 
+	/**
+	 * Reads the response from an HTTP connection.
+	 *
+	 * @param connection The HttpURLConnection to read from.
+	 * @return The response body as a String.
+	 * @throws IOException If an I/O error occurs while reading the response.
+	 */
 	private static @NotNull String readResponse(HttpURLConnection connection) throws IOException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
 			StringBuilder response = new StringBuilder();
@@ -58,6 +78,13 @@ public class ModrinthAPIClient {
 		}
 	}
 
+	/**
+	 * Extracts a value from a JSON-like string based on a target key.
+	 *
+	 * @param input The input string to search.
+	 * @param target The target key to search for.
+	 * @return The extracted value, or null if not found.
+	 */
 	private static @Nullable String extractValue(@NotNull String input, String target) {
 		int startIndex = input.indexOf(target);
 		if (startIndex == -1) return null;
@@ -73,6 +100,12 @@ public class ModrinthAPIClient {
 		return input.substring(i, endIndex);
 	}
 
+	/**
+	 * Extracts the latest version ID from a string containing version information.
+	 *
+	 * @param versionsString The string containing version information.
+	 * @return The latest version ID, or null if unable to extract.
+	 */
 	private static String extractLatestVersionID(String versionsString) {
 		if (versionsString == null) return null;
 
