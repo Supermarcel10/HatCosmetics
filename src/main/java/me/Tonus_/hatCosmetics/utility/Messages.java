@@ -17,9 +17,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 
-// TODO: Move all generics to the method level
 public class Messages {
 	private static String serverLocale;
+	private static final Map<String, String> generics = new HashMap<>();
 	private static final Map<String, FileConfiguration> translations = new HashMap<>();
 
 	public static void init() {
@@ -29,7 +29,8 @@ public class Messages {
 		serverLocale = localeConfig == null ? "en_US" : localeConfig;
 
 		ensureTemplateExists();
-		loadGenericTranslations(); // TODO: Instead of loading all translations, load only the server locale, and then load the rest when needed (e.g. when a player joins)
+		loadGenerics();
+		loadAllTranslations(); // TODO: Instead of loading all translations, load only the server locale, and then load the rest when needed (e.g. when a player joins)
 		loadLocalTranslations();
 
 		HatCosmetics.getLog().info("Loaded " + translations.size() + " translations.");
@@ -89,9 +90,29 @@ public class Messages {
 	}
 
 	/**
+	 * Loads all generic messages
+	 */
+	private static void loadGenerics() {
+		try (InputStream inputStream = Messages.class.getClassLoader().getResourceAsStream("messages/generics.yml")) {
+			if (inputStream != null) {
+				YamlConfiguration genericYAML = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+				for (Map.Entry<String, Object> entry : genericYAML.getValues(true).entrySet()) {
+					generics.put(entry.getKey(), String.valueOf(entry.getValue()));
+				}
+			} else throw new IOException("Failed to open input stream!");
+		} catch (IOException e) {
+			HatCosmetics.getLog().error("Failed to load generic messages!");
+			HatCosmetics.getLog().error(e.toString());
+		}
+
+		HatCosmetics.getLog().info("Loaded " + generics.size() + " generic messages.");
+	}
+
+	/**
 	 * Loads all generic translations from the JAR file
 	 */
-	private static void loadGenericTranslations() {
+	private static void loadAllTranslations() {
 		try (JarFile jarFile = new JarFile(HatCosmetics.class.getProtectionDomain().getCodeSource().getLocation().getPath())) {
 			Enumeration<JarEntry> entries = jarFile.entries();
 
@@ -176,6 +197,8 @@ public class Messages {
 
 		FileConfiguration yaml = translations.get(language);
 		if (yaml == null || !yaml.contains(path)) {
+			if (generics.containsKey(path)) return parseColorCodes(generics.get(path));
+
 			HatCosmetics.getLog().warn(String.format("Missing message (%s) for language %s!", path, language));
 			return "MISSING MESSAGE";
 		}
