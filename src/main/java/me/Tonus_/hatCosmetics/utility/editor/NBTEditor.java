@@ -13,149 +13,219 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-@SuppressWarnings("unused")
 public class NBTEditor {
-	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class ItemStackEditor {
-		private final ItemStack item;
-		private final ItemMeta meta;
-		private final PersistentDataContainer pdc;
+	/**
+	 * Abstract base class for NBT editors.
+	 *
+	 * @param <T> The type of object being edited.
+	 * @param <E> The type of the editor itself (for method chaining).
+	 */
+	@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+	public static abstract class BaseEditor<T, E extends BaseEditor<T, E>> {
+		protected final PersistentDataContainer pdc;
 
+		/**
+		 * Returns the current instance of the editor.
+		 *
+		 * @return The current editor instance.
+		 */
+		protected abstract E self();
+
+		/**
+		 * Adds a tag to the persistent data container.
+		 *
+		 * @param <P> The primitive type of the tag.
+		 * @param <C> The complex type of the tag.
+		 * @param type The persistent data type.
+		 * @param key The key for the tag.
+		 * @param val The value to set.
+		 * @return The current editor instance.
+		 */
 		@Contract("_, _, _ -> this")
-		public <P, C> ItemStackEditor addTag(PersistentDataType<P, C> type, String key, C val) {
+		public <P, C> E addTag(PersistentDataType<P, C> type, String key, C val) {
 			if (pdc != null) {
 				pdc.set(new NamespacedKey(HatCosmetics.getInstance(), key), type, val);
 			}
-			return this;
+
+			return self();
 		}
 
+		/**
+		 * Removes a tag from the persistent data container.
+		 *
+		 * @param key The key of the tag to remove.
+		 * @return The current editor instance.
+		 */
 		@Contract("_ -> this")
-		public ItemStackEditor removeTag(String key) {
+		public E removeTag(String key) {
 			if (pdc != null) {
 				pdc.remove(new NamespacedKey(HatCosmetics.getInstance(), key));
 			}
-			return this;
+
+			return self();
 		}
 
+		/**
+		 * Removes a tag from the persistent data container if it exists.
+		 *
+		 * @param key The key of the tag to remove.
+		 * @return The current editor instance.
+		 */
 		@Contract("_ -> this")
-		public ItemStackEditor removeTagIfExists(String key) {
+		public E removeTagIfExists(String key) {
 			if (pdc != null) {
 				NamespacedKey nKey = new NamespacedKey(HatCosmetics.getInstance(), key);
 				if (pdc.has(nKey)) {
 					pdc.remove(nKey);
 				}
 			}
-			return this;
+
+			return self();
 		}
 
+		/**
+		 * Gets the value of a tag from the persistent data container.
+		 *
+		 * @param <P> The primitive type of the tag.
+		 * @param <C> The complex type of the tag.
+		 * @param type The persistent data type.
+		 * @param key The key of the tag.
+		 * @return The value of the tag, or null if not found.
+		 */
 		public <P, C> @Nullable C getTag(PersistentDataType<P, C> type, String key) {
 			return pdc != null ? pdc.get(new NamespacedKey(HatCosmetics.getInstance(), key), type) : null;
 		}
 
+		/**
+		 * Gets the value of a tag from the persistent data container, or a default value if not found.
+		 *
+		 * @param <P> The primitive type of the tag.
+		 * @param <C> The complex type of the tag.
+		 * @param type The persistent data type.
+		 * @param key The key of the tag.
+		 * @param def The default value to return if the tag is not found.
+		 * @return The value of the tag, or the default value if not found.
+		 */
 		public <P, C> C getOrDefault(PersistentDataType<P, C> type, String key, C def) {
 			C val = getTag(type, key);
 			return val != null ? val : def;
 		}
 
+		/**
+		 * Gets the edited object.
+		 *
+		 * @return The edited object.
+		 */
+		public abstract T get();
+	}
+
+	/**
+	 * Editor for ItemStack objects.
+	 */
+	public static class ItemStackEditor extends BaseEditor<ItemStack, ItemStackEditor> {
+		private final ItemStack item;
+		private final ItemMeta meta;
+
+		/**
+		 * Construct a new ItemStackEditor.
+		 */
+		private ItemStackEditor(ItemStack item, ItemMeta meta, PersistentDataContainer pdc) {
+			super(pdc);
+			this.item = item;
+			this.meta = meta;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected ItemStackEditor self() {
+			return this;
+		}
+
+		/**
+		 * Applies the changes to the ItemStack.
+		 *
+		 * @return The modified ItemStack.
+		 */
 		public ItemStack apply() {
 			if (item != null && meta != null) {
 				item.setItemMeta(meta);
 			}
 			return item;
 		}
+
+		@Override
+		public ItemStack get() {
+			return apply();
+		}
 	}
 
-	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class ItemMetaEditor {
+	/**
+	 * Editor for ItemMeta objects.
+	 */
+	public static class ItemMetaEditor extends BaseEditor<ItemMeta, ItemMetaEditor> {
 		private final ItemMeta meta;
-		private final PersistentDataContainer pdc;
 
-		@Contract("_, _, _ -> this")
-		public <P, C> ItemMetaEditor addTag(PersistentDataType<P, C> type, String key, C val) {
-			if (pdc != null) {
-				pdc.set(new NamespacedKey(HatCosmetics.getInstance(), key), type, val);
-			}
+		/**
+		 * Construct a new ItemMetaEditor.
+		 */
+		private ItemMetaEditor(ItemMeta meta, PersistentDataContainer pdc) {
+			super(pdc);
+			this.meta = meta;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected ItemMetaEditor self() {
 			return this;
 		}
 
-		@Contract("_ -> this")
-		public ItemMetaEditor removeTag(String key) {
-			if (pdc != null) {
-				pdc.remove(new NamespacedKey(HatCosmetics.getInstance(), key));
-			}
-			return this;
-		}
-
-		@Contract("_ -> this")
-		public ItemMetaEditor removeTagIfExists(String key) {
-			if (pdc != null) {
-				NamespacedKey nKey = new NamespacedKey(HatCosmetics.getInstance(), key);
-				if (pdc.has(nKey)) {
-					pdc.remove(nKey);
-				}
-			}
-			return this;
-		}
-
-		public <P, C> @Nullable C getTag(PersistentDataType<P, C> type, String key) {
-			return pdc != null ? pdc.get(new NamespacedKey(HatCosmetics.getInstance(), key), type) : null;
-		}
-
-		public <P, C> C getOrDefault(PersistentDataType<P, C> type, String key, C def) {
-			C val = getTag(type, key);
-			return val != null ? val : def;
-		}
-
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
 		public ItemMeta get() {
 			return meta;
 		}
 	}
 
-	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class PDCEditor {
-		private final PersistentDataContainer pdc;
+	/**
+	 * Editor for PersistentDataContainer objects.
+	 */
+	public static class PDCEditor extends BaseEditor<PersistentDataContainer, PDCEditor> {
+		/**
+		 * Construct a new PDCEditor.
+		 */
+		private PDCEditor(PersistentDataContainer pdc) {
+			super(pdc);
+		}
 
-		@Contract("_, _, _ -> this")
-		public <P, C> PDCEditor addTag(PersistentDataType<P, C> type, String key, C val) {
-			if (pdc != null) {
-				pdc.set(new NamespacedKey(HatCosmetics.getInstance(), key), type, val);
-			}
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected PDCEditor self() {
 			return this;
 		}
 
-		@Contract("_ -> this")
-		public PDCEditor removeTag(String key) {
-			if (pdc != null) {
-				pdc.remove(new NamespacedKey(HatCosmetics.getInstance(), key));
-			}
-			return this;
-		}
-
-		@Contract("_ -> this")
-		public PDCEditor removeTagIfExists(String key) {
-			if (pdc != null) {
-				NamespacedKey nKey = new NamespacedKey(HatCosmetics.getInstance(), key);
-				if (pdc.has(nKey)) {
-					pdc.remove(nKey);
-				}
-			}
-			return this;
-		}
-
-		public <P, C> @Nullable C getTag(PersistentDataType<P, C> type, String key) {
-			return pdc != null ? pdc.get(new NamespacedKey(HatCosmetics.getInstance(), key), type) : null;
-		}
-
-		public <P, C> C getOrDefault(PersistentDataType<P, C> type, String key, C def) {
-			C val = getTag(type, key);
-			return val != null ? val : def;
-		}
-
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
 		public PersistentDataContainer get() {
 			return pdc;
 		}
 	}
 
+	/**
+	 * Creates an ItemStackEditor for the given ItemStack.
+	 *
+	 * @param item The ItemStack to edit.
+	 * @return A new ItemStackEditor instance.
+	 */
 	@Contract("null -> new")
 	public static @NotNull ItemStackEditor of(@Nullable ItemStack item) {
 		if (item == null) {
@@ -165,6 +235,12 @@ public class NBTEditor {
 		return new ItemStackEditor(item, meta, meta != null ? meta.getPersistentDataContainer() : null);
 	}
 
+	/**
+	 * Creates an ItemMetaEditor for the given ItemMeta.
+	 *
+	 * @param meta The ItemMeta to edit.
+	 * @return A new ItemMetaEditor instance.
+	 */
 	@Contract("_ -> new")
 	public static @NotNull ItemMetaEditor of(@Nullable ItemMeta meta) {
 		if (meta == null) {
@@ -173,6 +249,12 @@ public class NBTEditor {
 		return new ItemMetaEditor(meta, meta.getPersistentDataContainer());
 	}
 
+	/**
+	 * Creates a PDCEditor for the given PersistentDataContainer.
+	 *
+	 * @param pdc The PersistentDataContainer to edit.
+	 * @return A new PDCEditor instance.
+	 */
 	@Contract("_ -> new")
 	public static @NotNull PDCEditor of(@Nullable PersistentDataContainer pdc) {
 		return new PDCEditor(pdc);
