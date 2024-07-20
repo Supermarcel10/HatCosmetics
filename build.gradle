@@ -2,7 +2,6 @@ plugins {
     id "java"
     id "com.github.johnrengelman.shadow" version "8.1.1"
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8"
-    id "maven-publish"
 }
 
 group = "me.Tonus_"
@@ -17,10 +16,15 @@ repositories {
 dependencies {
     implementation "org.bstats:bstats-bukkit:3.0.2"
     implementation "org.reflections:reflections:0.10.2"
-    compileOnly "io.papermc.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
     compileOnly "org.jetbrains:annotations:24.1.0"
     compileOnly "org.projectlombok:lombok:1.18.32"
     annotationProcessor "org.projectlombok:lombok:1.18.32"
+
+    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+    compileOnly "com.google.code.gson:gson:2.11.0" // CVE mitigation: spigot-api
+    compileOnly "com.google.guava:guava:33.2.1-jre" // CVE mitigation: spigot-api
+    compileOnly "org.yaml:snakeyaml:2.2" // CVE mitigation: spigot-api
+    compileOnly 'junit:junit:4.13.2' // CVE mitigation: spigot-api
 }
 
 java {
