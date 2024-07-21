@@ -36,7 +36,11 @@ public class VersionChecker {
 		try (InputStream manifestStream = HatCosmetics.getInstance().getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
 			if (manifestStream != null) {
 				Manifest manifest = new Manifest(manifestStream);
-				return manifest.getMainAttributes().getValue("Implementation-Version");
+
+				String version = manifest.getMainAttributes().getValue("Implementation-Version");
+				if (version == null) throw new IOException("Version is null");
+
+				return version;
 			}
 		} catch (IOException e) {
 			HatCosmetics.getLog().warn("Failed to retrieve plugin version.");
