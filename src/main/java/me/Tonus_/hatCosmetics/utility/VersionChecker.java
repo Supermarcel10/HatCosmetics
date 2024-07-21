@@ -19,7 +19,6 @@ public class VersionChecker {
 		}
 
 		String pluginVersion = getPluginVersion();
-		if (pluginVersion == null) return;
 
 		int versionComparison = compareVersions(pluginVersion, remoteVersion);
 		if (versionComparison < 0) {
@@ -32,20 +31,8 @@ public class VersionChecker {
 		}
 	}
 
-	private static @Nullable String getPluginVersion() {
-		try (InputStream manifestStream = HatCosmetics.getInstance().getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
-			if (manifestStream != null) {
-				Manifest manifest = new Manifest(manifestStream);
-
-				String version = manifest.getMainAttributes().getValue("Implementation-Version");
-				if (version == null) throw new IOException("Version is null");
-
-				return version;
-			}
-		} catch (IOException e) {
-			HatCosmetics.getLog().warn("Failed to retrieve plugin version.");
-		}
-		return null;
+	private static @NotNull String getPluginVersion() {
+		return HatCosmetics.getInstance().getDescription().getVersion();
 	}
 
 	private static int compareVersions(@NotNull String v1, @NotNull String v2) {
