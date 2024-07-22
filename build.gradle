@@ -64,6 +64,12 @@ build.dependsOn shadowJar
 shadowJar {
     relocate "org.bstats", "${project.group}.shaded.org.bstats"
     archiveFileName.set("${project.name}-${project.version}.jar")
+
+    processResources {
+        filesMatching("plugin.yml") {
+            expand(version: project.version)
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

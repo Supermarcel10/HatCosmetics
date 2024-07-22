@@ -1,6 +1,6 @@
 main: me.Tonus_.hatCosmetics.HatCosmetics
 name: HatCosmetics
-version: 3.0.0
+version: ${version}
 api-version: 1.16
 depend: [NBTAPI]
 
