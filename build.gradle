@@ -67,7 +67,8 @@ shadowJar {
 
     processResources {
         filesMatching("plugin.yml") {
-            expand(version: project.version)
+            println "Expanding plugin.yml"
+            expand(pluginVersion: project.version)
         }
     }
 }
