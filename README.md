@@ -44,7 +44,7 @@ This is a key difference from mods, which require additional setup for each clie
 [![BuiltByBit](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/builtbybit_vector.svg)](https://builtbybit.com/resources/hatcosmetics.44686/)
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/available/modrinth_vector.svg)](https://modrinth.com/plugin/hatcosmetics)
 
-1. Download the latest release for your server version.
+1. Download the latest release for your server version using one of the above options.
 2. Download the latest release of [NBT API](https://modrinth.com/plugin/nbtapi/version/2.12.4).
 3. Drop the JAR files into the `plugins` folder of your Minecraft server.
 4. Restart the server.
