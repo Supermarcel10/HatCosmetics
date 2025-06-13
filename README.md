@@ -2,11 +2,17 @@
 
 [![Discord](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg)](https://discord.gg/3ruhs6Artc)
 
-## About
+## 🔍 About
 
 HatCosmetics is a plugin that provides a simple and user-friendly way to implement custom hat models on your server.
 
-## Features
+## 🌟 How is HatCosmetics Different?
+
+HatCosmetics works with no interaction (just toggling resourcepacks) from the end users.
+Distribution of hats is handled fully server-side, meaning compatiblity and reproducability with any client.
+This is a key difference from mods, which require additional setup for each client.
+
+## 🚀 Features
 
 **Hat Selection GUI**
 - A customisable GUI that serves as the main menu for players to browse and select hats to equip.
@@ -20,14 +26,14 @@ HatCosmetics is a plugin that provides a simple and user-friendly way to impleme
 - Easily add or remove hats by modifying the plugin's configuration files.
 - Designed with easy design, allowing easy creation and implementation of custom hats.
 
-## Work In Progress Features
+## 🎯 Work In Progress Features
 
 - **Player Locality**: Translation for HatCosmetics commands and GUIs.
 - **Hat Overlays**: The ability to overlay a hat on top of a piece of armour, without affecting the stats.
 - **Adding Hat Simplification**: Further improvements to streamline and make adding hats simpler.
 
-## Installation
-### Releases
+## 📥 Installation
+### 🏷️ Releases
 
 > [!CAUTION]
 > Do not download HatCosmetics from any other source than the ones listed below.
@@ -43,7 +49,7 @@ HatCosmetics is a plugin that provides a simple and user-friendly way to impleme
 3. Drop the JAR files into the `plugins` folder of your Minecraft server.
 4. Restart the server.
 
-### Building from Source
+### 📜 Building from Source
 
 1. Clone the repository.
 2. Run `gradlew build` in the root directory of the repository.
@@ -55,8 +61,8 @@ HatCosmetics is a plugin that provides a simple and user-friendly way to impleme
 
 5. Restart the server.
 
-## Usage
-### Commands
+## 💻 Usage
+### ⌨️ Commands
 
 **Aliases**: `/hats`, `/hatcosmetics`
 
@@ -68,7 +74,7 @@ HatCosmetics is a plugin that provides a simple and user-friendly way to impleme
 | `/hats equip`   | Equips the specified hat              |
 | `/hats reload`  | Reloads the plugin configuration      |
 
-### Permissions
+### 🔐 Permissions
 
 The pluguin supports permissions, and works with any permissions plugin that supports the Bukkit API.<br>
 This includes plugins like LuckPerms, PermissionsEx, and more.
@@ -79,20 +85,20 @@ For e.g. `/hats reload` has the permission node `hatcosmetics.reload`.
 Each hat has its own permission node.<br/>
 For e.g. a hat with the name `example` has the permission node `hatcosmetics.hat.example`.
 
-### GUI
+### 🖥️ GUI
 TODO: TBD
 
-## Contributing
-### Contributing Guide
+## 🤝 Contributing
+### ✏️ Contributing Guide
 
 Anyone and everyone is welcome to contribute and help out with the project!
 If you have any problems, please help track it by opening an issue.
 Feel free to open a PR and look at any potential issues.
 
-### Contributors
+### 👥 Contributors
 
 [![Contributors](https://contrib.rocks/image?repo=ItsTonus/HatCosmetics)](https://github.com/ItsTonus/HatCosmetics/graphs/contributors)
 
-## Licence
+## ⚖️ Licence
 
 HatCosmetics is licensed under the [MIT License](LICENSE).
