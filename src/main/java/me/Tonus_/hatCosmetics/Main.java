@@ -5,6 +5,7 @@ import me.Tonus_.hatCosmetics.events.MainHatsCommand;
 import me.Tonus_.hatCosmetics.manager.ConfigManager;
 import me.Tonus_.hatCosmetics.manager.InventoryManager;
 import me.Tonus_.hatCosmetics.manager.MessageManager;
+import me.Tonus_.hatCosmetics.networking.ModrinthVersionChecker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,8 +55,7 @@ public class Main extends JavaPlugin implements Listener {
         Objects.requireNonNull(getCommand("hatcosmetics")).setExecutor(new MainHatsCommand(this));
         new Metrics(this, 11075);
 
-        // Check for new updates
-        VersionChecker.checkForUpdates("4h6EFh3D");
+        new ModrinthVersionChecker(this, "4h6EFh3D", true).checkForUpdates();
     }
 
     // Ensure cosmetics don't drop if the player dies
