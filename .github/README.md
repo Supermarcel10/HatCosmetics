@@ -101,4 +101,4 @@ Feel free to open a PR and look at any potential issues.
 
 ## ⚖️ Licence
 
-HatCosmetics is licensed under the [MIT License](LICENSE).
+HatCosmetics is licensed under the [MIT License](../LICENSE).
