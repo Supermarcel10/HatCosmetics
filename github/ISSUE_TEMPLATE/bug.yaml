@@ -1,0 +1,57 @@
+name: Bug Report
+description: File a bug report
+title: "Bug Report"
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: version
+    attributes:
+      label: HatCosmetics Plugin Version
+      description: What version of the plugin are you using? This can be found by running `/version HatCosmetics` on Paper derivatives.
+      placeholder: ex. 2.4.0
+    validations:
+      required: true
+  - type: dropdown
+    id: mc-server
+    attributes:
+      label: On which MC server(s) can you replicate the bug?
+      multiple: true
+      options:
+        - Bukkit
+        - BungeeCord
+        - Spigot
+        - Paper
+        - Purpur
+        - Other
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect to happen?
+      placeholder: I expected to see a cat.png
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How do you trigger this bug?
+      value: |
+        1.
+        2.
+        3.
+        ...
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow the [Code of Conduct](https://github.com/Supermarcel10/HatCosmetics?tab=coc-ov-file)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
