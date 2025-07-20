@@ -18,6 +18,11 @@ public class ModrinthAPIClient implements IModrinthAPIClient {
     private String latestVersionResponse;
     private String latestStableVersionResponse;
 
+    ModrinthAPIClient(Logger logger, String projectID, String response) {
+        this.logger = logger;
+        this.primaryURL = "https://api.modrinth.com/v2/project/" + projectID;
+    }
+
     public ModrinthAPIClient(Logger logger, String projectID) {
         this.logger = logger;
         this.primaryURL = "https://api.modrinth.com/v2/project/" + projectID;
