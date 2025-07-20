@@ -47,6 +47,8 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     testImplementation "org.mockito:mockito-core:5.18.0"
+
+    testImplementation 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -57,5 +59,12 @@ test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
+    }
+
+    doFirst {
+        def mockitoJar = configurations.testRuntimeClasspath.find {
+            it.name.startsWith("mockito-core")
+        }
+        if (mockitoJar) jvmArgs "-javaagent:${mockitoJar}", "-Xshare:off"
     }
 }
