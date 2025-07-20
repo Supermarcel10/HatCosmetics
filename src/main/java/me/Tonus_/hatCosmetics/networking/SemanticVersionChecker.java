@@ -4,16 +4,20 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.logging.Logger;
 
-public class ModrinthVersionChecker implements IVersionChecker {
+public class SemanticVersionChecker implements IVersionChecker {
     private final Plugin plugin;
     private final Logger logger;
-    private final ModrinthAPIClient apiClient;
+    private final IModrinthAPIClient apiClient;
 	private final boolean isStableRelease;
 
-    public ModrinthVersionChecker(@NotNull Plugin plugin, String projectID, boolean isStableRelease) {
+    public SemanticVersionChecker(
+            @NotNull Plugin plugin,
+            @NotNull IModrinthAPIClient apiClient,
+            boolean isStableRelease
+    ) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
-        this.apiClient = new ModrinthAPIClient(logger, projectID);
+        this.apiClient = apiClient;
 		this.isStableRelease = isStableRelease;
     }
 
