@@ -68,7 +68,6 @@ public class ModrinthAPIClient implements IModrinthAPIClient {
                 return;
             }
 
-//            this.latestVersionResponse = makeRequest(primaryURL + "/version/" + extractLatestVersionID(versionID));
 			String latestVersionID = extractLatestVersionID(versionID);
             if (latestVersionID != null) {
                 this.latestVersionResponse = makeRequest(primaryURL + "/version/" + latestVersionID);
