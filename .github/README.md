@@ -61,32 +61,8 @@ This is a key difference from mods, which require additional setup for each clie
 
 5. Restart the server.
 
-## 💻 Usage
-### ⌨️ Commands
-
-**Aliases**: `/hats`, `/hatcosmetics`
-
-| Command         | Description                           |
-|:----------------|:--------------------------------------|
-| `/hats`         | Opens the main GUI                    |
-| `/hats help`    | Opens the command list for the plugin |
-| `/hats unequip` | Unequips hat                          |
-| `/hats equip`   | Equips the specified hat              |
-| `/hats reload`  | Reloads the plugin configuration      |
-
-### 🔐 Permissions
-
-The pluguin supports permissions, and works with any permissions plugin that supports the Bukkit API.<br>
-This includes plugins like LuckPerms, PermissionsEx, and more.
-
-Each command has its own permission node.<br/>
-For e.g. `/hats reload` has the permission node `hatcosmetics.reload`.
-
-Each hat has its own permission node.<br/>
-For e.g. a hat with the name `example` has the permission node `hatcosmetics.hat.example`.
-
-### 🖥️ GUI
-TODO: TBD
+## 📚 Wikipedia
+A wiki page detailing usage, commands and permissiosn can be found [here](https://github.com/Supermarcel10/HatCosmetics/wiki).
 
 ## 🤝 Contributing
 ### ✏️ Contributing Guide
