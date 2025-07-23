@@ -38,7 +38,7 @@ dependencies {
     implementation 'org.jetbrains:annotations:24.1.0'
     compileOnly 'de.tr7zw:item-nbt-api-plugin:2.12.3'
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
-    compileOnly 'com.google.code.gson:gson:2.11.0' // CVE mitigation: spigot-api
+    compileOnly 'com.google.code.gson:gson:2.13.1' // CVE mitigation: spigot-api
     compileOnly 'com.google.guava:guava:33.2.1-jre' // CVE mitigation: spigot-api
     compileOnly 'org.yaml:snakeyaml:2.2' // CVE mitigation: spigot-api
 
@@ -48,7 +48,8 @@ dependencies {
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     testImplementation "org.mockito:mockito-core:5.18.0"
 
-    testImplementation 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    testImplementation "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
+    testImplementation "com.google.code.gson:gson:2.13.1"
 }
 
 tasks.withType(JavaCompile).configureEach {
