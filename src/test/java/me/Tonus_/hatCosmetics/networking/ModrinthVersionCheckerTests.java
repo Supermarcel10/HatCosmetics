@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import static org.mockito.Mockito.*;
 
 
-public class ModrinthVersionCheckerTests {
+class ModrinthVersionCheckerTests {
 	private Plugin plugin;
     private Logger logger;
     private ModrinthAPIClient apiClient;
@@ -24,7 +24,13 @@ public class ModrinthVersionCheckerTests {
         doReturn(pluginDescription).when(plugin).getDescription();
         doReturn("1.0.0").when(pluginDescription).getVersion();
 
-        apiClient = spy(new ModrinthAPIClient(logger, "", ""));
+        String emptyResponse = """
+                {
+                    versions: []
+                }
+                """;
+
+        apiClient = spy(new ModrinthAPIClient(logger, "", emptyResponse));
     }
 
 	@Test
