@@ -130,14 +130,14 @@ class ModrinthAPIClientTests {
             when(url1.openConnection()).thenReturn(connection1);
 
             // Set up responses
-            setupMockResponse(connection2, """
+            setupMockResponse(connection2, SAMPLE_BETA_VERSION_RESPONSE);
+            setupMockResponse(connection1, """
                 {
                     "id": "version-id-2",
                     "version_number": "1.2.3",
                     "version_type": "release"
                 }
                 """);
-            setupMockResponse(connection1, SAMPLE_BETA_VERSION_RESPONSE);
 
             // Act
             String latestVersion = client.getLatestVersion(true);
@@ -187,7 +187,7 @@ class ModrinthAPIClientTests {
         setupMockResponse(connection, SAMPLE_BETA_VERSION_RESPONSE);
 
         try (MockedStatic<URI> uriMock = mockStatic(URI.class)) {
-            uriMock.when(() -> URI.create(BASE_URL + "/version/version-id-1")).thenReturn(uri);
+            uriMock.when(() -> URI.create(BASE_URL + "/version/version-id-3")).thenReturn(uri);
 
             // Act
             String latestVersion = client.getLatestVersion(false);

@@ -52,7 +52,7 @@ public class ModrinthAPIClient implements IModrinthAPIClient {
             return null;
         }
 
-        for (JsonElement versionID : versionIDs) {
+        for (JsonElement versionID : versionIDs.asList().reversed()) {
             if (versionID == null) continue;
 
             try {
