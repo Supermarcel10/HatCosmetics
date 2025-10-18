@@ -1,19 +1,23 @@
 package me.Tonus_.hatCosmetics.updates;
 
-import me.Tonus_.hatCosmetics.HatCosmetics;
+import lombok.AllArgsConstructor;
 import me.Tonus_.hatCosmetics.networking.ModrinthAPIClient;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 
+@AllArgsConstructor
 public class VersionChecker {
+	private final Plugin plugin;
+	private final String projectID;
+
 	/**
 	 * Checks for updates for the plugin
-	 * @param projectID the Modrinth project ID of the plugin
 	 */
-	public static void checkForUpdates(String projectID) {
+	public void checkForUpdates() {
 		String remoteVersion = ModrinthAPIClient.getLatestPluginVersion(projectID);
 		if (remoteVersion == null) {
-			HatCosmetics.getLog().warn("Failed to check for updates.");
+			plugin.getSLF4JLogger().warn("Failed to check for updates.");
 			return;
 		}
 
@@ -21,12 +25,12 @@ public class VersionChecker {
 
 		int versionComparison = compareVersions(pluginVersion, remoteVersion);
 		if (versionComparison > 0) {
-			HatCosmetics.getLog().warn("A new version is available: {}", remoteVersion);
-			HatCosmetics.getLog().warn("You are currently running: {}", pluginVersion);
-			HatCosmetics.getLog().warn("Update here: https://modrinth.com/plugin/hatcosmetics/version/latest");
+			plugin.getSLF4JLogger().warn("A new version is available: {}", remoteVersion);
+			plugin.getSLF4JLogger().warn("You are currently running: {}", pluginVersion);
+			plugin.getSLF4JLogger().warn("Update here: https://modrinth.com/plugin/hatcosmetics/version/latest");
 		} else if (versionComparison < 0) {
-			HatCosmetics.getLog().warn("You are running an unknown version!");
-			HatCosmetics.getLog().warn("Ensure you download the plugin from trusted sources.");
+			plugin.getSLF4JLogger().warn("You are running an unknown version!");
+			plugin.getSLF4JLogger().warn("Ensure you download the plugin from trusted sources.");
 		}
 	}
 
@@ -34,8 +38,8 @@ public class VersionChecker {
 	 * Retrieves the version of the plugin
 	 * @return the version of the plugin
 	 */
-	private static @NotNull String getPluginVersion() {
-		return HatCosmetics.getInstance().getDescription().getVersion();
+	private @NotNull String getPluginVersion() {
+		return plugin.getDescription().getVersion();
 	}
 
 	/**
@@ -44,7 +48,7 @@ public class VersionChecker {
 	 * @param remote the remote version
 	 * @return -1 if unknown version, 0 if up to date, 1 if it needs updating
 	 */
-	protected static int compareVersions(@NotNull String local, @NotNull String remote) {
+	private static int compareVersions(@NotNull String local, @NotNull String remote) {
 		String[] localParts = local.split("\\.");
 		String[] remoteParts = remote.split("\\.");
 
