@@ -2,18 +2,23 @@ package me.Tonus_.hatCosmetics.utility.editor;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import me.Tonus_.hatCosmetics.HatCosmetics;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
 public class NBTEditor {
+	private final Plugin plugin;
+
+	public NBTEditor(Plugin plugin) {
+		this.plugin = plugin;
+	}
+
 	/**
 	 * Abstract base class for NBT editors.
 	 *
@@ -22,6 +27,7 @@ public class NBTEditor {
 	 */
 	@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 	public static abstract class BaseEditor<T, E extends BaseEditor<T, E>> {
+		private final Plugin plugin;
 		protected final PersistentDataContainer pdc;
 
 		/**
@@ -34,17 +40,17 @@ public class NBTEditor {
 		/**
 		 * Adds a tag to the persistent data container.
 		 *
-		 * @param <P> The primitive type of the tag.
-		 * @param <C> The complex type of the tag.
+		 * @param <P>  The primitive type of the tag.
+		 * @param <C>  The complex type of the tag.
 		 * @param type The persistent data type.
-		 * @param key The key for the tag.
-		 * @param val The value to set.
+		 * @param key  The key for the tag.
+		 * @param val  The value to set.
 		 * @return The current editor instance.
 		 */
 		@Contract("_, _, _ -> this")
 		public <P, C> E addTag(PersistentDataType<P, C> type, String key, C val) {
 			if (pdc != null) {
-				pdc.set(new NamespacedKey(HatCosmetics.getInstance(), key), type, val);
+				pdc.set(new NamespacedKey(plugin, key), type, val);
 			}
 
 			return self();
@@ -59,7 +65,7 @@ public class NBTEditor {
 		@Contract("_ -> this")
 		public E removeTag(String key) {
 			if (pdc != null) {
-				pdc.remove(new NamespacedKey(HatCosmetics.getInstance(), key));
+				pdc.remove(new NamespacedKey(plugin, key));
 			}
 
 			return self();
@@ -68,14 +74,15 @@ public class NBTEditor {
 		/**
 		 * Removes a tag from the persistent data container if it exists.
 		 *
-		 * @param key The key of the tag to remove.
+		 * @param type The persistent data type of the tag.
+		 * @param key  The key of the tag to remove.
 		 * @return The current editor instance.
 		 */
-		@Contract("_ -> this")
-		public E removeTagIfExists(String key) {
+		@Contract("_, _ -> this")
+		public <P, C> E removeTagIfExists(PersistentDataType<P, C> type, String key) {
 			if (pdc != null) {
-				NamespacedKey nKey = new NamespacedKey(HatCosmetics.getInstance(), key);
-				if (pdc.has(nKey)) {
+				NamespacedKey nKey = new NamespacedKey(plugin, key);
+				if (pdc.has(nKey, type)) {
 					pdc.remove(nKey);
 				}
 			}
@@ -86,24 +93,25 @@ public class NBTEditor {
 		/**
 		 * Gets the value of a tag from the persistent data container.
 		 *
-		 * @param <P> The primitive type of the tag.
-		 * @param <C> The complex type of the tag.
+		 * @param <P>  The primitive type of the tag.
+		 * @param <C>  The complex type of the tag.
 		 * @param type The persistent data type.
-		 * @param key The key of the tag.
+		 * @param key  The key of the tag.
 		 * @return The value of the tag, or null if not found.
 		 */
 		public <P, C> @Nullable C getTag(PersistentDataType<P, C> type, String key) {
-			return pdc != null ? pdc.get(new NamespacedKey(HatCosmetics.getInstance(), key), type) : null;
+			return pdc != null ? pdc.get(new NamespacedKey(plugin, key), type) : null;
 		}
 
 		/**
-		 * Gets the value of a tag from the persistent data container, or a default value if not found.
+		 * Gets the value of a tag from the persistent data container, or a default
+		 * value if not found.
 		 *
-		 * @param <P> The primitive type of the tag.
-		 * @param <C> The complex type of the tag.
+		 * @param <P>  The primitive type of the tag.
+		 * @param <C>  The complex type of the tag.
 		 * @param type The persistent data type.
-		 * @param key The key of the tag.
-		 * @param def The default value to return if the tag is not found.
+		 * @param key  The key of the tag.
+		 * @param def  The default value to return if the tag is not found.
 		 * @return The value of the tag, or the default value if not found.
 		 */
 		public <P, C> C getOrDefault(PersistentDataType<P, C> type, String key, C def) {
@@ -129,8 +137,8 @@ public class NBTEditor {
 		/**
 		 * Construct a new ItemStackEditor.
 		 */
-		private ItemStackEditor(ItemStack item, ItemMeta meta, PersistentDataContainer pdc) {
-			super(pdc);
+		private ItemStackEditor(Plugin plugin, ItemStack item, ItemMeta meta, PersistentDataContainer pdc) {
+			super(plugin, pdc);
 			this.item = item;
 			this.meta = meta;
 		}
@@ -170,8 +178,8 @@ public class NBTEditor {
 		/**
 		 * Construct a new ItemMetaEditor.
 		 */
-		private ItemMetaEditor(ItemMeta meta, PersistentDataContainer pdc) {
-			super(pdc);
+		private ItemMetaEditor(Plugin plugin, ItemMeta meta, PersistentDataContainer pdc) {
+			super(plugin, pdc);
 			this.meta = meta;
 		}
 
@@ -199,8 +207,8 @@ public class NBTEditor {
 		/**
 		 * Construct a new PDCEditor.
 		 */
-		private PDCEditor(PersistentDataContainer pdc) {
-			super(pdc);
+		private PDCEditor(Plugin plugin, PersistentDataContainer pdc) {
+			super(plugin, pdc);
 		}
 
 		/**
@@ -227,12 +235,13 @@ public class NBTEditor {
 	 * @return A new ItemStackEditor instance.
 	 */
 	@Contract("null -> new")
-	public static @NotNull ItemStackEditor of(@Nullable ItemStack item) {
+	public @NotNull ItemStackEditor of(@Nullable ItemStack item) {
 		if (item == null) {
-			return new ItemStackEditor(null, null, null);
+			return new ItemStackEditor(this.plugin, null, null, null);
 		}
+
 		ItemMeta meta = item.getItemMeta();
-		return new ItemStackEditor(item, meta, meta != null ? meta.getPersistentDataContainer() : null);
+		return new ItemStackEditor(this.plugin, item, meta, meta != null ? meta.getPersistentDataContainer() : null);
 	}
 
 	/**
@@ -242,11 +251,12 @@ public class NBTEditor {
 	 * @return A new ItemMetaEditor instance.
 	 */
 	@Contract("_ -> new")
-	public static @NotNull ItemMetaEditor of(@Nullable ItemMeta meta) {
+	public @NotNull ItemMetaEditor of(@Nullable ItemMeta meta) {
 		if (meta == null) {
-			return new ItemMetaEditor(null, null);
+			return new ItemMetaEditor(this.plugin, null, null);
 		}
-		return new ItemMetaEditor(meta, meta.getPersistentDataContainer());
+
+		return new ItemMetaEditor(this.plugin, meta, meta.getPersistentDataContainer());
 	}
 
 	/**
@@ -256,7 +266,7 @@ public class NBTEditor {
 	 * @return A new PDCEditor instance.
 	 */
 	@Contract("_ -> new")
-	public static @NotNull PDCEditor of(@Nullable PersistentDataContainer pdc) {
-		return new PDCEditor(pdc);
+	public @NotNull PDCEditor of(@Nullable PersistentDataContainer pdc) {
+		return new PDCEditor(this.plugin, pdc);
 	}
 }
