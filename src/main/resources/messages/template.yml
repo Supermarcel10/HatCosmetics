@@ -1,10 +1,17 @@
 # HatCosmetics messages version: 3
 # For both my sake and yours, please DO NOT change the messages version!
 
+# This is a template file for all plugin's messages.
+# You can create a new file in the same directory and name it whatever you want, or rename this one.
+# The name of the file will be the name of the locale. For example, ABC.yml will be locale "ABC".
+# To make the plugin use your locale, change the "locale" options in the config.yml to the name of your locale.
+
+# Colour codes are supported. Use '&' followed by a number or letter to change the format of the text.
+# See https://minecraft.gamepedia.com/Formatting_codes for more information.
+
 # Placeholders:
 # {hat} - Returns the name of the equipped/unequipped hat
 
-# This file is used for the plugin's various messages
 prefix: "&3&lHats"
 suffix: " &3&l>> "
 
