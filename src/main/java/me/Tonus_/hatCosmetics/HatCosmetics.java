@@ -48,7 +48,7 @@ public class HatCosmetics extends JavaPlugin implements Listener {
 		new Metrics(this, 11075);
 
 		// Check for updates
-		var modrinthApiClient = new ModrinthUpstreamAPIClient(this.getLogger(), "4h6EFh3D");
+		var modrinthApiClient = new ModrinthUpstreamAPIClient(this.getSLF4JLogger(), "4h6EFh3D");
 		var pluginVersionRetriever = new PluginVersionRetriever(this);
 		new SemanticVersionChecker(this.getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever, true)
 				.checkForUpdates();
