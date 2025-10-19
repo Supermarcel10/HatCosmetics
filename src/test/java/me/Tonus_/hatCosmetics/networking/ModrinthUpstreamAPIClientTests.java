@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-class ModrinthAPIClientTests {
+class ModrinthUpstreamAPIClientTests {
     private Logger logger;
     private HttpURLConnection connection;
     private URI uri;
