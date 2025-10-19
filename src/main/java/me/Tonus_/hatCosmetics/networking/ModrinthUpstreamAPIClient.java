@@ -24,6 +24,12 @@ public class ModrinthUpstreamAPIClient implements IUpstreamAPIClient {
 		this.primaryURL = UPSTREAM_URL + projectID;
 	}
 
+	ModrinthUpstreamAPIClient(Logger logger, String projectID, String projectData) {
+		this.logger = logger;
+		this.primaryURL = UPSTREAM_URL + projectID;
+		this._projectData = JsonParser.parseString(projectData).getAsJsonObject();
+	}
+
 	private @Nullable JsonObject getProjectData() {
 		if (_projectData == null) {
 			try {
