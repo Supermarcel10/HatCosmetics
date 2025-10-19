@@ -6,6 +6,9 @@ plugins {
 
 group = "me.Tonus_"
 version = "3.0.0"
+var configVersion = "5"
+var messageVersion = "4"
+var genericsVersion = "1"
 
 repositories {
     mavenCentral()
@@ -17,13 +20,13 @@ dependencies {
     implementation "org.bstats:bstats-bukkit:3.0.2"
     implementation "org.reflections:reflections:0.10.2"
     compileOnly "org.jetbrains:annotations:24.1.0"
+    compileOnly "org.yaml:snakeyaml:2.2"
     compileOnly "org.projectlombok:lombok:1.18.32"
     annotationProcessor "org.projectlombok:lombok:1.18.32"
 
     compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
     compileOnly "com.google.code.gson:gson:2.11.0" // CVE mitigation: spigot-api
     compileOnly "com.google.guava:guava:33.2.1-jre" // CVE mitigation: spigot-api
-    compileOnly "org.yaml:snakeyaml:2.2" // CVE mitigation: spigot-api
     compileOnly 'junit:junit:4.13.2' // CVE mitigation: spigot-api
 }
 
@@ -70,19 +73,26 @@ shadowJar {
             expand(pluginVersion: project.version)
         }
     }
+
+    manifest {
+        attributes("Supported-Config-Version": configVersion)
+        attributes("Supported-Message-Version": messageVersion)
+        attributes("Supported-Generics-Version": genericsVersion)
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
 }
 
-tasks.register("copyToTestServer", Copy) {
+tasks.register("copyToTestServer", Sync) {
     dependsOn "build"
     mustRunAfter "build"
 
-    from "${project.layout.buildDirectory}/libs"
-    into "${project.layout.projectDirectory}/src/main/test/server/plugins"
-    include "*.jar"
+    from(fileTree("${project.buildDir}/libs") {
+        include("*.jar")
+    })
+    into("${project.projectDir}/src/main/test/server/plugins")
 }
 
 tasks.register("runOnTestServer", Exec) {
