@@ -1,0 +1,35 @@
+# HatCosmetics messages version: 4
+
+# Translation by: devMarcel, Tonus_
+
+# Placeholders:
+# {hat} - Returns the name of the equipped/unequipped hat
+# {player} - Returns the name of the target player
+
+gui_close: "&c&lClose Menu"
+gui_next: "&f&lNext Page"
+gui_prev: "&f&lPrevious Page"
+
+hat_unequip: "&bClick to unequip"
+hat_unequip_overlayed: "&4Right click to remove hat!"
+hat_unequip_success: "&bYou unequipped {hat}&b!"
+hat_unequip_success_other: "&b{player} unequipped {hat}&b!"
+hat_unequip_success_force: "&bYour hat was unequipped by an admin!"
+
+no_permission: "&bYou do not have permission to run this command!"
+not_online: "&b{player} is not online!"
+
+hat_equip: "&bClick to equip"
+
+hat_not_exist: "&bThis hat does not exist!"
+hat_success: "&bYou equipped {hat}&b!"
+hat_success_other: "&b{player} equipped {hat}&b!"
+hat_success_force: "&b{player} equipped you a hat!"
+no_hat: "&bYou don't have a hat equipped!"
+no_hat_given: "&bYou must specify a hat to equip!"
+no_hat_other: "&b{player} doesn't have a hat equipped!"
+no_hat_permission: "&bYou do not have permission to equip {hat}&b!"
+no_hat_permission_other: "&b{player} does not have permission to equip {hat}&b!"
+no_hats_gui: "&bYou don't have access to any hats!"
+
+reload_success: "&bPlugin reloaded!"
