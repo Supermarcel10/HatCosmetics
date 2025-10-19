@@ -13,7 +13,8 @@ import java.net.URI;
 
 
 public class ModrinthUpstreamAPIClient implements IUpstreamAPIClient {
-	private static final String UPSTREAM_URL = "https://api.modrinth.com/v2/project/";
+	private static final String UPSTREAM_API_URL = "https://api.modrinth.com/v2/project/";
+	private static final String UPSTREAM_RESOURCE_URL = "https://modrinth.com/";
 
 	private final Logger logger;
 	private final String primaryURL;
@@ -21,12 +22,12 @@ public class ModrinthUpstreamAPIClient implements IUpstreamAPIClient {
 
 	public ModrinthUpstreamAPIClient(Logger logger, String projectID) {
 		this.logger = logger;
-		this.primaryURL = UPSTREAM_URL + projectID;
+		this.primaryURL = UPSTREAM_API_URL + projectID;
 	}
 
 	ModrinthUpstreamAPIClient(Logger logger, String projectID, String projectData) {
 		this.logger = logger;
-		this.primaryURL = UPSTREAM_URL + projectID;
+		this.primaryURL = UPSTREAM_API_URL + projectID;
 		this._projectData = JsonParser.parseString(projectData).getAsJsonObject();
 	}
 
@@ -92,7 +93,7 @@ public class ModrinthUpstreamAPIClient implements IUpstreamAPIClient {
 
 		if (projectType == null || slug == null) return null;
 
-		return "https://modrinth.com/" + projectType.getAsString() + "/" + slug.getAsString();
+		return UPSTREAM_RESOURCE_URL + projectType.getAsString() + "/" + slug.getAsString();
 	}
 
 	/**
