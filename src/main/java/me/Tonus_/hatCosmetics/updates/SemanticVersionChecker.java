@@ -20,11 +20,6 @@ public class SemanticVersionChecker implements IVersionChecker {
 			return;
 		}
 
-		String url = apiClient.getResourceURL();
-		if (url == null) {
-			logger.warn("Failed to retrieve resource URL.");
-		}
-
 		var currentVersion = pluginVersionRetriever.getVersion();
 
 		int versionComparison = compareVersions(currentVersion, remoteVersion);
@@ -32,7 +27,12 @@ public class SemanticVersionChecker implements IVersionChecker {
             logger.warn("A new version is available: {}", remoteVersion);
             logger.warn("You are currently running: {}", currentVersion);
 
-			if (url != null) logger.warn("Update here: {}/version/latest", url);
+			var url = apiClient.getResourceURL();
+			if (url == null) {
+				logger.warn("Failed to retrieve resource URL.");
+			} else {
+				logger.warn("Update here: {}/version/latest", url);
+			}
 		} else if (versionComparison > 0) {
 			logger.warn("You are running an unknown or unsupported version!");
 			logger.warn("Ensure you download the plugin from trusted sources.");
