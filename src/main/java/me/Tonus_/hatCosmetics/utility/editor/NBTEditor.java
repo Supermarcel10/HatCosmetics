@@ -1,6 +1,7 @@
 package me.Tonus_.hatCosmetics.utility.editor;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -12,12 +13,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class NBTEditor {
 	private final Plugin plugin;
-
-	public NBTEditor(Plugin plugin) {
-		this.plugin = plugin;
-	}
 
 	/**
 	 * Abstract base class for NBT editors.
