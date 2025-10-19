@@ -1,7 +1,6 @@
 package me.Tonus_.hatCosmetics.networking;
 
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.slf4j.Logger;
@@ -17,9 +16,9 @@ import static org.mockito.Mockito.*;
 
 
 class ModrinthUpstreamAPIClientTests {
-    private Logger logger;
-    private HttpURLConnection connection;
-    private URI uri;
+    private final Logger logger = mock();
+    private final HttpURLConnection connection = mock();
+    private final URI uri = mock();
 
     private static final String TEST_PROJECT_ID = "test-project-id";
     private static final String BASE_URL = "https://api.modrinth.com/v2/project/" + TEST_PROJECT_ID;
@@ -41,13 +40,8 @@ class ModrinthUpstreamAPIClientTests {
             }
             """;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        logger = mock();
-        connection = mock();
-        uri = mock();
+    ModrinthUpstreamAPIClientTests() throws IOException {
         URL url = mock();
-
         doReturn(connection).when(url).openConnection();
         doReturn(url).when(uri).toURL();
     }
