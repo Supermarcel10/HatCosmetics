@@ -8,6 +8,9 @@ import me.Tonus_.hatCosmetics.inventory.InventoryHandler;
 import me.Tonus_.hatCosmetics.utility.Configs;
 import me.Tonus_.hatCosmetics.utility.VersionChecker;
 import me.Tonus_.hatCosmetics.utility.Messages;
+import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
+import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
+import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,7 +48,10 @@ public class HatCosmetics extends JavaPlugin implements Listener {
 		new Metrics(this, 11075);
 
 		// Check for updates
-		VersionChecker.checkForUpdates("4h6EFh3D");
+		var modrinthApiClient = new ModrinthUpstreamAPIClient(this.getLogger(), "4h6EFh3D");
+		var pluginVersionRetriever = new PluginVersionRetriever(this);
+		new SemanticVersionChecker(this.getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever, true)
+				.checkForUpdates();
 	}
 
 	/**
