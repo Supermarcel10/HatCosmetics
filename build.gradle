@@ -10,32 +10,23 @@ var configVersion = "5"
 var messageVersion = "4"
 var genericsVersion = "1"
 
-repositories {
-    mavenCentral()
-    maven { url = "https://repo.papermc.io/repository/maven-public/" }
-    mavenLocal()
-}
-
-dependencies {
-    implementation "org.bstats:bstats-bukkit:3.0.2"
-    implementation "org.reflections:reflections:0.10.2"
-    compileOnly "org.jetbrains:annotations:24.1.0"
-    compileOnly "org.yaml:snakeyaml:2.2"
-    compileOnly "org.projectlombok:lombok:1.18.32"
-    annotationProcessor "org.projectlombok:lombok:1.18.32"
-
-    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
-    compileOnly "com.google.code.gson:gson:2.11.0" // CVE mitigation: spigot-api
-    compileOnly "com.google.guava:guava:33.2.1-jre" // CVE mitigation: spigot-api
-    compileOnly 'junit:junit:4.13.2' // CVE mitigation: spigot-api
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
 
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["src/main/java"]
+        resources.srcDirs = ["src/main/resources/"]
+    }
+    test {
+        java.srcDirs = ["src/test/java"]
+        resources.srcDirs = ["src/test/resources/"]
     }
 }
 
@@ -51,15 +42,38 @@ idea {
     }
 }
 
-sourceSets {
-    main {
-        java.srcDirs = ["src/main/java"]
-        resources.srcDirs = ["src/main/resources/"]
-    }
-    test {
-        java.srcDirs = ["src/test/java"]
-        resources.srcDirs = ["src/test/resources/"]
-    }
+repositories {
+    mavenCentral()
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    mavenLocal()
+}
+
+dependencies {
+    // Build
+    implementation "org.bstats:bstats-bukkit:3.0.2"
+    implementation "org.reflections:reflections:0.10.2"
+    compileOnly "org.jetbrains:annotations:24.1.0"
+    compileOnly "org.yaml:snakeyaml:2.2"
+    compileOnly "org.projectlombok:lombok:1.18.32"
+    annotationProcessor "org.projectlombok:lombok:1.18.32"
+
+    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+    compileOnly "com.google.code.gson:gson:2.11.0" // CVE mitigation: spigot-api
+    compileOnly "com.google.guava:guava:33.2.1-jre" // CVE mitigation: spigot-api
+    compileOnly 'junit:junit:4.13.2' // CVE mitigation: spigot-api
+
+    // Testing
+    testImplementation platform("org.junit:junit-bom:5.13.1")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "org.mockito:mockito-core:5.18.0"
+
+    testImplementation "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
+    testImplementation "com.google.code.gson:gson:2.13.1"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
 }
 
 build.dependsOn shadowJar
@@ -81,8 +95,18 @@ shadowJar {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = "UTF-8"
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+    doFirst {
+        def mockitoJar = configurations.testRuntimeClasspath.find {
+            it.name.startsWith("mockito-core")
+        }
+        if (mockitoJar) jvmArgs "-javaagent:${mockitoJar}", "-Xshare:off"
+    }
 }
 
 tasks.register("copyToTestServer", Sync) {
