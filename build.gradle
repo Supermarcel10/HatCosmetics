@@ -124,6 +124,6 @@ tasks.register("runOnTestServer", Exec) {
     dependsOn "copyToTestServer"
     mustRunAfter "copyToTestServer"
 
-    workingDir "${project.layout.projectDirectory}/src/main/test/server/"
+    workingDir "${project.layout.projectDirectory}/src/test/server/"
     commandLine "java", "-Xms1G", "-Xmx1G", "-Dpaper.log-level=WARN", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "paper-1.20.4-496.jar", "--nogui"
 }
