@@ -6,6 +6,6 @@ gradlew
 gradlew.bat
 
 # Test server files
-/src/main/test/server/*
-!/src/main/test/server/paper-1.20.4-496.jar
-!/src/main/test/server/plugins/item-nbt-api-plugin-2.12.4.jar
+src/test/server/
+!src/test/server/paper-*.jar
+!src/test/server/plugins/item-nbt-api-plugin-*.jar
