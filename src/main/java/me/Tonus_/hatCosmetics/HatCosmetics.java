@@ -14,16 +14,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class HatCosmetics extends JavaPlugin implements Listener {
 	private Metrics metricService;
 
-	@Getter private ConfigRetriever configHandler;
-	@Getter private MessageHandler messageHandler;
-
 	/**
 	 * Plugin enable
 	 */
 	@Override
 	public void onEnable() {
-		configHandler = new ConfigRetriever(this);
-		messageHandler = new MessageHandler(this, configHandler);
+        var configHandler = new ConfigRetriever(this);
+        var messageHandler = new MessageHandler(this, configHandler);
 
 		// Enable bStats
 		metricService = new Metrics(this, 11075);
