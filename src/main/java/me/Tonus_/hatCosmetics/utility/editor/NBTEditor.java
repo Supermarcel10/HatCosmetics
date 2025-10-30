@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
 
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -96,10 +97,12 @@ public class NBTEditor {
 		 * @param <C>  The complex type of the tag.
 		 * @param type The persistent data type.
 		 * @param key  The key of the tag.
-		 * @return The value of the tag, or null if not found.
+		 * @return The value of the tag or empty.
 		 */
-		public <P, C> @Nullable C getTag(PersistentDataType<P, C> type, String key) {
-			return pdc != null ? pdc.get(new NamespacedKey(plugin, key), type) : null;
+		public <P, C> Optional<C> getTag(PersistentDataType<P, C> type, String key) {
+			return pdc == null ?
+					Optional.empty() :
+					Optional.ofNullable(pdc.get(new NamespacedKey(plugin, key), type));
 		}
 
 		/**
@@ -114,8 +117,7 @@ public class NBTEditor {
 		 * @return The value of the tag, or the default value if not found.
 		 */
 		public <P, C> C getOrDefault(PersistentDataType<P, C> type, String key, C def) {
-			C val = getTag(type, key);
-			return val != null ? val : def;
+            return getTag(type, key).orElse(def);
 		}
 
 		/**
