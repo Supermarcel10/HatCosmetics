@@ -69,7 +69,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:5.18.0"
     testImplementation "org.jetbrains:annotations:24.1.0"
 
-    testImplementation "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
+    testImplementation "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
     testImplementation "com.google.code.gson:gson:2.13.1"
 }
 
