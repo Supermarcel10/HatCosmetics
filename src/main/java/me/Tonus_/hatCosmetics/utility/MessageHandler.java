@@ -1,6 +1,7 @@
 package me.Tonus_.hatCosmetics.utility;
 
-import me.Tonus_.hatCosmetics.config.ConfigHandler;
+import me.Tonus_.hatCosmetics.config.ConfigReference;
+import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,21 +19,21 @@ import java.util.jar.JarFile;
 
 public class MessageHandler {
 	private final Plugin plugin;
-	private final ConfigHandler configHandler;
+	private final ConfigRetriever configRetriever;
 	private static String serverLocale;
 	private static final Map<String, String> generics = new HashMap<>();
 	private static final Map<String, FileConfiguration> translations = new HashMap<>();
 
-	public MessageHandler(Plugin plugin, ConfigHandler configHandler) {
+	public MessageHandler(Plugin plugin, ConfigRetriever configHandler) {
 		this.plugin = plugin;
-		this.configHandler = configHandler;
+		this.configRetriever = configHandler;
 
 		init();
 	}
 
 	private void init() {
 		// Default to en_US if the locale is not found
-		serverLocale = configHandler.getStringOrDefault("locale", "en_US");
+		serverLocale = configRetriever.getValue(ConfigReference.LOCALE, "en_US");
 
 		ensureTemplateExists();
 		loadGenerics();
