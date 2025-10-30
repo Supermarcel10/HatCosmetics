@@ -117,7 +117,7 @@ tasks.register("copyToTestServer", Sync) {
     from(fileTree("${project.buildDir}/libs") {
         include("*.jar")
     })
-    into("${project.projectDir}/src/main/test/server/plugins")
+    into("${project.projectDir}/src/test/server/plugins")
 }
 
 tasks.register("runOnTestServer", Exec) {
