@@ -1,31 +1,10 @@
 main: me.Tonus_.hatCosmetics.HatCosmetics
 name: HatCosmetics
+website: https://github.com/Supermarcel10/HatCosmetics/
 version: ${pluginVersion}
 api-version: 1.16
-
+load: STARTUP
 description: A simple plugin that allows players to wear hats.
 authors:
   - Supermarcel10
   - Tonus_
-load: STARTUP
-
-commands:
-  hatCosmetics:
-    description: Main command for HatCosmetics.
-    usage: /hatCosmetics help
-    aliases:
-      - hats
-
-permissions:
-  hatcosmetics.reload:
-    description: Allows you to reload the plugin's config.
-    default: op
-  hatcosmetics.hat:
-    description: Allows use of hat in permission.
-    default: op
-  hatcosmetics.equip.other:
-    description: Allows sender to equip hat for online player.
-    default: op
-  hatcosmetics.unequip.other:
-    description: Allows sender to unequip hat from online player.
-    default: op
