@@ -3,6 +3,7 @@ package me.Tonus_.hatCosmetics.utility.editor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -149,6 +150,16 @@ public class NBTEditor {
 		 */
 		@Override
 		protected ItemStackEditor self() {
+			return this;
+		}
+
+		/**
+		 * Sets an item's display name.
+		 * @param nameComponent display name to set.
+		 * @return itemstack editor.
+		 */
+		public ItemStackEditor setName(Component nameComponent) {
+			this.meta.displayName(nameComponent);
 			return this;
 		}
 
