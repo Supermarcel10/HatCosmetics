@@ -1,4 +1,4 @@
-main: me.Tonus_.hatCosmetics.HatCosmetics
+main: me.Tonus_.hatCosmetics.Main
 name: HatCosmetics
 website: https://github.com/Supermarcel10/HatCosmetics/
 version: ${pluginVersion}
