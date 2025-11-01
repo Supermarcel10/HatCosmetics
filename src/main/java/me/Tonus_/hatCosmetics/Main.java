@@ -6,7 +6,7 @@ import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
 import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
 import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
-import me.Tonus_.hatCosmetics.utility.MessageHandler;
+import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +21,7 @@ public class Main extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
         var configHandler = new ConfigRetriever(this);
-        var messageHandler = new MessageHandler(this, configHandler);
+        var messageHandler = new MessageRetriever(this, configHandler);
 
 		// Register commands
 		var commandManager = new PaperCommandManager(this);

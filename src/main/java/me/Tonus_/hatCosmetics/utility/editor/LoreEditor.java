@@ -3,7 +3,7 @@ package me.Tonus_.hatCosmetics.utility.editor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import me.Tonus_.hatCosmetics.utility.MessageHandler;
+import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @AllArgsConstructor
 public class LoreEditor {
-	private final MessageHandler messageHandler;
+	private final MessageRetriever messageRetriever;
 
 	/**
 	 * Abstract base class for Lore editors.
@@ -27,7 +27,7 @@ public class LoreEditor {
 	 */
 	@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 	public static abstract class BaseLoreEditor<T, E extends BaseLoreEditor<T, E>> {
-		private final MessageHandler messageHandler;
+		private final MessageRetriever messageRetriever;
 		protected final List<Component> lore;
 
 		/**
@@ -60,7 +60,7 @@ public class LoreEditor {
 		 */
 		@Contract("_, _ -> this")
 		public E addLoreMessage(@NotNull Player player, String path) {
-			return addLore(Component.text(messageHandler.getMessage(player, path)));
+			return addLore(Component.text(messageRetriever.getMessage(player, path)));
 		}
 
 		/**
@@ -109,8 +109,8 @@ public class LoreEditor {
 		/**
 		 * Construct a new ItemStackLoreEditor.
 		 */
-		private ItemStackLoreEditor(MessageHandler messageHandler, ItemStack item, ItemMeta meta, List<Component> lore) {
-			super(messageHandler, lore);
+		private ItemStackLoreEditor(MessageRetriever messageRetriever, ItemStack item, ItemMeta meta, List<Component> lore) {
+			super(messageRetriever, lore);
 			this.item = item;
 			this.meta = meta;
 		}
@@ -154,8 +154,8 @@ public class LoreEditor {
 		/**
 		 * Construct a new ItemMetaLoreEditor.
 		 */
-		private ItemMetaLoreEditor(MessageHandler messageHandler, ItemMeta meta, List<Component> lore) {
-			super(messageHandler, lore);
+		private ItemMetaLoreEditor(MessageRetriever messageRetriever, ItemMeta meta, List<Component> lore) {
+			super(messageRetriever, lore);
 			this.meta = meta;
 		}
 
@@ -197,7 +197,7 @@ public class LoreEditor {
 	@Contract("null -> new")
 	public @NotNull ItemStackLoreEditor of(@Nullable ItemStack item) {
 		if (item == null) {
-			return new ItemStackLoreEditor(messageHandler, null, null, null);
+			return new ItemStackLoreEditor(messageRetriever, null, null, null);
 		}
 
 		ItemMeta meta = item.getItemMeta();
@@ -206,7 +206,7 @@ public class LoreEditor {
 			lore = new ArrayList<>();
 		}
 
-		return new ItemStackLoreEditor(messageHandler, item, meta, lore);
+		return new ItemStackLoreEditor(messageRetriever, item, meta, lore);
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class LoreEditor {
 	@Contract("null -> new")
 	public @NotNull ItemMetaLoreEditor of(@Nullable ItemMeta meta) {
 		if (meta == null) {
-			return new ItemMetaLoreEditor(messageHandler, null, null);
+			return new ItemMetaLoreEditor(messageRetriever, null, null);
 		}
 
 		List<Component> lore = meta.lore();
@@ -226,6 +226,6 @@ public class LoreEditor {
 			lore = new ArrayList<>();
 		}
 
-		return new ItemMetaLoreEditor(messageHandler, meta, lore);
+		return new ItemMetaLoreEditor(messageRetriever, meta, lore);
 	}
 }

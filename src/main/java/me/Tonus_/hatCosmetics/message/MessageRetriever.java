@@ -1,4 +1,4 @@
-package me.Tonus_.hatCosmetics.utility;
+package me.Tonus_.hatCosmetics.message;
 
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
@@ -17,14 +17,14 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 
-public class MessageHandler {
+public class MessageRetriever {
 	private final Plugin plugin;
 	private final ConfigRetriever configRetriever;
 	private static String serverLocale;
 	private static final Map<String, String> generics = new HashMap<>();
 	private static final Map<String, FileConfiguration> translations = new HashMap<>();
 
-	public MessageHandler(Plugin plugin, ConfigRetriever configHandler) {
+	public MessageRetriever(Plugin plugin, ConfigRetriever configHandler) {
 		this.plugin = plugin;
 		this.configRetriever = configHandler;
 
@@ -100,7 +100,7 @@ public class MessageHandler {
 	 * Loads all generic messages
 	 */
 	private void loadGenerics() {
-		try (InputStream inputStream = MessageHandler.class.getClassLoader().getResourceAsStream("messages/generics.yml")) {
+		try (InputStream inputStream = MessageRetriever.class.getClassLoader().getResourceAsStream("messages/generics.yml")) {
 			if (inputStream != null) {
 				YamlConfiguration genericYAML = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 
