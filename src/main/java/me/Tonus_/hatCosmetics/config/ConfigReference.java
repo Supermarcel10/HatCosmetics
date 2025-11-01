@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 public enum ConfigReference {
     VERSION("version", String.class),
 
-    LOCALE("locale.server-locale", String.class),
+    SERVER_LOCALE("locale.server-locale", String.class),
     FORCED_LOCALE("locale.forced-locale", Boolean.class),
 
     STORAGE_FORMAT("storage.format", StorageFormat.class),
