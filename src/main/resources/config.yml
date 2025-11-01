@@ -1,13 +1,38 @@
 # HatCosmetics config version: 5
 version: 5
-# DO NOT EDIT THE CONFIG VERSION!
+# DO NOT EDIT THE CONFIG VERSION ABOVE!
 
-# Default server locale
-# This is the language displayed in the plugin's messages, if the player's locale is not supported
-locale: en_US
+# ----------------------------------------
+# Storage Configuration
+# ----------------------------------------
+locale:
+  # Default server locale
+  # This is the language displayed in the plugin's messages, if the player's locale is not supported
+  server-locale: en_US
 
-# Force server locale
-force-locale: false
+  # Force server locale
+  force-locale: false
+
+
+# ----------------------------------------
+# Storage Configuration
+# ----------------------------------------
+storage:
+  # The data pattern/format to save files in
+  format: JSON
+
+
+# ----------------------------------------
+# Performance Configuration
+# ----------------------------------------
+performance:
+  # How agressive value caching is.
+  # The following options are available:
+  # - MINIMAL
+  # - CONSERVATIVE
+  # - AGRESSIVE
+  caching-agressivness: CONSERVATIVE
+
 
 # ----------------------------------------
 # GUI Configuration
@@ -34,6 +59,7 @@ gui:
   # Hide hats that players do not have access to.
   # If set to true, players will only see hats they have access to in the GUI.
   hide-hats: false
+
 
 # ----------------------------------------
 # Hat Configuration
