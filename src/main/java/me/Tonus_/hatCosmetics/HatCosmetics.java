@@ -1,6 +1,7 @@
 package me.Tonus_.hatCosmetics;
 
-import lombok.Getter;
+import co.aikar.commands.PaperCommandManager;
+import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
 import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
@@ -21,6 +22,11 @@ public class HatCosmetics extends JavaPlugin implements Listener {
 	public void onEnable() {
         var configHandler = new ConfigRetriever(this);
         var messageHandler = new MessageHandler(this, configHandler);
+
+		// Register commands
+		var commandManager = new PaperCommandManager(this);
+		commandManager.enableUnstableAPI("help");
+		commandManager.registerCommand(new MainCommand());
 
 		// Enable bStats
 		metricService = new Metrics(this, 11075);

@@ -1,0 +1,34 @@
+package me.Tonus_.hatCosmetics.command;
+
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+
+@CommandAlias("hatcosmetics|hats|hc")
+public class MainCommand extends BaseCommand {
+    @Default
+    public void onDefault(@NotNull Player player) {
+
+    }
+
+    @Subcommand("equip|e")
+    public void onEquip(@NotNull Player player, String hatName) {
+
+    }
+
+    @Subcommand("unequip|u")
+    public void onUnequip(@NotNull Player player) {
+
+    }
+
+    @Subcommand("reload")
+    @CommandPermission("hatcosmetics.reload|hatcosmetics.admin")
+    public void onReload(@NotNull Player player) {
+
+    }
+}
