@@ -3,6 +3,8 @@ package me.Tonus_.hatCosmetics;
 import co.aikar.commands.PaperCommandManager;
 import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
+import me.Tonus_.hatCosmetics.message.ColorParser;
+import me.Tonus_.hatCosmetics.message.generics.GenericsRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
 import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
 import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
@@ -21,7 +23,9 @@ public class Main extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
         var configHandler = new ConfigRetriever(this);
-        var messageHandler = new MessageRetriever(this, configHandler);
+		var colorParser = new ColorParser();
+		var genericsRetriever = new GenericsRetriever(getSLF4JLogger(), colorParser);
+        var messageRetriever = new MessageRetriever(this, configHandler, colorParser, genericsRetriever);
 
 		// Register commands
 		var commandManager = new PaperCommandManager(this);
@@ -32,9 +36,9 @@ public class Main extends JavaPlugin implements Listener {
 		metricService = new Metrics(this, 11075);
 
 		// Check for updates
-		var modrinthApiClient = new ModrinthUpstreamAPIClient(this.getSLF4JLogger(), "4h6EFh3D");
+		var modrinthApiClient = new ModrinthUpstreamAPIClient(getSLF4JLogger(), "4h6EFh3D");
 		var pluginVersionRetriever = new PluginVersionRetriever(this);
-		new SemanticVersionChecker(this.getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever, true)
+		new SemanticVersionChecker(getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever, true)
 				.checkForUpdates();
 	}
 
