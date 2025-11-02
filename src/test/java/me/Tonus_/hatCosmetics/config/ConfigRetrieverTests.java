@@ -1,26 +1,18 @@
 package me.Tonus_.hatCosmetics.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
 public class ConfigRetrieverTests {
-    private final Plugin plugin = mock();
     private final Logger logger = mock();
     private final FileConfiguration configuration = mock();
-    private final ConfigRetriever sut = new ConfigRetriever(plugin, configuration);
-
-    ConfigRetrieverTests() {
-        doReturn(logger).when(plugin).getSLF4JLogger();
-    }
+    private final ConfigRetriever sut = new ConfigRetriever(logger, configuration);
 
     @Test
     void getValue_whenValueExists_shouldReturnValueCast() {
@@ -36,7 +28,7 @@ public class ConfigRetrieverTests {
         // Assert
         assertEquals(expectedValue, result);
         assertEquals(expectedValue.getClass(), configReference.type);
-        verify(logger, never()).warn(anyString(), any(Object.class));
+        verify(logger, never()).warn(anyString(), any(), any(), anyString());
     }
 
     @Test
@@ -52,7 +44,7 @@ public class ConfigRetrieverTests {
 
         // Assert
         assertNull(result);
-        assertLoggedWarningMessage(configReference, expectedValue);
+        verify(logger).warn(anyString(), eq(expectedValue), eq(configReference.yamlPath), anyString());
     }
 
     @Test
@@ -65,7 +57,7 @@ public class ConfigRetrieverTests {
 
         // Assert
         assertNull(result);
-        verify(logger, never()).warn(anyString(), any(Object.class));
+        verify(logger, never()).warn(anyString(), any(), any(), anyString());
     }
 
     @Test
@@ -81,7 +73,7 @@ public class ConfigRetrieverTests {
 
         // Assert
         assertEquals(expectedValue, result);
-        verify(logger, never()).warn(anyString(), any(Object.class));
+        verify(logger, never()).warn(anyString(), any(), any(), anyString());
     }
 
     @Test
@@ -96,31 +88,6 @@ public class ConfigRetrieverTests {
 
         // Assert
         assertEquals(expectedValue, result);
-        verify(logger, never()).warn(anyString(), any(Object.class));
-    }
-
-    @Test
-    void getValueWithInvalidTypeDefault_whenValueNull_shouldReturnWarning() {
-        // Arrange
-        var configReference = ConfigReference.VERSION;
-
-        // Act
-        var result = sut.getValue(configReference, 1);
-
-        // Assert
-        assertNull(result);
-        assertLoggedWarningMessage(configReference, null);
-    }
-
-    public void assertLoggedWarningMessage(@NotNull ConfigReference configReference, Object expectedValue) {
-        var simpleName = expectedValue == null ? null : expectedValue.getClass().getSimpleName();
-
-        verify(logger, times(1)).warn(
-                "Config value ({}) at path '{}' is not of expected type {}. Found {}.",
-                expectedValue,
-                configReference.yamlPath,
-                configReference.type.getSimpleName(),
-                simpleName
-        );
+        verify(logger, never()).warn(anyString(), any(), any(), anyString());
     }
 }

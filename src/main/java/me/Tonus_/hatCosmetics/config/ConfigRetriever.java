@@ -5,11 +5,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+
 import java.io.File;
 
 
 public class ConfigRetriever implements IConfigRetriever {
-    private final Plugin plugin;
+    private final Logger logger;
     private final FileConfiguration config;
 
     public ConfigRetriever(@NotNull Plugin plugin) {
@@ -18,52 +20,37 @@ public class ConfigRetriever implements IConfigRetriever {
             plugin.saveResource("config.yml", false);
         }
 
-        this.plugin = plugin;
+        this.logger = plugin.getSLF4JLogger();
         this.config = YamlConfiguration.loadConfiguration(configFile);
     }
 
-    ConfigRetriever(@NotNull Plugin plugin, FileConfiguration config) {
-        this.plugin = plugin;
+    ConfigRetriever(Logger logger, FileConfiguration config) {
+        this.logger = logger;
         this.config = config;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> @Nullable T getValue(@NotNull ConfigReference configReference) {
-        Object value = config.get(configReference.yamlPath);
+    public <T> @Nullable T getValue(@NotNull ConfigReference<T> configReference) {
+        var value = config.get(configReference.yamlPath);
 
-        if (value == null) {
+        if (value != null && !configReference.getType().isInstance(value)) {
+            var simpleName = value.getClass().getSimpleName();
+
+            logger.warn(
+                    "Config value ({}) at path '{}' is not of expected type. Found {}.",
+                    value,
+                    configReference.yamlPath,
+                    simpleName
+            );
+
             return null;
         }
 
-        if (!configReference.type.isInstance(value)) {
-            logConfigMismatchWarning(configReference, value);
-            return null;
-        }
-
-        return (T) configReference.type.cast(value);
+        return (T) value;
     }
 
-    public <T> @Nullable T getValue(@NotNull ConfigReference configReference, T defaultValue) {
-        var isSameType = configReference.type.isInstance(defaultValue);
-
-        if (isSameType) {
-            T value = getValue(configReference);
-            return value != null ? value : defaultValue;
-        } else {
-            logConfigMismatchWarning(configReference, null);
-            return null;
-        }
-    }
-
-    private void logConfigMismatchWarning(@NotNull ConfigReference configReference, @Nullable Object value) {
-        var simpleName = value == null ? null : value.getClass().getSimpleName();
-
-        plugin.getSLF4JLogger().warn(
-                "Config value ({}) at path '{}' is not of expected type {}. Found {}.",
-                value,
-                configReference.yamlPath,
-                configReference.type.getSimpleName(),
-                simpleName
-        );
+    public <T> T getValue(@NotNull ConfigReference<T> configReference, T defaultValue) {
+        var value = getValue(configReference);
+        return value != null ? value : defaultValue;
     }
 }
