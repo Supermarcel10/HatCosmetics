@@ -54,7 +54,6 @@ public class MessageRetriever {
 		plugin.getSLF4JLogger().info("Loaded {} translations.", translations.size());
 	}
 
-
 	/**
 	 * Ensures that the template file exists
 	 */
@@ -180,17 +179,18 @@ public class MessageRetriever {
 	private @NotNull String getMessage(String language, String path) {
 		// Check if server has a forced locale or if the language is not found
 		// Use the default server locale if the language is not found
-		if (plugin.getConfig().getBoolean("force-locale") || !translations.containsKey(language)) {
+		var forcedLocale = configRetriever.getValue(ConfigReference.FORCED_LOCALE);
+		if (Boolean.TRUE.equals(forcedLocale) || !translations.containsKey(language)) {
 			language = serverLocale;
 		}
 
-		FileConfiguration yaml = translations.get(language);
+		var yaml = translations.get(language);
 		if (yaml == null || !yaml.contains(path)) {
 			var generic = genericsRetriever.getGeneric(path);
 			if (generic != null) return generic;
 
-			logger.warn("Missing message ({}) for language {}!", path, language);
-			return "MISSING MESSAGE";
+			logger.warn("Missing message \"{}\" for language {}!", path, language);
+			return "<MISSING MESSAGE - REPORT THIS>";
 		}
 
 		return colorParser.parse(yaml.getString(path));
