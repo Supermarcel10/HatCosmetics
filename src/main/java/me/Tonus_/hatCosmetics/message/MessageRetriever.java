@@ -2,6 +2,7 @@ package me.Tonus_.hatCosmetics.message;
 
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
+import me.Tonus_.hatCosmetics.message.generics.IGenericsRetriever;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,13 +21,19 @@ import java.util.jar.JarFile;
 public class MessageRetriever {
 	private final Plugin plugin;
 	private final ConfigRetriever configRetriever;
-	private static String serverLocale;
-	private static final Map<String, String> generics = new HashMap<>();
-	private static final Map<String, FileConfiguration> translations = new HashMap<>();
+	private final IGenericsRetriever genericsRetriever;
 
-	public MessageRetriever(Plugin plugin, ConfigRetriever configHandler) {
+	private final Map<String, FileConfiguration> translations = new HashMap<>();
+	private String serverLocale;
+
+	public MessageRetriever(
+			Plugin plugin,
+			ConfigRetriever configHandler,
+			IGenericsRetriever genericsRetriever
+	) {
 		this.plugin = plugin;
 		this.configRetriever = configHandler;
+		this.genericsRetriever = genericsRetriever;
 
 		init();
 	}
@@ -36,7 +43,6 @@ public class MessageRetriever {
 		serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, "en_US");
 
 		ensureTemplateExists();
-		loadGenerics();
 		loadAllTranslations(); // TODO: Instead of loading all translations, load only the server locale, and then load the rest when needed (e.g. when a player joins)
 		loadLocalTranslations();
 
@@ -94,25 +100,6 @@ public class MessageRetriever {
 				);
 			}
 		}
-	}
-
-	/**
-	 * Loads all generic messages
-	 */
-	private void loadGenerics() {
-		try (InputStream inputStream = MessageRetriever.class.getClassLoader().getResourceAsStream("messages/generics.yml")) {
-			if (inputStream != null) {
-				YamlConfiguration genericYAML = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-				for (Map.Entry<String, Object> entry : genericYAML.getValues(true).entrySet()) {
-					generics.put(entry.getKey(), String.valueOf(entry.getValue()));
-				}
-			} else throw new IOException("Failed to open input stream!");
-		} catch (IOException e) {
-			plugin.getSLF4JLogger().error("Failed to load generic messages! {}", e.toString());
-		}
-
-        plugin.getSLF4JLogger().info("Loaded {} generic messages.", generics.size());
 	}
 
 	/**
@@ -188,7 +175,8 @@ public class MessageRetriever {
 
 		FileConfiguration yaml = translations.get(language);
 		if (yaml == null || !yaml.contains(path)) {
-			if (generics.containsKey(path)) return parseColorCodes(generics.get(path));
+			var generic = genericsRetriever.getGeneric(path);
+			if (generic != null) return parseColorCodes(generic);
 
 			plugin.getSLF4JLogger().warn("Missing message ({}) for language {}!", path, language);
 			return "MISSING MESSAGE";
