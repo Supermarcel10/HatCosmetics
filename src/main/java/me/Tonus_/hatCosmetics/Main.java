@@ -9,6 +9,7 @@ import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
 import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
 import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
 import me.Tonus_.hatCosmetics.message.MessageRetriever;
+import me.Tonus_.hatCosmetics.utility.string.StringFormatter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,7 +26,8 @@ public class Main extends JavaPlugin implements Listener {
         var configHandler = new ConfigRetriever(this);
 		var colorParser = new ColorParser();
 		var genericsRetriever = new GenericsRetriever(getSLF4JLogger(), colorParser);
-        var messageRetriever = new MessageRetriever(this, configHandler, colorParser, genericsRetriever);
+		var stringFormatter = new StringFormatter(getSLF4JLogger());
+        var messageRetriever = new MessageRetriever(this, configHandler, colorParser, genericsRetriever, stringFormatter);
 
 		// Register commands
 		var commandManager = new PaperCommandManager(this);
