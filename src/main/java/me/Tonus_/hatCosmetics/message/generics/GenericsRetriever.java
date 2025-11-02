@@ -1,5 +1,7 @@
 package me.Tonus_.hatCosmetics.message.generics;
 
+import lombok.RequiredArgsConstructor;
+import me.Tonus_.hatCosmetics.message.IColorParser;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,34 +13,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+@RequiredArgsConstructor
 public class GenericsRetriever implements IGenericsRetriever {
     private static final String GENERICS_FILE = "messages/generics.yml";
 
-    private final Map<String, String> generics = new HashMap<>();
     private final Logger logger;
+    private final IColorParser colorParser;
 
-    public GenericsRetriever(Logger logger) {
-        this.logger = logger;
-        loadGenerics();
-    }
+    private Map<String, String> generics;
 
     public @Nullable String getGeneric(@NotNull String key) {
+        if (generics == null) {
+            generics = loadGenerics();
+        }
+
         var value = generics.get(key);
-        if (value == null) logger.warn("Could not retrieve generic with key '{}'.", key);
+        if (value == null) {
+            logger.warn("Could not retrieve generic with key '{}'.", key);
+        }
+
         return value;
     }
 
-    /**
-     * Loads all generic messages
-     */
-    private void loadGenerics() {
+    private @NotNull Map<String, String> loadGenerics() {
+        var generics = new HashMap<String, String>();
+
         try (var inputStream = GenericsRetriever.class.getClassLoader().getResourceAsStream(GENERICS_FILE)) {
             if (inputStream != null) {
                 var isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                 var yaml = YamlConfiguration.loadConfiguration(isr);
 
                 for (var entry : yaml.getValues(true).entrySet()) {
-                    generics.put(entry.getKey(), String.valueOf(entry.getValue()));
+                    var parsedValue = colorParser.parse(String.valueOf(entry.getValue()));
+                    generics.put(entry.getKey(), parsedValue);
                 }
             } else throw new IOException("Failed to open input stream!");
         } catch (IOException e) {
@@ -46,5 +53,6 @@ public class GenericsRetriever implements IGenericsRetriever {
         }
 
         logger.info("Loaded {} generic messages.", generics.size());
+        return generics;
     }
 }
