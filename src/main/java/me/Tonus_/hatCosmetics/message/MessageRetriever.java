@@ -1,7 +1,7 @@
 package me.Tonus_.hatCosmetics.message;
 
 import me.Tonus_.hatCosmetics.config.ConfigReference;
-import me.Tonus_.hatCosmetics.config.ConfigRetriever;
+import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.message.generics.IGenericsRetriever;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +19,8 @@ import java.util.jar.JarFile;
 
 public class MessageRetriever {
 	private final Plugin plugin;
-	private final ConfigRetriever configRetriever;
+	private final IConfigRetriever configRetriever;
+	private final IColorParser colorParser;
 	private final IGenericsRetriever genericsRetriever;
 
 	private final Map<String, FileConfiguration> translations = new HashMap<>();
@@ -28,11 +28,13 @@ public class MessageRetriever {
 
 	public MessageRetriever(
 			Plugin plugin,
-			ConfigRetriever configHandler,
+			IConfigRetriever configHandler,
+			IColorParser colorParser,
 			IGenericsRetriever genericsRetriever
 	) {
 		this.plugin = plugin;
 		this.configRetriever = configHandler;
+		this.colorParser = colorParser;
 		this.genericsRetriever = genericsRetriever;
 
 		init();
@@ -176,13 +178,13 @@ public class MessageRetriever {
 		FileConfiguration yaml = translations.get(language);
 		if (yaml == null || !yaml.contains(path)) {
 			var generic = genericsRetriever.getGeneric(path);
-			if (generic != null) return parseColorCodes(generic);
+			if (generic != null) return generic;
 
 			plugin.getSLF4JLogger().warn("Missing message ({}) for language {}!", path, language);
 			return "MISSING MESSAGE";
 		}
 
-		return parseColorCodes(yaml.getString(path));
+		return colorParser.parse(yaml.getString(path));
 	}
 
 	public void sendMessage(@NotNull CommandSender sender, @NotNull String path) {
@@ -277,15 +279,5 @@ public class MessageRetriever {
 				!entry.isDirectory() &&
 				entryName.endsWith(".yml") &&
 				!entryName.equals("messages/template.yml");
-	}
-
-	/**
-	 * Formats a message for color by replacing all '&' with '§'
-	 * @param msg Message to format
-	 * @return Formatted message
-	 */
-	@Contract(pure = true)
-	public static @NotNull String parseColorCodes(@NotNull String msg) {
-		return msg.replaceAll("&([1-9a-eA-EKkLlMmNnOoRr])", "§$1");
 	}
 }
