@@ -3,6 +3,7 @@ package me.Tonus_.hatCosmetics.message;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.message.generics.IGenericsRetriever;
+import me.Tonus_.hatCosmetics.utility.string.IStringFormatter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,6 +11,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -19,9 +22,11 @@ import java.util.jar.JarFile;
 
 public class MessageRetriever {
 	private final Plugin plugin;
+	private final Logger logger;
 	private final IConfigRetriever configRetriever;
 	private final IColorParser colorParser;
 	private final IGenericsRetriever genericsRetriever;
+	private final IStringFormatter stringFormatter;
 
 	private final Map<String, FileConfiguration> translations = new HashMap<>();
 	private String serverLocale;
@@ -30,34 +35,25 @@ public class MessageRetriever {
 			Plugin plugin,
 			IConfigRetriever configHandler,
 			IColorParser colorParser,
-			IGenericsRetriever genericsRetriever
+			IGenericsRetriever genericsRetriever,
+			IStringFormatter stringFormatter
 	) {
 		this.plugin = plugin;
+		this.logger = plugin.getSLF4JLogger();
 		this.configRetriever = configHandler;
 		this.colorParser = colorParser;
 		this.genericsRetriever = genericsRetriever;
+		this.stringFormatter = stringFormatter;
 
-		init();
-	}
-
-	private void init() {
-		// Default to en_US if the locale is not found
 		serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, "en_US");
 
 		ensureTemplateExists();
 		loadAllTranslations(); // TODO: Instead of loading all translations, load only the server locale, and then load the rest when needed (e.g. when a player joins)
 		loadLocalTranslations();
 
-        plugin.getSLF4JLogger().info("Loaded {} translations.", translations.size());
+		plugin.getSLF4JLogger().info("Loaded {} translations.", translations.size());
 	}
 
-	/**
-	 * Reloads all translations
-	 */
-	public void reload() {
-		translations.clear();
-		init();
-	}
 
 	/**
 	 * Ensures that the template file exists
@@ -116,7 +112,7 @@ public class MessageRetriever {
 				if (isValidTranslationFile(entry)) loadTranslationFile(entry);
 			}
 		} catch (IOException e) {
-			plugin.getSLF4JLogger().error("Failed to load translations from JAR file! {}", e.toString());
+			logger.error("Failed to load translations from JAR file! {}", e.toString());
 		}
 	}
 
@@ -134,8 +130,21 @@ public class MessageRetriever {
 				translations.put(locale, language);
 			}
 		} catch (IOException e) {
-            plugin.getSLF4JLogger().error("Failed to load translation file {}. {}", entryName, e.toString());
+            logger.error("Failed to load translation file {}. {}", entryName, e.toString());
 		}
+	}
+
+	/**
+	 * Checks if the entry is a valid translation file
+	 * @param entry JarEntry to check
+	 * @return boolean if the entry is a valid translation file
+	 */
+	private static boolean isValidTranslationFile(@NotNull JarEntry entry) {
+		String entryName = entry.getName();
+		return entryName.startsWith("messages/") &&
+				!entry.isDirectory() &&
+				entryName.endsWith(".yml") &&
+				!entryName.equals("messages/template.yml");
 	}
 
 	/**
@@ -180,7 +189,7 @@ public class MessageRetriever {
 			var generic = genericsRetriever.getGeneric(path);
 			if (generic != null) return generic;
 
-			plugin.getSLF4JLogger().warn("Missing message ({}) for language {}!", path, language);
+			logger.warn("Missing message ({}) for language {}!", path, language);
 			return "MISSING MESSAGE";
 		}
 
@@ -192,92 +201,12 @@ public class MessageRetriever {
 	}
 
 	public void sendMessage(@NotNull CommandSender sender, @NotNull String path, String formatArg) {
-		if (formatArg == null) {
-			sendMessage(sender, path);
-		} else {
-			sender.sendMessage(Component.text(format(getMessage(sender, path), formatArg)));
-		}
+		var formattedMessage = stringFormatter.format(getMessage(sender, path), formatArg);
+		sender.sendMessage(Component.text(formattedMessage));
 	}
 
 	public void sendMessage(@NotNull CommandSender sender, @NotNull String path, Map<String, String> formatArgs) {
-		if (formatArgs == null) {
-			sendMessage(sender, path);
-		} else {
-			sender.sendMessage(Component.text(format(getMessage(sender, path), formatArgs)));
-		}
-	}
-
-	public @NotNull String format(@NotNull String format, String formatArg) {
-		StringBuilder result = new StringBuilder(format.length());
-		int start = 0;
-		int openBrace = format.indexOf('{', start);
-
-		while (openBrace != -1) {
-			int closeBrace = format.indexOf('}', openBrace);
-			if (closeBrace == -1) {
-				break;
-			}
-
-			result.append(format, start, openBrace);
-			result.append(formatArg);
-			start = closeBrace + 1;
-			openBrace = format.indexOf('{', start);
-		}
-
-		// Append any remaining part of the template
-		result.append(format, start, format.length());
-
-		return result.toString();
-	}
-
-	public @NotNull String format(@NotNull String format, Map<String, String> formatArgs) {
-		StringBuilder result = new StringBuilder(format.length());
-		StringBuilder placeholder = new StringBuilder();
-		boolean inPlaceholder = false;
-
-		for (int i = 0; i < format.length(); i++) {
-			char c = format.charAt(i);
-
-			if (c == '{') {
-				inPlaceholder = true;
-				placeholder.setLength(0);
-			} else if (c == '}' && inPlaceholder) {
-				inPlaceholder = false;
-				String key = placeholder.toString();
-				if (formatArgs.containsKey(key)) {
-					result.append(formatArgs.get(key));
-				} else {
-					logFormatWarning(key, format);
-					result.append('{').append(key).append('}');
-				}
-			} else if (inPlaceholder) {
-				placeholder.append(c);
-			} else {
-				result.append(c);
-			}
-		}
-
-		return result.toString();
-	}
-
-	private void logFormatWarning(String placeholder, String format) {
-		plugin.getSLF4JLogger().warn(String.format("Value for placeholder \"%s\" is not defined in the template: %s", placeholder, format));
-
-		if (plugin.getSLF4JLogger().isDebugEnabled()) {
-			plugin.getSLF4JLogger().warn("Stacktrace:", new Exception("Placeholder not defined"));
-		}
-	}
-
-	/**
-	 * Checks if the entry is a valid translation file
-	 * @param entry JarEntry to check
-	 * @return boolean if the entry is a valid translation file
-	 */
-	private static boolean isValidTranslationFile(@NotNull JarEntry entry) {
-		String entryName = entry.getName();
-		return entryName.startsWith("messages/") &&
-				!entry.isDirectory() &&
-				entryName.endsWith(".yml") &&
-				!entryName.equals("messages/template.yml");
+		var formattedMessage = stringFormatter.format(getMessage(sender, path), formatArgs);
+		sender.sendMessage(Component.text(formattedMessage));
 	}
 }
