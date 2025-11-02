@@ -33,7 +33,7 @@ public class MessageRetriever {
 
 	private void init() {
 		// Default to en_US if the locale is not found
-		serverLocale = configRetriever.getValue(ConfigReference.LOCALE, "en_US");
+		serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, "en_US");
 
 		ensureTemplateExists();
 		loadGenerics();
