@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -29,7 +28,6 @@ public class MessageRetriever {
 	private final IStringFormatter stringFormatter;
 
 	private final Map<String, FileConfiguration> translations = new HashMap<>();
-	private String serverLocale;
 
 	public MessageRetriever(
 			Plugin plugin,
@@ -44,8 +42,6 @@ public class MessageRetriever {
 		this.colorParser = colorParser;
 		this.genericsRetriever = genericsRetriever;
 		this.stringFormatter = stringFormatter;
-
-		serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, "en_US");
 
 		ensureTemplateExists();
 		loadAllTranslations(); // TODO: Instead of loading all translations, load only the server locale, and then load the rest when needed (e.g. when a player joins)
@@ -152,6 +148,7 @@ public class MessageRetriever {
 	 * @return String message
 	 */
 	public @NotNull String getMessage(String path) {
+		var serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, "en_US");
 		return getMessage(serverLocale, path);
 	}
 
@@ -181,7 +178,7 @@ public class MessageRetriever {
 		// Use the default server locale if the language is not found
 		var forcedLocale = configRetriever.getValue(ConfigReference.FORCED_LOCALE);
 		if (Boolean.TRUE.equals(forcedLocale) || !translations.containsKey(language)) {
-			language = serverLocale;
+            language = configRetriever.getValue(ConfigReference.SERVER_LOCALE, "en_US");
 		}
 
 		var yaml = translations.get(language);
