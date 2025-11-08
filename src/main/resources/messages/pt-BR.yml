@@ -1,0 +1,39 @@
+# HatCosmetics messages version: 4
+
+
+# Colour codes are supported. Use '&' followed by a number or letter to change the format of the text.
+# See https://minecraft.gamepedia.com/Formatting_codes for more information.
+
+# Translation by: AVeryRedCabbage
+
+# Placeholders:
+# {hat} - Returns the name of the equipped/unequipped hat
+# {player} - Returns the name of the target player
+
+gui_close: "&c&lFechar Menu"
+gui_next: "&f&lPróxima Página"
+gui_prev: "&f&lPágina Anterior"
+
+hat_unequip: "&bClique para remover"
+hat_unequip_overlayed: "&4Clique direito para remover o chapéu!"
+hat_unequip_success: "&bVocê removeu {hat}&b!"
+hat_unequip_success_other: "Você removeu o chapéu de &b{player}!"
+hat_unequip_success_force: "&bSeu chapéu foi removido por {player}!"
+
+no_permission: "&bVocê não tem permissão para usar esse comando!"
+not_online: "&b{player} não está online!"
+
+hat_equip: "&bClique para equipar"
+
+hat_not_exist: "&bEsse chapéu não existe!"
+hat_success: "&bVocê equipou {hat}&b!"
+hat_success_other: "&bVocê colocou {hat}&b em {player}!"
+hat_success_force: "&b{player} colocou um chapéu em você!"
+no_hat: "&bVocê não tem um chapéu equipado!"
+no_hat_given: "&bÉ preciso especificar um chapéu para equipar!"
+no_hat_other: "&b{player} não tem um chapéu equipado!"
+no_hat_permission: "&bVocê não tem permissão para equipar {hat}&b!"
+no_hat_permission_other: "&b{player} não tem permissão para equipar {hat}&b!"
+no_hats_gui: "&bVocê não tem acesso a nenhum chapéu!"
+
+reload_success: "&bPlugin recarregado!"

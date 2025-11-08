@@ -1,0 +1,39 @@
+# HatCosmetics messages version: 4
+
+
+# Colour codes are supported. Use '&' followed by a number or letter to change the format of the text.
+# See https://minecraft.gamepedia.com/Formatting_codes for more information.
+
+# Translation by: AVeryRedCabbage
+
+# Placeholders:
+# {hat} - Returns the name of the equipped/unequipped hat
+# {player} - Returns the name of the target player
+
+gui_close: "&c&lメニューを閉じる"
+gui_next: "&f&l次ページ"
+gui_prev: "&f&l前ページ"
+
+hat_unequip: "&bクリックで外す"
+hat_unequip_overlayed: "&4右クリックで外す!"
+hat_unequip_success: "&b{hat}&bを外した!"
+hat_unequip_success_other: "&b{player}は{hat}&bを外された!"
+hat_unequip_success_force: "&b帽子は{player}に外された!"
+
+no_permission: "&bそのコマンドを使用する許可はない!"
+not_online: "&b{player}はオンラインじゃない!"
+
+hat_equip: "&bクリックと装備する"
+
+hat_not_exist: "&bその帽子は存在しない!"
+hat_success: "&b{hat}を装備した&b!"
+hat_success_other: "&b{player}に{hat}&bを装備された!"
+hat_success_force: "&b{player}に帽子を装備させられた!"
+no_hat: "&b帽子を装備していない!"
+no_hat_given: "&b帽子を指定しなければならない!"
+no_hat_other: "&b{player}は帽子を装備していない!"
+no_hat_permission: "&b{hat}&bを装備する許可はない!"
+no_hat_permission_other: "&b{player}には{hat}&bを装備する許可はない!"
+no_hats_gui: "&b帽子をアクセスする許可はない!"
+
+reload_success: "&bプラグインをリロードした!"
