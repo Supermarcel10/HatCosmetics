@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 import java.io.*;
 import java.util.*;
 
@@ -20,7 +19,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MessageRetriever {
 	private final Plugin plugin;
-	private final Logger logger = plugin.getSLF4JLogger();
 	private final IConfigRetriever configRetriever;
 	private final IColorParser colorParser;
 	private final IGenericsRetriever genericsRetriever;
@@ -100,7 +98,7 @@ public class MessageRetriever {
 		if (isForcedLocale()) return getServerMessage(path);
 
 		// Try language-specific locale
-		var translation = getTranslation(language, path);
+		var translation = getFormattedTranslation(language, path);
 		if (translation != null) return translation;
 
 		// Fallback to server locale
@@ -117,12 +115,12 @@ public class MessageRetriever {
 		var language = configRetriever.getValue(ConfigReference.SERVER_LOCALE, fallback);
 
 		// Try server locale
-		var translation = getTranslation(language, path);
+		var translation = getFormattedTranslation(language, path);
 		if (translation != null) return translation;
 
 		// Fallback to en_US
-		logger.warn("Missing message \"{}\" for language {}!", path, language);
-		translation = getTranslation(fallback, path);
+		plugin.getSLF4JLogger().warn("Missing message \"{}\" for language {}!", path, language);
+		translation = getFormattedTranslation(fallback, path);
 		return translation != null ? translation : "<MISSING TRANSLATION - REPORT THIS>";
 	}
 
@@ -133,11 +131,8 @@ public class MessageRetriever {
 	 * @see <a href="https://www.rfc-editor.org/info/bcp47">BCP 47 - RFC</a>
 	 * @return String message
 	 */
-	private @Nullable String getTranslation(String language, String path) {
-		var yaml = translationRetriever.tryGetTranslation(language);
-		if (yaml == null) return null;
-
-		var msg = yaml.getString(path);
+	private @Nullable String getFormattedTranslation(String language, String path) {
+		var msg = translationRetriever.tryGetTranslation(language, path);
 		return msg != null ? colorParser.parse(msg) : null;
 	}
 

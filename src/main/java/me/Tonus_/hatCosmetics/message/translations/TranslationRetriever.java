@@ -21,7 +21,6 @@ import java.util.jar.JarFile;
 @RequiredArgsConstructor
 public class TranslationRetriever implements ITranslationRetriever {
     private final Plugin plugin;
-    private final Logger logger = plugin.getSLF4JLogger();
 
     private Map<String, FileConfiguration> translations = null;
 
@@ -32,13 +31,14 @@ public class TranslationRetriever implements ITranslationRetriever {
         plugin.getSLF4JLogger().info("Loaded {} translations.", translations.size());
     }
 
-    public @Nullable FileConfiguration tryGetTranslation(String language) {
+    public @Nullable String tryGetTranslation(String language, String path) {
         if (translations == null) {
             translations = new HashMap<>(0);
             loadTranslations();
         }
 
-        return translations.get(language);
+        var yaml = translations.get(language);
+        return yaml == null ? null : yaml.getString(path);
     }
 
     /**
@@ -52,7 +52,7 @@ public class TranslationRetriever implements ITranslationRetriever {
         }
 
         if (!messageDir.isDirectory()) {
-            logger.error("Messages is not a directory!");
+            plugin.getSLF4JLogger().error("Messages is not a directory!");
             return;
         }
 
@@ -81,7 +81,7 @@ public class TranslationRetriever implements ITranslationRetriever {
                 if (isValidTranslationFile(entry)) loadTranslationFile(entry);
             }
         } catch (IOException e) {
-            logger.error("Failed to load translations from JAR file! {}", e.toString());
+            plugin.getSLF4JLogger().error("Failed to load translations from JAR file! {}", e.toString());
         }
     }
 
@@ -99,7 +99,7 @@ public class TranslationRetriever implements ITranslationRetriever {
                 translations.put(locale, language);
             }
         } catch (IOException e) {
-            logger.error("Failed to load translation file {}. {}", entryName, e.toString());
+            plugin.getSLF4JLogger().error("Failed to load translation file {}. {}", entryName, e.toString());
         }
     }
 
