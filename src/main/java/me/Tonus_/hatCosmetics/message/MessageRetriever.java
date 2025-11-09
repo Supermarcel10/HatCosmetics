@@ -12,8 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import java.io.*;
-import java.util.*;
+ import java.util.*;
 
 
 @RequiredArgsConstructor
@@ -24,24 +23,6 @@ public class MessageRetriever {
 	private final IGenericsRetriever genericsRetriever;
 	private final ITranslationRetriever translationRetriever;
 	private final IStringFormatter stringFormatter;
-
-	// TODO: Move template file somewhere else.
-	/**
-	 * Ensures that the template file exists
-	 */
-	private void ensureTemplateExists() {
-		// Check if the messages directory exists
-		File messageDir = new File(plugin.getDataFolder(), "messages");
-		if (!messageDir.exists()) {
-			plugin.saveResource("messages/", false);
-		}
-
-		// Check if the template file exists
-		File templateFile = new File(messageDir, "template.yml");
-		if (!templateFile.exists()) {
-			plugin.saveResource("messages/template.yml", false);
-		}
-	}
 
 	/**
 	 * Gets a message in the language of the server

@@ -15,6 +15,8 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 
 public class Main extends JavaPlugin implements Listener {
 	private Metrics metricService;
@@ -54,4 +56,23 @@ public class Main extends JavaPlugin implements Listener {
 		metricService.shutdown();
 		super.onDisable();
 	}
+
+
+// TODO: Move template method somewhere else.
+//	/**
+//	 * Ensures that the template file exists
+//	 */
+//	private void ensureTemplateExists() {
+//		// Check if the messages directory exists
+//		File messageDir = new File(plugin.getDataFolder(), "messages");
+//		if (!messageDir.exists()) {
+//			plugin.saveResource("messages/", false);
+//		}
+//
+//		// Check if the template file exists
+//		File templateFile = new File(messageDir, "template.yml");
+//		if (!templateFile.exists()) {
+//			plugin.saveResource("messages/template.yml", false);
+//		}
+//	}
 }
