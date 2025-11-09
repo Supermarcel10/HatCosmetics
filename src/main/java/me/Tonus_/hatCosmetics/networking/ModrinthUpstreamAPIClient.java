@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,6 +26,7 @@ public class ModrinthUpstreamAPIClient implements IUpstreamAPIClient {
 		this.primaryURL = UPSTREAM_API_URL + projectID;
 	}
 
+	@TestOnly
 	ModrinthUpstreamAPIClient(Logger logger, String projectID, String projectData) {
 		this.logger = logger;
 		this.primaryURL = UPSTREAM_API_URL + projectID;

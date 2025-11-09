@@ -1,15 +1,15 @@
 package me.Tonus_.hatCosmetics.config;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.structures.*;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ConfigReference<T> {
     public static ConfigReference<String> VERSION = cr("version", String.class);

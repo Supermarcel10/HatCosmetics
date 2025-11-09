@@ -5,8 +5,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.TestOnly;
 import org.slf4j.Logger;
-
 import java.io.File;
 
 
@@ -24,6 +24,7 @@ public class ConfigRetriever implements IConfigRetriever {
         this.config = YamlConfiguration.loadConfiguration(configFile);
     }
 
+    @TestOnly
     ConfigRetriever(Logger logger, FileConfiguration config) {
         this.logger = logger;
         this.config = config;

@@ -1,11 +1,11 @@
 package me.Tonus_.hatCosmetics.message.color;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ColorParser implements IColorParser {
     /**
      * Formats a message for color by replacing all '&' with '§'
