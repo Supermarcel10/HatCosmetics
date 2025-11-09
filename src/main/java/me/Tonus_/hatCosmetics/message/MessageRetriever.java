@@ -12,12 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
- import java.util.*;
+import java.util.*;
 
 
 @RequiredArgsConstructor
-public class MessageRetriever {
+public class MessageRetriever implements IMessageRetriever {
 	private static final String FALLBACK_LANGUAGE = "en_US";
+	private static final String MISSING_STRING = "<MISSING TRANSLATION - REPORT THIS>";
 
 	private final Plugin plugin;
 	private final IConfigRetriever configRetriever;
@@ -33,8 +34,10 @@ public class MessageRetriever {
 	 */
 	// TODO: See if this can be converted to private and consolidated into one
 	public @NotNull String getMessage(String path) {
-		var serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LANGUAGE);
-		return getMessage(serverLocale, path);
+		var generic = genericsRetriever.getGeneric(path);
+		if (generic != null) return generic;
+
+		return getServerMessage(path);
 	}
 
 	/**
@@ -74,7 +77,7 @@ public class MessageRetriever {
 	 */
 	private @NotNull String getMessage(String language, String path) {
 		// Check generics first
-		String generic = genericsRetriever.getGeneric(path);
+		var generic = genericsRetriever.getGeneric(path);
 		if (generic != null) return generic;
 
 		// Check server locale if forced
@@ -100,10 +103,17 @@ public class MessageRetriever {
 		var translation = getFormattedTranslation(language, path);
 		if (translation != null) return translation;
 
-		// Fallback to en_US
+		// Short circuit if language same as fallback & failed
 		plugin.getSLF4JLogger().warn("Missing message \"{}\" for language {}!", path, language);
+		if (Objects.equals(language, FALLBACK_LANGUAGE)) return MISSING_STRING;
+
+		// Fallback to en_US
 		translation = getFormattedTranslation(FALLBACK_LANGUAGE, path);
-		return translation != null ? translation : "<MISSING TRANSLATION - REPORT THIS>";
+		if (translation != null) return translation;
+
+		// Display fail message
+		plugin.getSLF4JLogger().error("Missing message \"{}\" for language {}!", path, FALLBACK_LANGUAGE);
+		return MISSING_STRING;
 	}
 
 	/**
