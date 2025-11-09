@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
+import org.jetbrains.annotations.TestOnly;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,6 +23,12 @@ public class TranslationRetriever implements ITranslationRetriever {
     private final Plugin plugin;
 
     private Map<String, FileConfiguration> translations = null;
+
+    @TestOnly
+    public TranslationRetriever(Plugin plugin, Map<String, FileConfiguration> translations) {
+        this.plugin = plugin;
+        this.translations = translations;
+    }
 
     private void loadTranslations() {
         loadLocalTranslations();
@@ -90,7 +96,7 @@ public class TranslationRetriever implements ITranslationRetriever {
      * @param entry JarEntry to load
      */
     private void loadTranslationFile(@NotNull JarEntry entry) {
-        String entryName = entry.getName();
+        var entryName = entry.getName();
 
         try (var inputStream = plugin.getClass().getResourceAsStream("/" + entryName)) {
             if (inputStream != null) {
