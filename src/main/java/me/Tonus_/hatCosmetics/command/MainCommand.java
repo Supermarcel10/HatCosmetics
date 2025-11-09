@@ -25,10 +25,4 @@ public class MainCommand extends BaseCommand {
     public void onUnequip(@NotNull Player player) {
 
     }
-
-    @Subcommand("reload")
-    @CommandPermission("hatcosmetics.reload|hatcosmetics.admin")
-    public void onReload(@NotNull Player player) {
-
-    }
 }
