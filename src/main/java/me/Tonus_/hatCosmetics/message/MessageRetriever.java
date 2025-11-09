@@ -17,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class MessageRetriever {
+	private static final String FALLBACK_LANGUAGE = "en_US";
+
 	private final Plugin plugin;
 	private final IConfigRetriever configRetriever;
 	private final IColorParser colorParser;
@@ -31,7 +33,7 @@ public class MessageRetriever {
 	 */
 	// TODO: See if this can be converted to private and consolidated into one
 	public @NotNull String getMessage(String path) {
-		var serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, "en_US");
+		var serverLocale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LANGUAGE);
 		return getMessage(serverLocale, path);
 	}
 
@@ -92,8 +94,7 @@ public class MessageRetriever {
 	 * @return String message
 	 */
 	private @NotNull String getServerMessage(String path) {
-		var fallback = "en_US";
-		var language = configRetriever.getValue(ConfigReference.SERVER_LOCALE, fallback);
+		var language = configRetriever.getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LANGUAGE);
 
 		// Try server locale
 		var translation = getFormattedTranslation(language, path);
@@ -101,7 +102,7 @@ public class MessageRetriever {
 
 		// Fallback to en_US
 		plugin.getSLF4JLogger().warn("Missing message \"{}\" for language {}!", path, language);
-		translation = getFormattedTranslation(fallback, path);
+		translation = getFormattedTranslation(FALLBACK_LANGUAGE, path);
 		return translation != null ? translation : "<MISSING TRANSLATION - REPORT THIS>";
 	}
 
