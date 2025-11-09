@@ -1,4 +1,4 @@
-package me.Tonus_.hatCosmetics.message;
+package me.Tonus_.hatCosmetics.message.color;
 
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.Contract;

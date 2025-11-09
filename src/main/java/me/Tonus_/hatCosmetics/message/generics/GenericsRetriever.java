@@ -1,7 +1,7 @@
 package me.Tonus_.hatCosmetics.message.generics;
 
 import lombok.RequiredArgsConstructor;
-import me.Tonus_.hatCosmetics.message.IColorParser;
+import me.Tonus_.hatCosmetics.message.color.IColorParser;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -3,6 +3,7 @@ package me.Tonus_.hatCosmetics.message;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
+import me.Tonus_.hatCosmetics.message.color.IColorParser;
 import me.Tonus_.hatCosmetics.message.generics.IGenericsRetriever;
 import me.Tonus_.hatCosmetics.message.translations.ITranslationRetriever;
 import me.Tonus_.hatCosmetics.utility.string.IStringFormatter;

@@ -1,6 +1,6 @@
 package me.Tonus_.hatCosmetics.messages.generics;
 
-import me.Tonus_.hatCosmetics.message.IColorParser;
+import me.Tonus_.hatCosmetics.message.color.IColorParser;
 import me.Tonus_.hatCosmetics.message.generics.GenericsRetriever;
 import me.Tonus_.hatCosmetics.message.generics.IGenericsRetriever;
 import org.junit.jupiter.api.Test;

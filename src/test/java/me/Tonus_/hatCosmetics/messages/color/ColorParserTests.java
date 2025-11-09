@@ -1,7 +1,7 @@
-package me.Tonus_.hatCosmetics.messages;
+package me.Tonus_.hatCosmetics.messages.color;
 
-import me.Tonus_.hatCosmetics.message.ColorParser;
-import me.Tonus_.hatCosmetics.message.IColorParser;
+import me.Tonus_.hatCosmetics.message.color.ColorParser;
+import me.Tonus_.hatCosmetics.message.color.IColorParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -2,7 +2,7 @@ package me.Tonus_.hatCosmetics.messages;
 
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
-import me.Tonus_.hatCosmetics.message.IColorParser;
+import me.Tonus_.hatCosmetics.message.color.IColorParser;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import me.Tonus_.hatCosmetics.message.generics.IGenericsRetriever;

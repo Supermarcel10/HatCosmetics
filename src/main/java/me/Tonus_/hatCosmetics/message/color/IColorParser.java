@@ -1,4 +1,4 @@
-package me.Tonus_.hatCosmetics.message;
+package me.Tonus_.hatCosmetics.message.color;
 
 import org.jetbrains.annotations.NotNull;
 
