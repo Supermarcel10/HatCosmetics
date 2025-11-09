@@ -5,6 +5,7 @@ import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.message.ColorParser;
 import me.Tonus_.hatCosmetics.message.generics.GenericsRetriever;
+import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
 import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
 import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
@@ -23,11 +24,12 @@ public class Main extends JavaPlugin implements Listener {
 	 */
 	@Override
 	public void onEnable() {
-        var configHandler = new ConfigRetriever(this);
+        var configRetriever = new ConfigRetriever(this);
 		var colorParser = new ColorParser();
 		var genericsRetriever = new GenericsRetriever(getSLF4JLogger(), colorParser);
 		var stringFormatter = new StringFormatter(getSLF4JLogger());
-        var messageRetriever = new MessageRetriever(this, configHandler, colorParser, genericsRetriever, stringFormatter);
+		var translationRetriever = new TranslationRetriever(this);
+        var messageRetriever = new MessageRetriever(this, configRetriever, colorParser, genericsRetriever, translationRetriever, stringFormatter);
 
 		// Register commands
 		var commandManager = new PaperCommandManager(this);
