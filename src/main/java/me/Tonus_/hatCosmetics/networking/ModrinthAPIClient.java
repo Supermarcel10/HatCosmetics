@@ -52,7 +52,7 @@ public class ModrinthAPIClient implements IModrinthAPIClient {
             return null;
         }
 
-        for (var i = versionIDs.size(); i >= 0; i--) {
+        for (var i = versionIDs.size() - 1; i >= 0; i--) {
             var versionID = versionIDs.get(i);
             if (versionID == null) continue;
 
