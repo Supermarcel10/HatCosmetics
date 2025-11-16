@@ -62,7 +62,8 @@ public class ModrinthUpstreamAPIClient implements IUpstreamAPIClient {
 			return null;
 		}
 
-		for (JsonElement versionID : versionIDs.asList().reversed()) {
+        for (var i = versionIDs.size() - 1; i >= 0; i--) {
+            var versionID = versionIDs.get(i);
 			if (versionID == null) continue;
 
 			try {
