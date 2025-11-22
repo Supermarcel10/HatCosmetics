@@ -12,11 +12,10 @@ import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
 import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import me.Tonus_.hatCosmetics.utility.string.StringFormatter;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class Main extends JavaPlugin implements Listener {
+public class Main extends JavaPlugin {
 	private Metrics metricService;
 
 	/**
