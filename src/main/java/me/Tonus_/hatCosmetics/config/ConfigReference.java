@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.structures.*;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,10 +22,10 @@ public class ConfigReference<T> {
     public static ConfigReference<CachingAggressiveness> PERFORMANCE_CACHING_AGGRESSIVNESS = cr("performance.caching-agressivness", CachingAggressiveness.class);
 
     public static ConfigReference<Integer> GUI_ROWS = cr("gui.rows", Integer.class);
-    public static ConfigReference<ItemStack> GUI_BORDER_ITEM = cr("gui.items.border", ItemStack.class);
-    public static ConfigReference<ItemStack> GUI_NEXT_PAGE_ITEM = cr("gui.items.next-page", ItemStack.class);
-    public static ConfigReference<ItemStack> GUI_PREV_PAGE_ITEM = cr("gui.items.previous-page", ItemStack.class);
-    public static ConfigReference<ItemStack> GUI_CLOSE_ITEM = cr("gui.items.close", ItemStack.class);
+    public static ConfigReference<Material> GUI_BORDER_MATERIAL = cr("gui.items.border", Material.class);
+    public static ConfigReference<Material> GUI_NEXT_PAGE_MATERIAL = cr("gui.items.next-page", Material.class);
+    public static ConfigReference<Material> GUI_PREV_PAGE_MATERIAL = cr("gui.items.previous-page", Material.class);
+    public static ConfigReference<Material> GUI_CLOSE_MATERIAL = cr("gui.items.close", Material.class);
 
     public static ConfigReference<Boolean> HATS_KEEP_ON_DEATH = cr("hats.keep-on-death", Boolean.class);
 
