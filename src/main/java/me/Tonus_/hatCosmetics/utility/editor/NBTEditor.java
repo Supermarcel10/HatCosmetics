@@ -1,7 +1,6 @@
 package me.Tonus_.hatCosmetics.utility.editor;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class NBTEditor {
 	private final Plugin plugin;
 
