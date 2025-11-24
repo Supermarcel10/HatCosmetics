@@ -31,7 +31,6 @@ public class MessageRetriever implements IMessageRetriever {
 	 * @param messageReference Path to the message
 	 * @return String message
 	 */
-	// TODO: See if this can be converted to private and consolidated into one
 	public @NotNull String getMessage(MessageReference messageReference) {
         var language = configRetriever.getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LANGUAGE);
 
