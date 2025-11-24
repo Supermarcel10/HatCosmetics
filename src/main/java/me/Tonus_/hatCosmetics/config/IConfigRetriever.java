@@ -5,5 +5,5 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IConfigRetriever {
     <T> @Nullable T getValue(@NotNull ConfigReference<T> configReference);
-    <T> @Nullable T getValue(@NotNull ConfigReference<T> configReference, T defaultValue);
+    <T> T getValue(@NotNull ConfigReference<T> configReference, T defaultValue);
 }
