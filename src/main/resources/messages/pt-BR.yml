@@ -10,6 +10,7 @@ version: 4
 # {hat} - Returns the name of the equipped/unequipped hat
 # {player} - Returns the name of the target player
 
+gui_title: "&b&lMISSING_TRANSLATION"
 gui_close: "&c&lFechar Menu"
 gui_next: "&f&lPróxima Página"
 gui_prev: "&f&lPágina Anterior"
