@@ -6,7 +6,6 @@ import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
 import me.Tonus_.hatCosmetics.inventory.InventoryManager;
 import me.Tonus_.hatCosmetics.message.color.ColorParser;
-import me.Tonus_.hatCosmetics.message.generics.GenericsRetriever;
 import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
 import me.Tonus_.hatCosmetics.player.PlayerEventManager;
@@ -30,10 +29,9 @@ public class Main extends JavaPlugin {
         var configRetriever = new ConfigRetriever(this);
         var nbtEditor = new NBTEditor(this);
 		var colorParser = new ColorParser();
-		var genericsRetriever = new GenericsRetriever(getSLF4JLogger(), colorParser);
 		var stringFormatter = new StringFormatter(getSLF4JLogger());
 		var translationRetriever = new TranslationRetriever(this);
-        var messageRetriever = new MessageRetriever(this, configRetriever, colorParser, genericsRetriever, translationRetriever, stringFormatter);
+        var messageRetriever = new MessageRetriever(this, configRetriever, colorParser, translationRetriever, stringFormatter);
         var cosmeticTagManager = new CosmeticTagManager(nbtEditor);
         var inventoryManager = new InventoryManager(nbtEditor, configRetriever, this);
 

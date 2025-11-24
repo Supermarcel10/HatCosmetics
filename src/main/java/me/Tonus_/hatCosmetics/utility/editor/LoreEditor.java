@@ -3,6 +3,7 @@ package me.Tonus_.hatCosmetics.utility.editor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -55,12 +56,12 @@ public class LoreEditor {
 		 * Adds a lore line from a message path.
 		 *
 		 * @param player The player to get the localized message for.
-		 * @param path The message path.
+		 * @param messageReference The message path.
 		 * @return The current editor instance.
 		 */
 		@Contract("_, _ -> this")
-		public E addLoreMessage(@NotNull Player player, String path) {
-			return addLore(Component.text(messageRetriever.getMessage(player, path)));
+		public E addLoreMessage(@NotNull Player player, MessageReference messageReference) {
+			return addLore(Component.text(messageRetriever.getMessage(player, messageReference)));
 		}
 
 		/**

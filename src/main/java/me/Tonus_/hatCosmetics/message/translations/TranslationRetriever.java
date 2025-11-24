@@ -1,6 +1,7 @@
 package me.Tonus_.hatCosmetics.message.translations;
 
 import lombok.RequiredArgsConstructor;
+import me.Tonus_.hatCosmetics.message.MessageReference;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -37,14 +38,16 @@ public class TranslationRetriever implements ITranslationRetriever {
         plugin.getSLF4JLogger().info("Loaded {} translations.", translations.size());
     }
 
-    public @Nullable String tryGetTranslation(String language, String path) {
+    public @Nullable String tryGetTranslation(String language, MessageReference messageReference) {
         if (translations == null) {
             translations = new HashMap<>(0);
             loadTranslations();
         }
 
         var yaml = translations.get(language);
-        return yaml == null ? null : yaml.getString(path);
+        var yamlPath = messageReference.getYamlPath();
+
+        return yaml == null ? null : yaml.getString(yamlPath);
     }
 
     /**
