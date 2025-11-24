@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -38,13 +39,13 @@ public class TranslationRetriever implements ITranslationRetriever {
         plugin.getSLF4JLogger().info("Loaded {} translations.", translations.size());
     }
 
-    public @Nullable String tryGetTranslation(String language, MessageReference messageReference) {
+    public @Nullable String tryGetTranslation(Locale locale, MessageReference messageReference) {
         if (translations == null) {
             translations = new HashMap<>(0);
             loadTranslations();
         }
 
-        var yaml = translations.get(language);
+        var yaml = translations.get(locale.toString());
         var yamlPath = messageReference.getYamlPath();
 
         return yaml == null ? null : yaml.getString(yamlPath);

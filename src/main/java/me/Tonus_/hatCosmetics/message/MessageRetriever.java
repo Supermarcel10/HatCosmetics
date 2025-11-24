@@ -17,7 +17,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class MessageRetriever implements IMessageRetriever {
-	private static final String FALLBACK_LANGUAGE = "en_US";
+	private static final Locale FALLBACK_LOCALE = new Locale("en", "us");
 	private static final String MISSING_STRING = "<MISSING TRANSLATION - REPORT THIS>";
 
 	private final Plugin plugin;
@@ -27,39 +27,40 @@ public class MessageRetriever implements IMessageRetriever {
 	private final IStringFormatter stringFormatter;
 
 	/**
-	 * Gets a message in the language of the server
+	 * Gets a message in the locale of the server
 	 * @param messageReference Path to the message
 	 * @return String message
 	 */
 	public @NotNull String getMessage(MessageReference messageReference) {
-        var language = configRetriever.getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LANGUAGE);
+        var locale = configRetriever.getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LOCALE);
 
         // Try server locale
-        var translation = getFormattedTranslation(language, messageReference);
+        var translation = getFormattedTranslation(locale, messageReference);
         if (translation != null) return translation;
 
-        // Short circuit if language same as fallback & failed
-        plugin.getSLF4JLogger().warn("Missing message \"{}\" for language {}!", messageReference, language);
-        if (Objects.equals(language, FALLBACK_LANGUAGE)) return MISSING_STRING;
+        // Short circuit if locale same as fallback & failed
+        plugin.getSLF4JLogger().warn("Missing message \"{}\" for locale {}!", messageReference, locale);
+        if (Objects.equals(locale, FALLBACK_LOCALE)) return MISSING_STRING;
 
         // Fallback to en_US
-        translation = getFormattedTranslation(FALLBACK_LANGUAGE, messageReference);
+        translation = getFormattedTranslation(FALLBACK_LOCALE, messageReference);
         if (translation != null) return translation;
 
         // Display fail message
-        plugin.getSLF4JLogger().error("Missing message \"{}\" for language {}!", messageReference, FALLBACK_LANGUAGE);
+        plugin.getSLF4JLogger().error("Missing message \"{}\" for locale {}!", messageReference, FALLBACK_LOCALE);
         return MISSING_STRING;
 	}
 
 	/**
-	 * Gets a message in the language of the player
+	 * Gets a message in the locale of the player
 	 * @param sender Player to get the message for
 	 * @param messageReference Path to the message
 	 * @return String message
 	 */
 	public @NotNull String getMessage(@NotNull CommandSender sender, MessageReference messageReference) {
 		if (sender instanceof Player player) {
-			return getMessage(player.locale().getLanguage(), messageReference);
+            plugin.getSLF4JLogger().warn("Player locale is " + player.locale());
+			return getMessage(player.locale(), messageReference);
 		}
 
 		return getMessage(messageReference);
@@ -82,18 +83,18 @@ public class MessageRetriever implements IMessageRetriever {
 	}
 
 	/**
-	 * Gets a message in the specified language
-	 * @param language Language to get the message for, formatted in <a href="https://en.wikipedia.org/wiki/IETF_language_tag">BCP 47</a>
+	 * Gets a message in the specified locale
+	 * @param locale Locale to get the message for, formatted in <a href="https://en.wikipedia.org/wiki/IETF_locale_tag">BCP 47</a>
 	 * @param messageReference Path to the message
 	 * @see <a href="https://www.rfc-editor.org/info/bcp47">BCP 47 - RFC</a>
 	 * @return String message
 	 */
-	private @NotNull String getMessage(String language, MessageReference messageReference) {
+	private @NotNull String getMessage(Locale locale, MessageReference messageReference) {
 		// Check server locale if forced
 		if (isForcedLocale()) return getMessage(messageReference);
 
-		// Try language-specific locale
-		var translation = getFormattedTranslation(language, messageReference);
+		// Try locale-specific locale
+		var translation = getFormattedTranslation(locale, messageReference);
 		if (translation != null) return translation;
 
 		// Fallback to server locale
@@ -101,14 +102,14 @@ public class MessageRetriever implements IMessageRetriever {
 	}
 
 	/**
-	 * Retrieves translation of a given message in a language
-	 * @param language Language to get the message for, formatted in <a href="https://en.wikipedia.org/wiki/IETF_language_tag">BCP 47</a>
+	 * Retrieves translation of a given message in a locale
+	 * @param locale Locale to get the message for, formatted in <a href="https://en.wikipedia.org/wiki/IETF_locale_tag">BCP 47</a>
 	 * @param messageReference Path to the message
 	 * @see <a href="https://www.rfc-editor.org/info/bcp47">BCP 47 - RFC</a>
 	 * @return String message
 	 */
-	private @Nullable String getFormattedTranslation(String language, MessageReference messageReference) {
-		var msg = translationRetriever.tryGetTranslation(language, messageReference);
+	private @Nullable String getFormattedTranslation(Locale locale, MessageReference messageReference) {
+		var msg = translationRetriever.tryGetTranslation(locale, messageReference);
 		return msg != null ? colorParser.parse(msg) : null;
 	}
 

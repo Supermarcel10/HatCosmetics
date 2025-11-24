@@ -23,7 +23,8 @@ import static org.mockito.Mockito.*;
 
 public class MessageRetrieverTests {
     private final static MessageReference existingPath = MessageReference.VERSION;
-    private final static String SERVER_LOCALE = "SERVER LOCALE";
+    private final static Locale FALLBACK_LOCALE = new Locale("en", "us");
+    private final static Locale SERVER_LOCALE = new Locale("en", "uk");
 
     private final Plugin plugin = mock();
     private final IConfigRetriever configRetriever = mock();
@@ -40,10 +41,10 @@ public class MessageRetrieverTests {
         // Mock default responses
         doAnswer(invocation -> invocation.getArgument(0)).when(colorParser).parse(anyString());
 
-        doReturn(SERVER_LOCALE).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, "en_US");
+        doReturn(SERVER_LOCALE).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LOCALE);
         doReturn(false).when(configRetriever).getValue(ConfigReference.FORCED_LOCALE);
 
-        doReturn(null).when(translationRetriever).tryGetTranslation(anyString(), any(MessageReference.class));
+        doReturn(null).when(translationRetriever).tryGetTranslation(any(Locale.class), any(MessageReference.class));
         doReturn("SERVER RESPONSE").when(translationRetriever).tryGetTranslation(eq(SERVER_LOCALE), any(MessageReference.class));
     }
 
@@ -53,7 +54,7 @@ public class MessageRetrieverTests {
         var nonExistentPath = MessageReference.createReference("DOES_NOT_EXIST");
         var expectedResult = "<MISSING TRANSLATION - REPORT THIS>";
 
-        doReturn(null).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, "en_US");
+        doReturn(null).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LOCALE);
 
         // Act
         var result = sut.getMessage(nonExistentPath);
@@ -78,13 +79,12 @@ public class MessageRetrieverTests {
     @Test
     void getMessage_whenServerLocaleTranslationMissing_shouldFallbackToEnglishUSLocale() {
         // Arrange
-        var serverLocale = "fr_FR";
-        var fallbackLocale = "en_US";
+        var serverLocale = new Locale("fr", "fr");
         var expectedMessage = "Fallback Message";
 
-        doReturn(serverLocale).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, "en_US");
+        doReturn(serverLocale).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LOCALE);
         doReturn(null).when(translationRetriever).tryGetTranslation(serverLocale, existingPath);
-        doReturn(expectedMessage).when(translationRetriever).tryGetTranslation(fallbackLocale, existingPath);
+        doReturn(expectedMessage).when(translationRetriever).tryGetTranslation(FALLBACK_LOCALE, existingPath);
 
         // Act
         var result = sut.getMessage(existingPath);
@@ -92,13 +92,13 @@ public class MessageRetrieverTests {
         // Assert
         assertEquals(expectedMessage, result);
         verify(translationRetriever).tryGetTranslation(serverLocale, existingPath);
-        verify(translationRetriever).tryGetTranslation(fallbackLocale, existingPath);
+        verify(translationRetriever).tryGetTranslation(FALLBACK_LOCALE, existingPath);
     }
 
     @Test
     void getMessage_whenAllTranslationsMissing_shouldReturnMissingString() {
         // Arrange
-        var serverLocale = "fr_FR";
+        var serverLocale = new Locale("fr", "fr");
 
         doReturn(null).when(translationRetriever).tryGetTranslation(serverLocale, existingPath);
         doReturn(null).when(translationRetriever).tryGetTranslation(SERVER_LOCALE, existingPath);
@@ -113,7 +113,7 @@ public class MessageRetrieverTests {
     @Test
     void getMessage_whenServerLocaleSameAsFallbackAndPathNotPresent_shouldReturnMissingString() {
         // Arrange
-        doReturn("en_US").when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, "en_US");
+        doReturn(new Locale("en", "us")).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LOCALE);
         doReturn(null).when(translationRetriever).tryGetTranslation(SERVER_LOCALE, existingPath);
 
         // Act
@@ -126,7 +126,7 @@ public class MessageRetrieverTests {
     @Test
     void getMessage_withPlayer_whenLanguageSpecificTranslationExists_shouldReturnTranslation() {
         // Arrange
-        var playerLocale = "es_ES";
+        var playerLocale = new Locale("es", "es");
         var player = mockPlayer(playerLocale);
         var expectedResult = "TRANSLATED MESSAGE";
 
@@ -143,7 +143,7 @@ public class MessageRetrieverTests {
     @Test
     void getMessage_withPlayer_whenLanguageSpecificTranslationMissing_shouldFallbackToServerLocale() {
         // Arrange
-        var playerLocale = "es_ES";
+        var playerLocale = new Locale("es", "es");
         var player = mockPlayer(playerLocale);
         var expectedResult = "SERVER RESPONSE";
 
@@ -159,7 +159,7 @@ public class MessageRetrieverTests {
     @Test
     void getMessage_withPlayer_whenForcedLocale_shouldIgnorePlayerLocale() {
         // Arrange
-        var playerLocale = "es_ES";
+        var playerLocale = new Locale("es", "es");
         var player = mockPlayer(playerLocale);
         var expectedResult = "SERVER RESPONSE";
 
@@ -210,7 +210,7 @@ public class MessageRetrieverTests {
         var expectedResult = "Hello John";
         var sender = mock(CommandSender.class);
 
-        doReturn(rawMessage).when(translationRetriever).tryGetTranslation(anyString(), eq(existingPath));
+        doReturn(rawMessage).when(translationRetriever).tryGetTranslation(any(Locale.class), eq(existingPath));
         doReturn(expectedResult).when(stringFormatter).format(rawMessage, formatArg);
 
         // Act
@@ -229,7 +229,7 @@ public class MessageRetrieverTests {
         var expectedResult = "Hello John, you have 5 cosmetics";
         var sender = mock(CommandSender.class);
 
-        doReturn(rawMessage).when(translationRetriever).tryGetTranslation(anyString(), eq(existingPath));
+        doReturn(rawMessage).when(translationRetriever).tryGetTranslation(any(Locale.class), eq(existingPath));
         doReturn(expectedResult).when(stringFormatter).format(rawMessage, formatArgs);
 
         // Act
@@ -240,12 +240,10 @@ public class MessageRetrieverTests {
         verify(stringFormatter).format(rawMessage, formatArgs);
     }
 
-    private Player mockPlayer(String language) {
-        var locale = mock(Locale.class);
+    private Player mockPlayer(Locale locale) {
         var player = mock(Player.class);
 
         doReturn(locale).when(player).locale();
-        doReturn(language).when(locale).getLanguage();
 
         return player;
     }

@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.Test;
 import java.util.HashMap;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -18,55 +19,38 @@ public class TranslationRetrieverTests {
     private final Plugin plugin = mock();
 
     @Test
-    void tryGetTranslation_whenLanguageInvalid_shouldReturnNull() {
+    void tryGetTranslation_whenLocaleValidAndKeyNotPresent_shouldReturnNull() {
         // Arrange
-        var language = "DOES_NOT_EXIST";
-        var nonExistentPath = MessageReference.createReference("NON_EXISTENT_PATH");
-
-        var translations = new HashMap<String, FileConfiguration>();
-
-        var sut = new TranslationRetriever(plugin, translations);
-
-        // Act
-        var result = sut.tryGetTranslation(language, nonExistentPath);
-
-        // Assert
-        assertNull(result);
-    }
-
-    @Test
-    void tryGetTranslation_whenLanguageValidAndKeyNotPresent_shouldReturnNull() {
-        // Arrange
-        var language = "language";
+        var locale = new Locale("en", "us");
 
         var translations = new HashMap<String, FileConfiguration>();
         var yamlFile = mock(FileConfiguration.class);
-        translations.put(language, yamlFile);
+        translations.put(locale.toString(), yamlFile);
 
         var sut = new TranslationRetriever(plugin, translations);
 
         // Act
-        var result = sut.tryGetTranslation(language, existingPath);
+        var result = sut.tryGetTranslation(locale, existingPath);
 
         // Assert
         assertNull(result);
     }
 
     @Test
-    void tryGetTranslation_whenLanguageAndKeyValid_shouldReturnTranslatedString() {
+    void tryGetTranslation_whenLocaleAndKeyValid_shouldReturnTranslatedString() {
         // Arrange
-        var language = "language";
+        var locale = new Locale("en", "us");
         var expectedResult = "result";
 
         var translations = new HashMap<String, FileConfiguration>();
         var yamlFile = mock(FileConfiguration.class);
         doReturn(expectedResult).when(yamlFile).getString(existingPath.getYamlPath());
-        translations.put(language, yamlFile);
+        translations.put(locale.toString(), yamlFile);
 
         var sut = new TranslationRetriever(plugin, translations);
 
         // Act
-        var result = sut.tryGetTranslation(language, existingPath);
+        var result = sut.tryGetTranslation(locale, existingPath);
 
         // Assert
         assertEquals(expectedResult, result);

@@ -33,7 +33,7 @@ public class Main extends JavaPlugin {
 		var translationRetriever = new TranslationRetriever(this);
         var messageRetriever = new MessageRetriever(this, configRetriever, colorParser, translationRetriever, stringFormatter);
         var cosmeticTagManager = new CosmeticTagManager(nbtEditor);
-        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, this);
+        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, this);
 
 		// Register commands
         var commandListener = new MainCommand(inventoryManager);
