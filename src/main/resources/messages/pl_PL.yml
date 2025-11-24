@@ -1,0 +1,37 @@
+version: 4
+# HatCosmetics messages version: 4
+
+# Translation by: devMarcel
+
+# Placeholders:
+# {hat} - Returns the name of the equipped/unequipped hat
+# {player} - Returns the name of the target player
+
+gui_title: "&b&lNakrycia Głowy"
+gui_close: "&c&lZamknij Menu"
+gui_next: "&f&lNastępna Strona"
+gui_prev: "&f&lPoprzednia Strona"
+
+hat_unequip: "&bKliknij, aby zdjąć"
+hat_unequip_overlayed: "&4Kliknij prawym, aby usunąć nakrycie głowy!"
+hat_unequip_success: "&bZdjąłeś(aś) {hat}&b!"
+hat_unequip_success_other: "&bGracz {player} zdjął(a) {hat}&b!"
+hat_unequip_success_force: "&bTwoje nakrycie głowy zostało zdjęte przez {player}!"
+
+no_permission: "&bNie masz uprawnień do użycia tej komendy!"
+not_online: "&bGracz {player} nie jest online!"
+
+hat_equip: "&bKliknij, aby założyć"
+
+hat_not_exist: "&bTo nakrycie głowy nie istnieje!"
+hat_success: "&bZałożyłeś(aś) {hat}&b!"
+hat_success_other: "&bGracz {player} założył(a) {hat}&b!"
+hat_success_force: "&bGracz {player} założył ci nakrycie głowy!"
+no_hat: "&bNie masz nałożonego żadnego nakrycia głowy!"
+no_hat_given: "&bMusisz podać nazwę nakrycia głowy do założenia!"
+no_hat_other: "&bGracz {player} nie ma nałożonego nakrycia głowy!"
+no_hat_permission: "&bNie masz uprawnień, aby założyć {hat}&b!"
+no_hat_permission_other: "&bGracz {player} nie ma uprawnień, aby założyć {hat}&b!"
+no_hats_gui: "&bNie masz dostępu do żadnych nakryć głowy!"
+
+reload_success: "&bPlugin przeładowany!"
