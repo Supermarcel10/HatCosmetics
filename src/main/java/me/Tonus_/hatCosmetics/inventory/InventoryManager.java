@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
+import me.Tonus_.hatCosmetics.message.IMessageRetriever;
+import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -32,6 +34,7 @@ public class InventoryManager implements IInventoryManager {
 
     private final NBTEditor nbtEditor;
     private final IConfigRetriever configRetriever;
+    private final IMessageRetriever messageRetriever;
     private final Plugin plugin;
 
     private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
@@ -40,10 +43,12 @@ public class InventoryManager implements IInventoryManager {
         var ipc = new InventoryPlayerContext(player);
         playerContexts.put(player, ipc);
 
-        var inv = (new CosmeticSelectionInventoryHolder(3, getTitleTextComponent(ipc))).getInventory();
+        var titleText = getTitleTextComponent(ipc, player);
+        var inv = (new CosmeticSelectionInventoryHolder(3, titleText)).getInventory();
+
         drawBorder(inv);
-        drawExitButton(inv);
-        drawPageMoveButtons(inv, ipc);
+        drawExitButton(inv, player);
+        drawPageMoveButtons(inv, ipc, player);
 
         player.openInventory(inv);
     }
@@ -77,14 +82,14 @@ public class InventoryManager implements IInventoryManager {
             case PREV_TAG -> {
                 var playerContext = playerContexts.get(player);
                 if (playerContext.prevPage()) {
-                    drawPageMoveButtons(inventory, playerContext);
+                    drawPageMoveButtons(inventory, playerContext, player);
                     player.updateInventory();
                 }
             }
             case NEXT_TAG -> {
                 var playerContext = playerContexts.get(player);
                 if (playerContext.nextPage()) {
-                    drawPageMoveButtons(inventory, playerContext);
+                    drawPageMoveButtons(inventory, playerContext, player);
                     player.updateInventory();
                 }
             }
@@ -101,8 +106,9 @@ public class InventoryManager implements IInventoryManager {
         return itemStackEditor.apply();
     }
 
-    private @NotNull Component getTitleTextComponent(@NotNull InventoryPlayerContext ipc) {
-        var baseText = new StringBuilder(ChatColor.DARK_PURPLE + "HatCosmetics Test Inventory");
+    private @NotNull Component getTitleTextComponent(@NotNull InventoryPlayerContext ipc, Player player) {
+        var baseText = new StringBuilder(messageRetriever.getMessage(player, MessageReference.GUI_TITLE));
+
         if (ipc.getMaxPage() > 1) {
             baseText.append(ChatColor.DARK_GRAY);
             baseText.append(" (");
@@ -125,16 +131,16 @@ public class InventoryManager implements IInventoryManager {
         }
     }
 
-    private void drawExitButton(@NotNull Inventory inventory) {
+    private void drawExitButton(@NotNull Inventory inventory, Player player) {
         var material = configRetriever.getValue(ConfigReference.GUI_CLOSE_MATERIAL, DEFAULT_CLOSE_MATERIAL);
-        var text = Component.text(ChatColor.RED + "Close Menu");
+        var text = Component.text(messageRetriever.getMessage(player, MessageReference.GUI_CLOSE));
 
         var closeButtonItem = createMenuItem(material, text, CLOSE_TAG);
 
         inventory.setItem(40, closeButtonItem);
     }
 
-    private void drawPageMoveButtons(@NotNull Inventory inventory, @NotNull InventoryPlayerContext ipc) {
+    private void drawPageMoveButtons(@NotNull Inventory inventory, @NotNull InventoryPlayerContext ipc, Player player) {
         int currentPage = ipc.getCurrentPage();
         int maxPage = ipc.getMaxPage();
 
@@ -142,11 +148,12 @@ public class InventoryManager implements IInventoryManager {
 
         // Previous page
         var material = configRetriever.getValue(ConfigReference.GUI_PREV_PAGE_MATERIAL, DEFAULT_PREV_PAGE_MATERIAL);
+        var text = messageRetriever.getMessage(player, MessageReference.GUI_PREV);
         var prevItem = createPageButton(
                 currentPage > 1,
                 currentPage - 1,
                 material,
-                "Previous Page",
+                text,
                 PREV_TAG,
                 borderMaterial
         );
@@ -155,11 +162,12 @@ public class InventoryManager implements IInventoryManager {
 
         // Next page
         material = configRetriever.getValue(ConfigReference.GUI_NEXT_PAGE_MATERIAL, DEFAULT_NEXT_PAGE_MATERIAL);
+        text = messageRetriever.getMessage(player, MessageReference.GUI_NEXT);
         var nextItem = createPageButton(
                 currentPage < maxPage,
                 currentPage + 1,
                 material,
-                "Next Page",
+                text,
                 NEXT_TAG,
                 borderMaterial
         );
