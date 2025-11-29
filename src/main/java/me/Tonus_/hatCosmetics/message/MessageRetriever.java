@@ -59,7 +59,6 @@ public class MessageRetriever implements IMessageRetriever {
 	 */
 	public @NotNull String getMessage(@NotNull CommandSender sender, MessageReference messageReference) {
 		if (sender instanceof Player player) {
-            plugin.getSLF4JLogger().warn("Player locale is " + player.locale());
 			return getMessage(player.locale(), messageReference);
 		}
 
