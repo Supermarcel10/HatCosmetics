@@ -3,6 +3,7 @@ package me.Tonus_.hatCosmetics;
 import co.aikar.commands.PaperCommandManager;
 import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
+import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
 import me.Tonus_.hatCosmetics.inventory.InventoryManager;
 import me.Tonus_.hatCosmetics.message.color.ColorParser;
@@ -26,7 +27,8 @@ public class Main extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
-        var configRetriever = new ConfigRetriever(this);
+        var typeMapperRegistry = new TypeMapperRegistry();
+        var configRetriever = new ConfigRetriever(this, typeMapperRegistry);
         var nbtEditor = new NBTEditor(this);
 		var colorParser = new ColorParser();
 		var stringFormatter = new StringFormatter(getSLF4JLogger());
