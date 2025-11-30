@@ -30,11 +30,11 @@ public class ConfigReference<T> {
 
     public static ConfigReference<Boolean> HATS_KEEP_ON_DEATH = cr("hats.keep-on-death", Boolean.class);
 
+    private final String yamlPath;
+    private final Class<T> type;
+
     @Contract("_, _ -> new")
     static <T> @NotNull ConfigReference<T> cr(@NotNull String yamlPath, @NotNull Class<T> type) {
         return new ConfigReference<>(yamlPath, type);
     }
-
-    final String yamlPath;
-    final Class<T> type;
 }

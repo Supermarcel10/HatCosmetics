@@ -36,7 +36,7 @@ public class ConfigRetriever implements IConfigRetriever {
 
     @SuppressWarnings("unchecked")
     public <T> @Nullable T getValue(@NotNull ConfigReference<T> configReference) {
-        var value = config.get(configReference.yamlPath);
+        var value = config.get(configReference.getYamlPath());
 
         if (value != null && !configReference.getType().isInstance(value)) {
             if (value instanceof String strValue) {
@@ -49,7 +49,7 @@ public class ConfigRetriever implements IConfigRetriever {
             logger.warn(
                     "Config value ({}) at path '{}' is not of expected type. Found {}.",
                     value,
-                    configReference.yamlPath,
+                    configReference.getYamlPath(),
                     simpleName
             );
 

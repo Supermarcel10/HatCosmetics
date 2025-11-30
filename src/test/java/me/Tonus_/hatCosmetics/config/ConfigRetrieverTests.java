@@ -24,14 +24,14 @@ public class ConfigRetrieverTests {
         var configReference = ConfigReference.VERSION;
 
         var expectedValue = "1";
-        doReturn(expectedValue).when(configuration).get(configReference.yamlPath);
+        doReturn(expectedValue).when(configuration).get(configReference.getYamlPath());
 
         // Act
         var result = sut.getValue(configReference);
 
         // Assert
         assertEquals(expectedValue, result);
-        assertEquals(expectedValue.getClass(), configReference.type);
+        assertEquals(expectedValue.getClass(), configReference.getType());
         verify(logger, never()).warn(anyString(), any(), any(), anyString());
     }
 
@@ -41,14 +41,14 @@ public class ConfigRetrieverTests {
         var configReference = ConfigReference.VERSION;
 
         var expectedValue = 1;
-        doReturn(expectedValue).when(configuration).get(configReference.yamlPath);
+        doReturn(expectedValue).when(configuration).get(configReference.getYamlPath());
 
         // Act
         var result = sut.getValue(configReference);
 
         // Assert
         assertNull(result);
-        verify(logger).warn(anyString(), eq(expectedValue), eq(configReference.yamlPath), anyString());
+        verify(logger).warn(anyString(), eq(expectedValue), eq(configReference.getYamlPath()), anyString());
     }
 
     @Test
@@ -57,10 +57,10 @@ public class ConfigRetrieverTests {
         var configReference = ConfigReference.GUI_CLOSE_MATERIAL;
 
         var configValueStr = "CAKE";
-        doReturn(configValueStr).when(configuration).get(configReference.yamlPath);
+        doReturn(configValueStr).when(configuration).get(configReference.getYamlPath());
 
         TypeMapper<Material> mapper = mock();
-        doReturn(mapper).when(typeMapperRegistry).getMapper(configReference.type);
+        doReturn(mapper).when(typeMapperRegistry).getMapper(configReference.getType());
 
         var expectedValue = Material.CAKE;
         doReturn(expectedValue).when(mapper).map(configValueStr);
@@ -92,7 +92,7 @@ public class ConfigRetrieverTests {
         var configReference = ConfigReference.VERSION;
 
         var expectedValue = "1";
-        doReturn(expectedValue).when(configuration).get(configReference.yamlPath);
+        doReturn(expectedValue).when(configuration).get(configReference.getYamlPath());
 
         // Act
         var result = sut.getValue(configReference, "2");
