@@ -39,7 +39,7 @@ public class MessageRetriever implements IMessageRetriever {
         if (translation != null) return translation;
 
         // Short circuit if locale same as fallback & failed
-        plugin.getSLF4JLogger().warn("Missing message \"{}\" for locale {}!", messageReference, locale);
+        plugin.getSLF4JLogger().warn("Missing message \"{}\" for locale {}!", messageReference.getYamlPath(), locale);
         if (Objects.equals(locale, FALLBACK_LOCALE)) return MISSING_STRING;
 
         // Fallback to en_US
