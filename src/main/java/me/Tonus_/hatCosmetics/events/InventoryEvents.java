@@ -18,6 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Objects;
 
 public class InventoryEvents implements Listener {
     private final Main main;
@@ -114,9 +115,10 @@ public class InventoryEvents implements Listener {
             if(event.getSlot() >= 9 && event.getSlot() < event.getInventory().getSize()-9 && event.getCurrentItem().getItemMeta().getLore() != null &&
                     event.getCurrentItem().getItemMeta().getLore().get(0).contains("Hat Cosmetic")) {
                 helmCheck: {
-                    if (player.getEquipment() != null && player.getEquipment().getHelmet() != null) {
-                        if (player.getEquipment().getHelmet().getItemMeta() != null && player.getEquipment().getHelmet().getItemMeta().getLore() != null &&
-                                player.getEquipment().getHelmet().getItemMeta().getLore().get(0).contains("Hat Cosmetic"))
+                    var helmet = Objects.requireNonNull(player.getEquipment()).getHelmet();
+                    if (helmet != null && helmet.getType() != Material.AIR) {
+                        if (helmet.getItemMeta() != null && helmet.getItemMeta().getLore() != null &&
+                                helmet.getItemMeta().getLore().get(0).contains("Hat Cosmetic"))
                             break helmCheck;
                         player.sendMessage(messageManager.getPlayerMessage("helmet_exist", null));
                         player.closeInventory();
