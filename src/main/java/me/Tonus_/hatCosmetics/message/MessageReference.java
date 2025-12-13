@@ -13,6 +13,8 @@ import org.jetbrains.annotations.TestOnly;
 public class MessageReference {
     public static MessageReference VERSION = cr("version");
 
+
+    // GUI
     public static MessageReference GUI_TITLE = cr("gui.title");
     public static MessageReference GUI_CLOSE = cr("gui.close");
     public static MessageReference GUI_NEXT = cr("gui.next");
@@ -20,29 +22,31 @@ public class MessageReference {
 
     public static MessageReference COSMETIC_INVENTORY_EQUIP = cr("gui.cosmetic_inv_equip");
     public static MessageReference COSMETIC_INVENTORY_UNEQUIP = cr("gui.cosmetic_inv_unequip");
-    public static MessageReference COSMETIC_INVENTORY_UNEQUIP_OVERLAYED = cr("cosmetic_inv_unequip_overlayed");
+    public static MessageReference COSMETIC_INVENTORY_UNEQUIP_OVERLAYED = cr("gui.cosmetic_inv_unequip_overlayed");
 
-    public static MessageReference NO_HATS_GUI = cr("gui.cosmetic_list_empty");
+    public static MessageReference COSMETIC_LIST_EMPTY = cr("gui.cosmetic_list_empty");
 
-    public static MessageReference COSMETIC_UNEQUIP_SUCCESS = cr("hat_unequip_success");
-    public static MessageReference COSMETIC_UNEQUIP_SUCCESS_OTHER = cr("hat_unequip_success_other");
-    public static MessageReference COSMETIC_UNEQUIP_SUCCESS_FORCE = cr("hat_unequip_success_force");
 
-    public static MessageReference NO_PERMISSION = cr("no_permission");
+    // COMMAND
+    public static MessageReference COSMETIC_EQUIP_SUCCESS = cr("command.cosmetic_equip_success");
+    public static MessageReference COSMETIC_EQUIP_SUCCESS_INVOKER = cr("command.cosmetic_equip_success_other_invoker");
+    public static MessageReference COSMETIC_EQUIP_SUCCESS_TARGET = cr("command.cosmetic_equip_success_other_target");
 
-    public static MessageReference HAT_NOT_EXIST = cr("hat_not_exist");
-    public static MessageReference HAT_SUCCESS = cr("hat_success");
-    public static MessageReference HAT_SUCCESS_OTHER = cr("hat_success_other");
-    public static MessageReference HAT_SUCCESS_FORCE = cr("hat_success_force");
-    public static MessageReference NO_HAT = cr("no_hat");
-    public static MessageReference NO_HAT_GIVEN = cr("no_hat_given");
-    public static MessageReference NO_HAT_OTHER = cr("no_hat_other");
-    public static MessageReference NO_HAT_PERMISSION = cr("no_hat_permission");
-    public static MessageReference NO_HAT_PERMISSION_OTHER = cr("no_hat_permission_other");
+    public static MessageReference COSMETIC_UNEQUIP_SUCCESS = cr("command.cosmetic_unequip_success");
+    public static MessageReference COSMETIC_UNEQUIP_FAIL = cr("command.cosmetic_unequip_fail");
+    public static MessageReference COSMETIC_UNEQUIP_SUCCESS_INVOKER = cr("command.cosmetic_unequip_success_other_invoker");
+    public static MessageReference COSMETIC_UNEQUIP_SUCCESS_TARGET = cr("command.cosmetic_unequip_success_other_target");
+    public static MessageReference COSMETIC_UNEQUIP_OTHER_FAIL = cr("command.cosmetic_unequip_fail_other");
 
+    public static MessageReference COSMETIC_NOT_FOUND = cr("command.cosmetic_not_found");
+    public static MessageReference COSMETIC_ARG_NOT_GIVEN = cr("command.cosmetic_arg_not_given");
+
+
+    // MISC
     public static MessageReference PLAYER_NOT_ONLINE = cr("player_not_online");
 
     public static MessageReference RELOAD_SUCCESS = cr("reload_success");
+
 
     @Contract("_ -> new")
     static @NotNull MessageReference cr(@NotNull String yamlPath) {
@@ -55,5 +59,5 @@ public class MessageReference {
         return new MessageReference(yamlPath);
     }
 
-    final String yamlPath;
+    private final String yamlPath;
 }
