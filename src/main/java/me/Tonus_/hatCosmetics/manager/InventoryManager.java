@@ -2,6 +2,7 @@ package me.Tonus_.hatCosmetics.manager;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.Tonus_.hatCosmetics.Main;
+import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,15 +12,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import java.util.*;
-
-import static me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData.appendModelData;
 
 public class InventoryManager {
     private final Main main;
     private final ConfigManager configManager;
     private final MessageManager messageManager;
+    private final CustomModelData customModelDataAPI;
     private final ArrayList<String> hatOrder = new ArrayList<>();
     private final HashMap<UUID, ArrayList<Integer>> playerHats = new HashMap<>();
     private final HashMap<UUID, Integer> playerGUIPage = new HashMap<>();
@@ -67,7 +66,7 @@ public class InventoryManager {
         this.main = main;
         this.messageManager = main.getMessageManager();
         this.configManager = main.getConfigManager();
-
+        this.customModelDataAPI = new CustomModelData(main.getLogger());
         initHats();
     }
 
@@ -118,7 +117,7 @@ public class InventoryManager {
             // Update Model
             var modelData = main.getConfig().getInt("hats." + cosmetics + ".data");
             hatMeta.setCustomModelData(modelData);
-            hatItem = appendModelData(hatItem, modelData);
+            hatItem = customModelDataAPI.appendModelData(hatItem, modelData);
 
             NBTItem nbti = new NBTItem(hatItem);
             nbti.setString("Permission", "hatcosmetics.hat." + cosmetics);
