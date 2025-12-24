@@ -14,6 +14,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
+import static me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData.appendModelData;
+
 public class InventoryManager {
     private final Main main;
     private final ConfigManager configManager;
@@ -103,14 +105,21 @@ public class InventoryManager {
             lore.add(messageManager.getMessage("hat_equip"));
             assert hatMeta != null;
             hatMeta.setLore(lore);
-            hatMeta.setCustomModelData(main.getConfig().getInt("hats." + cosmetics + ".data"));
-            String name = main.getConfig().getString("hats." + cosmetics + ".name");
+
+            // Set Name
+            var name = main.getConfig().getString("hats." + cosmetics + ".name");
             if(name == null) {
                 main.getLogger().warning("The item '" + cosmetics + "' does not have a name defined!");
                 continue;
             }
             hatMeta.setDisplayName(messageManager.formatMessage(name));
             hatItem.setItemMeta(hatMeta);
+
+            // Update Model
+            var modelData = main.getConfig().getInt("hats." + cosmetics + ".data");
+            hatMeta.setCustomModelData(modelData);
+            hatItem = appendModelData(hatItem, modelData);
+
             NBTItem nbti = new NBTItem(hatItem);
             nbti.setString("Permission", "hatcosmetics.hat." + cosmetics);
             hatItem = nbti.getItem();
