@@ -2,6 +2,7 @@ package me.Tonus_.hatCosmetics.manager;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.Tonus_.hatCosmetics.Main;
+import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,13 +12,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import java.util.*;
 
 public class InventoryManager {
     private final Main main;
     private final ConfigManager configManager;
     private final MessageManager messageManager;
+    private final CustomModelData customModelDataAPI;
     private final ArrayList<String> hatOrder = new ArrayList<>();
     private final HashMap<UUID, ArrayList<Integer>> playerHats = new HashMap<>();
     private final HashMap<UUID, Integer> playerGUIPage = new HashMap<>();
@@ -65,7 +66,7 @@ public class InventoryManager {
         this.main = main;
         this.messageManager = main.getMessageManager();
         this.configManager = main.getConfigManager();
-
+        this.customModelDataAPI = new CustomModelData(main.getLogger());
         initHats();
     }
 
@@ -103,14 +104,21 @@ public class InventoryManager {
             lore.add(messageManager.getMessage("hat_equip"));
             assert hatMeta != null;
             hatMeta.setLore(lore);
-            hatMeta.setCustomModelData(main.getConfig().getInt("hats." + cosmetics + ".data"));
-            String name = main.getConfig().getString("hats." + cosmetics + ".name");
+
+            // Set Name
+            var name = main.getConfig().getString("hats." + cosmetics + ".name");
             if(name == null) {
                 main.getLogger().warning("The item '" + cosmetics + "' does not have a name defined!");
                 continue;
             }
             hatMeta.setDisplayName(messageManager.formatMessage(name));
             hatItem.setItemMeta(hatMeta);
+
+            // Update Model
+            var modelData = main.getConfig().getInt("hats." + cosmetics + ".data");
+            hatMeta.setCustomModelData(modelData);
+            hatItem = customModelDataAPI.appendModelData(hatItem, modelData);
+
             NBTItem nbti = new NBTItem(hatItem);
             nbti.setString("Permission", "hatcosmetics.hat." + cosmetics);
             hatItem = nbti.getItem();

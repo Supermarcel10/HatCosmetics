@@ -1,6 +1,7 @@
 ﻿{
   "pack": {
     "pack_format": 5,
+    "supported_formats": [5, 1000],
     "description": "§f§lHatCosmetics Example"
   }
 }

@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MainHatsCommand implements CommandExecutor {
     private final Main main;
@@ -29,16 +30,15 @@ public class MainHatsCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, String label, String[] args) {
         if(label.equalsIgnoreCase("hatcosmetics") || label.equalsIgnoreCase("hats")) {
             if(args.length == 0) {
-                if(!(sender instanceof Player)) {
+                if (sender instanceof Player player) {
+                    var inv = main.getInventoryManager().openInv(player);
+                    if(inv != null) {
+                        player.openInventory(inv);
+                    }
+                } else {
                     sender.sendMessage("You cannot do this in console!");
-                    return true;
                 }
-                Player player = (Player) sender;
-                // Open GUI
-                Inventory inv = main.getInventoryManager().openInv(player);
-                if(inv != null) {
-                    player.openInventory(inv);
-                }
+
                 return true;
             } else {
                 if(args[0].equalsIgnoreCase("help")) {
@@ -77,7 +77,9 @@ public class MainHatsCommand implements CommandExecutor {
                         }
                         player = (Player) sender;
                     }
-                    if(player.getEquipment() == null) return true;
+
+                    var equipment = player.getEquipment();
+                    if (equipment == null) return true;
 
                     // First check if the player has permission to the hat
                     ItemStack item = new ItemStack(Main.hats.get(args[1]));
@@ -89,12 +91,21 @@ public class MainHatsCommand implements CommandExecutor {
                     }
 
                     // Then check if the player has a helmet equipped and cancel if so
-                    if (player.getEquipment().getHelmet() != null) {
-                        if (player.getEquipment().getHelmet().getItemMeta() != null || player.getEquipment().getHelmet().getItemMeta().getLore() != null ||
-                                !(player.getEquipment().getHelmet().getItemMeta().getLore().get(0).contains("Hat Cosmetic"))) {
-                            if (args.length > 2) sender.sendMessage(messageManager.getPlayerMessage("helmet_exist_other", null));
-                            else player.sendMessage(messageManager.getPlayerMessage("helmet_exist", null));
-                            return true;
+                    if (equipment.getHelmet() != null) {
+                        var helmetSlotMeta = equipment.getHelmet().getItemMeta();
+
+                        if (helmetSlotMeta != null) {
+                            var lore = helmetSlotMeta.getLore();
+
+                            if (lore != null && !lore.isEmpty() && lore.get(0).contains("Hat Cosmetic")) {
+                                if (args.length > 2) {
+                                    sender.sendMessage(messageManager.getPlayerMessage("helmet_exist_other", null));
+                                } else {
+                                    player.sendMessage(messageManager.getPlayerMessage("helmet_exist", null));
+                                }
+
+                                return true;
+                            }
                         }
                     }
 
@@ -103,11 +114,11 @@ public class MainHatsCommand implements CommandExecutor {
                     assert meta != null;
                     List<String> lore = meta.getLore();
                     assert lore != null;
-                    lore.remove(lore.size()-1);
-                    lore.remove(lore.size()-1);
+                    lore.remove(lore.size() - 1);
+                    lore.remove(lore.size() - 1);
                     meta.setLore(lore);
                     item.setItemMeta(meta);
-                    player.getEquipment().setHelmet(item);
+                    equipment.setHelmet(item);
                     if (args.length > 2) sender.sendMessage(messageManager.getPlayerMessage("hat_success_other", item));
                     else player.sendMessage(messageManager.getPlayerMessage("hat_success", item));
                 }
