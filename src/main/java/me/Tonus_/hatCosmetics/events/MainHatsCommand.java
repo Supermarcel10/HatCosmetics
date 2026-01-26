@@ -92,23 +92,19 @@ public class MainHatsCommand implements CommandExecutor {
 
                     // Then check if the player has a helmet equipped and cancel if so
                     if (equipment.getHelmet() != null) {
-                        var helmetSlotMeta = equipment.getHelmet().getItemMeta();
-
+                        ItemMeta helmetSlotMeta = equipment.getHelmet().getItemMeta();
                         if (helmetSlotMeta != null) {
-                            var lore = helmetSlotMeta.getLore();
-
+                            List<String> lore = helmetSlotMeta.getLore();
                             if (lore != null && !lore.isEmpty() && lore.get(0).contains("Hat Cosmetic")) {
                                 if (args.length > 2) {
                                     sender.sendMessage(messageManager.getPlayerMessage("helmet_exist_other", null));
                                 } else {
                                     player.sendMessage(messageManager.getPlayerMessage("helmet_exist", null));
                                 }
-
                                 return true;
                             }
                         }
                     }
-
                     // Set player's helmet slot to specified hat
                     ItemMeta meta = item.getItemMeta();
                     assert meta != null;
@@ -173,7 +169,6 @@ public class MainHatsCommand implements CommandExecutor {
                 }
             }
         }
-
         return false;
     }
 }
