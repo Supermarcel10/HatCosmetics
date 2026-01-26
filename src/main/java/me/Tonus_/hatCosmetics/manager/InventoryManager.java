@@ -12,6 +12,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
+
 import java.util.*;
 
 public class InventoryManager {
@@ -115,9 +117,11 @@ public class InventoryManager {
             hatItem.setItemMeta(hatMeta);
 
             // Update Model
-            var modelData = main.getConfig().getInt("hats." + cosmetics + ".data");
-            hatMeta.setCustomModelData(modelData);
-            hatItem = customModelDataAPI.appendModelData(hatItem, modelData);
+            int modelData = main.getConfig().getInt("hats." + cosmetics + ".data");
+            CustomModelDataComponent customModelDataComponent = hatMeta.getCustomModelDataComponent();
+            customModelDataComponent.setFloats(List.of((float)modelData));
+            hatMeta.setCustomModelDataComponent(customModelDataComponent);
+            hatItem.setItemMeta(hatMeta);
 
             NBTItem nbti = new NBTItem(hatItem);
             nbti.setString("Permission", "hatcosmetics.hat." + cosmetics);
