@@ -1,11 +1,11 @@
-.idea/*
-.gradle/*
-build/*
-gradle/*
+/.idea
+/.gradle
+/build
+/gradle
 gradlew
 gradlew.bat
 
 # Test server files
-src/test/server/
-!src/test/server/paper-*.jar
-!src/test/server/plugins/item-nbt-api-plugin-*.jar
+/src/test/server/
+/!src/test/server/paper-*.jar
+/!src/test/server/plugins/item-nbt-api-plugin-*.jar
