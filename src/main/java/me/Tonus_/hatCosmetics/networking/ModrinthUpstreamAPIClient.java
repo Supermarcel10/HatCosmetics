@@ -1,6 +1,5 @@
 package me.Tonus_.hatCosmetics.networking;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
