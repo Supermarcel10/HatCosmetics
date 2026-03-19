@@ -5,6 +5,8 @@
 gradlew
 gradlew.bat
 
+/bin
+
 # Test server files
 /src/test/server/
 /!src/test/server/paper-*.jar
