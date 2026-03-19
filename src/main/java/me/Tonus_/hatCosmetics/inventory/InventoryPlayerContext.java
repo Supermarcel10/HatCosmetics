@@ -4,6 +4,7 @@ import java.util.HashSet;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.TestOnly;
 
 
 @Getter
@@ -17,7 +18,14 @@ public class InventoryPlayerContext {
         calculateMaxPage();
     }
 
+    @TestOnly
+    InventoryPlayerContext(HashSet<ItemStack> cosmetics) {
+        this.cosmetics.addAll(cosmetics);
+        calculateMaxPage();
+    }
+
     private void parseHats(Player player) {
+        // TODO: Implement me!
     }
 
     public boolean nextPage() {
@@ -41,7 +49,7 @@ public class InventoryPlayerContext {
     private void calculateMaxPage() {
         var rows = (cosmetics.size() + 8) / 9;
 
-        // TODO: Is the below line even necessary?
+        // Default 1 screen for no items
         rows = rows == 0 ? 1 : rows;
 
         maxPage = (rows + 2) / 3;
