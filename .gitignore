@@ -11,3 +11,7 @@ gradlew.bat
 /src/test/server/
 /!src/test/server/paper-*.jar
 /!src/test/server/plugins/item-nbt-api-plugin-*.jar
+
+# Nix + direnv
+/.direnv/
+/result
