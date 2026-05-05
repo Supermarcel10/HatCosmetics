@@ -17,7 +17,7 @@ public class MainCommand extends BaseCommand {
 
     @Default
     public void onDefault(@NotNull Player player) {
-
+        inventoryManager.openInventory(player);
     }
 
     @Subcommand("equip|e")
