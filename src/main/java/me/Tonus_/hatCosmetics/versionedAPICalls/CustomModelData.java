@@ -1,12 +1,12 @@
 package me.Tonus_.hatCosmetics.versionedAPICalls;
 
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handles applying custom model data to ItemStacks across different Minecraft versions.
@@ -18,9 +18,10 @@ import java.util.logging.Logger;
  * </p>
  */
 public class CustomModelData {
+
     private final Logger logger;
     private final ReflectionCache reflectionCache;
-    private final BiFunction<ItemStack, Integer, ItemStack> applyFunction;
+    private final BiFunction<ItemStack, String, ItemStack> applyFunction;
 
     public CustomModelData(@NotNull Logger logger) {
         this.logger = logger;
@@ -28,10 +29,14 @@ public class CustomModelData {
 
         if (this.reflectionCache.isValid()) {
             this.applyFunction = this::applyNewMethod;
-            logger.fine("Using Data Components API (1.21.4+) for custom model data");
+            logger.fine(
+                "Using Data Components API (1.21.4+) for custom model data"
+            );
         } else {
             this.applyFunction = this::applyOldMethod;
-            logger.warning("Failed to initialize Data Components API reflection. Falling back to ItemMeta API.");
+            logger.warning(
+                "Failed to initialize Data Components API reflection. Falling back to ItemMeta API."
+            );
         }
     }
 
@@ -44,11 +49,18 @@ public class CustomModelData {
      * @throws NullPointerException if baseItem is null
      */
     @NotNull
-    public ItemStack appendModelData(@NotNull ItemStack baseItem, int modelData) {
+    public ItemStack appendModelData(
+        @NotNull ItemStack baseItem,
+        @NotNull String modelData
+    ) {
         try {
             return applyFunction.apply(baseItem.clone(), modelData);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Failed to apply custom model data: " + e.getMessage(), e);
+            logger.log(
+                Level.SEVERE,
+                "Failed to apply custom model data: " + e.getMessage(),
+                e
+            );
             return baseItem;
         }
     }
@@ -61,10 +73,26 @@ public class CustomModelData {
      * @return The modified ItemStack
      */
     @NotNull
-    private ItemStack applyOldMethod(@NotNull ItemStack baseItem, int modelData) {
+    private ItemStack applyOldMethod(
+        @NotNull ItemStack baseItem,
+        @NotNull String modelData
+    ) {
+        int parsedModelData;
+        try {
+            parsedModelData = Integer.parseInt(modelData);
+        } catch (NumberFormatException e) {
+            logger.log(
+                Level.WARNING,
+                "Non-numeric custom model data \"{0}\" is not supported on this version. Skipping.",
+                modelData
+            );
+
+            return baseItem;
+        }
+
         var meta = baseItem.getItemMeta();
         if (meta != null) {
-            meta.setCustomModelData(modelData);
+            meta.setCustomModelData(parsedModelData);
             baseItem.setItemMeta(meta);
         }
         return baseItem;
@@ -78,7 +106,10 @@ public class CustomModelData {
      * @return The modified ItemStack
      */
     @NotNull
-    private ItemStack applyNewMethod(@NotNull ItemStack baseItem, int modelData) {
+    private ItemStack applyNewMethod(
+        @NotNull ItemStack baseItem,
+        @NotNull String modelData
+    ) {
         try {
             // Create builder instance
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/CustomModelData.html#customModelData()
@@ -86,7 +117,7 @@ public class CustomModelData {
 
             // Add model data as string
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/CustomModelData.Builder.html#addString(java.lang.String)
-            reflectionCache.addStringMethod.invoke(builder, String.valueOf(modelData));
+            reflectionCache.addStringMethod.invoke(builder, modelData);
 
             // Build the component
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/DataComponentBuilder.html#build()
@@ -94,11 +125,18 @@ public class CustomModelData {
 
             // Apply to ItemStack
             // https://jd.papermc.io/paper/1.21.4/org/bukkit/inventory/ItemStack.html#setData(io.papermc.paper.datacomponent.DataComponentType.Valued,io.papermc.paper.datacomponent.DataComponentBuilder)
-            reflectionCache.setDataMethod.invoke(baseItem, reflectionCache.customModelDataComponent, customData);
+            reflectionCache.setDataMethod.invoke(
+                baseItem,
+                reflectionCache.customModelDataComponent,
+                customData
+            );
 
             return baseItem;
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to apply custom model data via Data Components API", e);
+            throw new RuntimeException(
+                "Failed to apply custom model data via Data Components API",
+                e
+            );
         }
     }
 
@@ -112,17 +150,24 @@ public class CustomModelData {
     private ReflectionCache initializeReflectionCache() {
         try {
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/CustomModelData.html
-            var customModelDataClass = Class.forName("io.papermc.paper.datacomponent.item.CustomModelData");
+            var customModelDataClass = Class.forName(
+                "io.papermc.paper.datacomponent.item.CustomModelData"
+            );
 
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/CustomModelData.html#customModelData()
-            var builderMethod = customModelDataClass.getMethod("customModelData");
+            var builderMethod = customModelDataClass.getMethod(
+                "customModelData"
+            );
 
             // Get builder and its methods
             var builder = builderMethod.invoke(null);
             var builderClass = builder.getClass();
 
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/item/CustomModelData.Builder.html#addString(java.lang.String)
-            var addStringMethod = builderClass.getMethod("addString", String.class);
+            var addStringMethod = builderClass.getMethod(
+                "addString",
+                String.class
+            );
             addStringMethod.setAccessible(true);
 
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/DataComponentBuilder.html#build()
@@ -130,24 +175,44 @@ public class CustomModelData {
             buildMethod.setAccessible(true);
 
             // https://jd.papermc.io/paper/1.21.4/io/papermc/paper/datacomponent/DataComponentTypes.html
-            var dataComponentTypesClass = Class.forName("io.papermc.paper.datacomponent.DataComponentTypes");
-            var customModelDataComponentField = dataComponentTypesClass.getField("CUSTOM_MODEL_DATA");
-            var customModelDataComponent = customModelDataComponentField.get(null);
+            var dataComponentTypesClass = Class.forName(
+                "io.papermc.paper.datacomponent.DataComponentTypes"
+            );
+            var customModelDataComponentField =
+                dataComponentTypesClass.getField("CUSTOM_MODEL_DATA");
+            var customModelDataComponent = customModelDataComponentField.get(
+                null
+            );
 
             // https://jd.papermc.io/paper/1.21.4/org/bukkit/inventory/ItemStack.html#setData(io.papermc.paper.datacomponent.DataComponentType.Valued,io.papermc.paper.datacomponent.DataComponentBuilder)
-            var valuedTypeClass = Class.forName("io.papermc.paper.datacomponent.DataComponentType$Valued");
-            var setDataMethod = ItemStack.class.getMethod("setData", valuedTypeClass, Object.class);
+            var valuedTypeClass = Class.forName(
+                "io.papermc.paper.datacomponent.DataComponentType$Valued"
+            );
+            var setDataMethod = ItemStack.class.getMethod(
+                "setData",
+                valuedTypeClass,
+                Object.class
+            );
 
             return new ReflectionCache(
-                    builderMethod,
-                    addStringMethod,
-                    buildMethod,
-                    customModelDataComponent,
-                    setDataMethod
+                builderMethod,
+                addStringMethod,
+                buildMethod,
+                customModelDataComponent,
+                setDataMethod
             );
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
-                 NoSuchFieldException e) {
-            logger.log(Level.WARNING, "Failed to initialize Data Components API reflection", e);
+        } catch (
+            ClassNotFoundException
+            | NoSuchMethodException
+            | IllegalAccessException
+            | InvocationTargetException
+            | NoSuchFieldException e
+        ) {
+            logger.log(
+                Level.WARNING,
+                "Failed to initialize Data Components API reflection",
+                e
+            );
             return ReflectionCache.INVALID;
         }
     }
@@ -156,6 +221,7 @@ public class CustomModelData {
      * Flyweight pattern cache for reflection objects to avoid repeated lookups.
      */
     private static class ReflectionCache {
+
         static final ReflectionCache INVALID = new ReflectionCache();
 
         final Method builderMethod;
@@ -176,11 +242,11 @@ public class CustomModelData {
         }
 
         ReflectionCache(
-                @NotNull Method builderMethod,
-                @NotNull Method addStringMethod,
-                @NotNull Method buildMethod,
-                @NotNull Object customModelDataComponent,
-                @NotNull Method setDataMethod
+            @NotNull Method builderMethod,
+            @NotNull Method addStringMethod,
+            @NotNull Method buildMethod,
+            @NotNull Object customModelDataComponent,
+            @NotNull Method setDataMethod
         ) {
             this.builderMethod = builderMethod;
             this.addStringMethod = addStringMethod;
