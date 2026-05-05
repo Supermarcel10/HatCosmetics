@@ -98,18 +98,6 @@ class InventoryPlayerContextTest {
             cosmetics.add(mock(ItemStack.class));
         }
 
-        return new InventoryPlayerContext(cosmetics);
+        return new InventoryPlayerContext(cosmetics, 3);
     }
-
-    // private int getCurrentPage(InventoryPlayerContext context) throws Exception {
-    //     var field = InventoryPlayerContext.class.getDeclaredField("currentPage");
-    //     field.setAccessible(true);
-    //     return field.getInt(context);
-    // }
-
-    // private int getMaxPage(InventoryPlayerContext context) throws Exception {
-    //     var field = InventoryPlayerContext.class.getDeclaredField("maxPage");
-    //     field.setAccessible(true);
-    //     return field.getInt(context);
-    // }
 }

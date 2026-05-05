@@ -10,17 +10,22 @@ import org.jetbrains.annotations.TestOnly;
 @Getter
 public class InventoryPlayerContext {
     private final HashSet<ItemStack> cosmetics = new HashSet<>();
+    private final int hatRowsPerPage;
     private int currentPage = 1;
     private int maxPage;
 
-    public InventoryPlayerContext(Player player) {
+    public InventoryPlayerContext(Player player, int hatRowsPerPage) {
+        this.hatRowsPerPage = hatRowsPerPage;
+
         parseHats(player);
         calculateMaxPage();
     }
 
     @TestOnly
-    InventoryPlayerContext(HashSet<ItemStack> cosmetics) {
+    InventoryPlayerContext(HashSet<ItemStack> cosmetics, int hatRowsPerPage) {
+        this.hatRowsPerPage = hatRowsPerPage;
         this.cosmetics.addAll(cosmetics);
+
         calculateMaxPage();
     }
 
@@ -52,6 +57,6 @@ public class InventoryPlayerContext {
         // Default 1 screen for no items
         rows = rows == 0 ? 1 : rows;
 
-        maxPage = (rows + 2) / 3;
+        maxPage = (rows + hatRowsPerPage - 1) / hatRowsPerPage;
     }
 }

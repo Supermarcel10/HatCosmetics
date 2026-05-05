@@ -27,6 +27,7 @@ public class InventoryManager implements IInventoryManager {
     private static final String PREV_TAG = "pv";
     private static final String NEXT_TAG = "nx";
 
+    private static final int DEFAULT_HAT_ROWS = 3;
     private static final Material DEFAULT_BORDER_MATERIAL = Material.CYAN_STAINED_GLASS_PANE;
     private static final Material DEFAULT_CLOSE_MATERIAL = Material.BARRIER;
     private static final Material DEFAULT_NEXT_PAGE_MATERIAL = Material.ARROW;
@@ -40,11 +41,12 @@ public class InventoryManager implements IInventoryManager {
     private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
 
     public void openInventory(@NotNull Player player) {
-        var ipc = new InventoryPlayerContext(player);
+        var hatRows = getValidatedHatRows();
+        var ipc = new InventoryPlayerContext(player, hatRows);
         playerContexts.put(player, ipc);
 
         var titleText = getTitleTextComponent(ipc, player);
-        var inv = (new CosmeticSelectionInventoryHolder(3, titleText)).getInventory();
+        var inv = (new CosmeticSelectionInventoryHolder(hatRows, titleText)).getInventory();
 
         drawBorder(inv);
         drawExitButton(inv, player);
@@ -125,9 +127,11 @@ public class InventoryManager implements IInventoryManager {
         var material = configRetriever.getValue(ConfigReference.GUI_BORDER_MATERIAL, DEFAULT_BORDER_MATERIAL);
         var item = createMenuItem(material, Component.empty(), null);
 
+        var bottomRowStart = inventory.getSize() - 9;
+
         for(var i = 0; i < 9; ++i) {
             inventory.setItem(i, item);
-            inventory.setItem(36 + i, item);
+            inventory.setItem(bottomRowStart + i, item);
         }
     }
 
@@ -137,7 +141,7 @@ public class InventoryManager implements IInventoryManager {
 
         var closeButtonItem = createMenuItem(material, text, CLOSE_TAG);
 
-        inventory.setItem(40, closeButtonItem);
+        inventory.setItem(inventory.getSize() - 5, closeButtonItem);
     }
 
     private void drawPageMoveButtons(@NotNull Inventory inventory, @NotNull InventoryPlayerContext ipc, Player player) {
@@ -158,7 +162,7 @@ public class InventoryManager implements IInventoryManager {
                 borderMaterial
         );
 
-        inventory.setItem(39, prevItem);
+        inventory.setItem(inventory.getSize() - 6, prevItem);
 
         // Next page
         material = configRetriever.getValue(ConfigReference.GUI_NEXT_PAGE_MATERIAL, DEFAULT_NEXT_PAGE_MATERIAL);
@@ -172,7 +176,7 @@ public class InventoryManager implements IInventoryManager {
                 borderMaterial
         );
 
-        inventory.setItem(41, nextItem);
+        inventory.setItem(inventory.getSize() - 4, nextItem);
     }
 
     private @NotNull ItemStack createPageButton(
@@ -189,5 +193,15 @@ public class InventoryManager implements IInventoryManager {
         } else {
             return createMenuItem(borderMaterial, Component.empty(), null);
         }
+    }
+
+    private int getValidatedHatRows() {
+        var rows = configRetriever.getValue(ConfigReference.GUI_ROWS);
+        if (rows == null || rows < 1 || rows > 4 || rows == -1) {
+            // TODO: Implement auto-calculation
+            return DEFAULT_HAT_ROWS;
+        }
+
+        return rows;
     }
 }
