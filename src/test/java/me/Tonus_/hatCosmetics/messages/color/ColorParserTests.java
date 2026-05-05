@@ -48,4 +48,56 @@ public class ColorParserTests {
         // Assert
         assertEquals(expectedResult, result);
     }
+
+    @Test
+    void parse_whenBlackColorCode_returnsParsedString() {
+        // Arrange
+        var input = "&0PARSE_ME";
+        var expectedResult = "§0PARSE_ME";
+
+        // Act
+        var result = sut.parse(input);
+
+        // Assert
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    void parse_whenWhiteColorCodeLowercase_returnsParsedString() {
+        // Arrange
+        var input = "&fPARSE_ME";
+        var expectedResult = "§fPARSE_ME";
+
+        // Act
+        var result = sut.parse(input);
+
+        // Assert
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    void parse_whenWhiteColorCodeUppercase_returnsParsedString() {
+        // Arrange
+        var input = "&FPARSE_ME";
+        var expectedResult = "§FPARSE_ME";
+
+        // Act
+        var result = sut.parse(input);
+
+        // Assert
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    void parse_whenMixedColorCodes_returnsParsedString() {
+        // Arrange
+        var input = "&0Hello &fWorld";
+        var expectedResult = "§0Hello §fWorld";
+
+        // Act
+        var result = sut.parse(input);
+
+        // Assert
+        assertEquals(expectedResult, result);
+    }
 }

@@ -14,6 +14,6 @@ public class ColorParser implements IColorParser {
      */
     @Contract(pure = true)
     public @NotNull String parse(@NotNull String msg) {
-        return msg.replaceAll("&([1-9a-eA-EKkLlMmNnOoRr])", "§$1");
+        return msg.replaceAll("&([0-9a-fA-FKkLlMmNnOoRr])", "§$1");
     }
 }
