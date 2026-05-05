@@ -7,6 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 
 public interface ICosmeticItemFactory {
-    public Set<ItemStack> createAll(@NotNull Player player);
-    public @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player);
+    Set<ItemStack> createAll(@NotNull Player player);
+    @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player);
 }
