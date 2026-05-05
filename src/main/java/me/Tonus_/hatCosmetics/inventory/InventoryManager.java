@@ -2,20 +2,14 @@ package me.Tonus_.hatCosmetics.inventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
-import me.Tonus_.hatCosmetics.cosmetic.Cosmetic;
-import me.Tonus_.hatCosmetics.cosmetic.CosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
-import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
+import me.Tonus_.hatCosmetics.cosmetic.ICosmeticItemFactory;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
-import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +18,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,16 +37,13 @@ public class InventoryManager implements IInventoryManager {
     private final NBTEditor nbtEditor;
     private final IConfigRetriever configRetriever;
     private final IMessageRetriever messageRetriever;
-    private final Plugin plugin;
-    private final CosmeticTagManager cosmeticTagManager;
-    private final CustomModelData customModelData;
+    private final ICosmeticItemFactory cosmeticItemFactory;
 
-    private final HashMap<Player, InventoryPlayerContext> playerContexts =
-        new HashMap<>();
+    private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
 
     public void openInventory(@NotNull Player player) {
         var hatRows = getValidatedHatRows();
-        var cosmetics = buildCosmeticItems(player);
+        var cosmetics = cosmeticItemFactory.createAll(player);
         var ipc = new InventoryPlayerContext(player, hatRows, cosmetics);
         playerContexts.put(player, ipc);
 
@@ -230,51 +220,6 @@ public class InventoryManager implements IInventoryManager {
         }
 
         return rows;
-    }
-
-    private Set<ItemStack> buildCosmeticItems(Player player) {
-        return CosmeticLoader.load()
-            .stream()
-            .map(c -> createCosmeticItem(c, player))
-            .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    private @NotNull ItemStack createCosmeticItem(
-        @NotNull Cosmetic cosmetic,
-        Player player
-    ) {
-        var baseItem = new ItemStack(cosmetic.material());
-        var modelDataItem = customModelData.appendModelData(baseItem,cosmetic.customModelData());
-
-        var meta = modelDataItem.getItemMeta();
-        if (meta != null) {
-            var displayName = Component.text(ChatColor.translateAlternateColorCodes('&', cosmetic.displayName()));
-            meta.displayName(displayName);
-
-            var lore = new ArrayList<Component>();
-            for (var line : cosmetic.description()) {
-                lore.add(Component.text(ChatColor.translateAlternateColorCodes('&', line)));
-            }
-
-            lore.add(Component.empty());
-
-            var inventoryEquipMessage = ChatColor.translateAlternateColorCodes(
-                '&',
-                messageRetriever.getMessage(
-                    player,
-                    MessageReference.COSMETIC_INVENTORY_EQUIP
-                )
-            );
-            lore.add(Component.text(inventoryEquipMessage));
-
-            meta.lore(lore);
-            modelDataItem.setItemMeta(meta);
-        }
-
-        return cosmeticTagManager.addCosmeticTag(
-            modelDataItem,
-            cosmetic.name()
-        );
     }
 
     private void drawCosmetics(
