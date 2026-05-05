@@ -15,6 +15,7 @@ import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
 import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
 import me.Tonus_.hatCosmetics.utility.string.StringFormatter;
+import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,7 +36,8 @@ public class Main extends JavaPlugin {
 		var translationRetriever = new TranslationRetriever(this);
         var messageRetriever = new MessageRetriever(this, configRetriever, colorParser, translationRetriever, stringFormatter);
         var cosmeticTagManager = new CosmeticTagManager(nbtEditor);
-        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, this);
+        var customModelData = new CustomModelData(getLogger());
+        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, this, cosmeticTagManager, customModelData);
 
 		// Register commands
         var commandListener = new MainCommand(inventoryManager);

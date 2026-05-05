@@ -1,23 +1,25 @@
 package me.Tonus_.hatCosmetics.inventory;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
+import java.util.Set;
 
 
 @Getter
 public class InventoryPlayerContext {
-    private final HashSet<ItemStack> cosmetics = new HashSet<>();
+    private final LinkedHashSet<ItemStack> cosmetics = new LinkedHashSet<>();
     private final int hatRowsPerPage;
     private int currentPage = 1;
     private int maxPage;
 
-    public InventoryPlayerContext(Player player, int hatRowsPerPage) {
+    public InventoryPlayerContext(Player player, int hatRowsPerPage, @NotNull Set<ItemStack> cosmetics) {
         this.hatRowsPerPage = hatRowsPerPage;
-
-        parseHats(player);
+        this.cosmetics.addAll(cosmetics);
         calculateMaxPage();
     }
 
@@ -27,10 +29,6 @@ public class InventoryPlayerContext {
         this.cosmetics.addAll(cosmetics);
 
         calculateMaxPage();
-    }
-
-    private void parseHats(Player player) {
-        // TODO: Implement me!
     }
 
     public boolean nextPage() {

@@ -1,13 +1,21 @@
 package me.Tonus_.hatCosmetics.inventory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
+import me.Tonus_.hatCosmetics.cosmetic.Cosmetic;
+import me.Tonus_.hatCosmetics.cosmetic.CosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
+import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
+import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -37,20 +45,25 @@ public class InventoryManager implements IInventoryManager {
     private final IConfigRetriever configRetriever;
     private final IMessageRetriever messageRetriever;
     private final Plugin plugin;
+    private final CosmeticTagManager cosmeticTagManager;
+    private final CustomModelData customModelData;
 
-    private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
+    private final HashMap<Player, InventoryPlayerContext> playerContexts =
+        new HashMap<>();
 
     public void openInventory(@NotNull Player player) {
         var hatRows = getValidatedHatRows();
-        var ipc = new InventoryPlayerContext(player, hatRows);
+        var cosmetics = buildCosmeticItems(player);
+        var ipc = new InventoryPlayerContext(player, hatRows, cosmetics);
         playerContexts.put(player, ipc);
 
         var titleText = getTitleTextComponent(ipc, player);
-        var inv = (new CosmeticSelectionInventoryHolder(hatRows, titleText)).getInventory();
+        var inv = new CosmeticSelectionInventoryHolder(hatRows, titleText).getInventory();
 
         drawBorder(inv);
         drawExitButton(inv, player);
         drawPageMoveButtons(inv, ipc, player);
+        drawCosmetics(inv, ipc, player);
 
         player.openInventory(inv);
     }
@@ -68,9 +81,10 @@ public class InventoryManager implements IInventoryManager {
             return;
         }
 
-        nbtEditor.of(event.getCurrentItem())
-                .getTag(PersistentDataType.STRING, "menu")
-                .ifPresent(tag -> handleMenuTag(player, tag));
+        nbtEditor
+            .of(event.getCurrentItem())
+            .getTag(PersistentDataType.STRING, "menu")
+            .ifPresent(tag -> handleMenuTag(player, tag));
     }
 
     private void handleMenuTag(@NotNull Player player, @NotNull String tag) {
@@ -98,8 +112,14 @@ public class InventoryManager implements IInventoryManager {
         }
     }
 
-    private @NotNull ItemStack createMenuItem(Material material, Component itemName, @Nullable String tag) {
-        var itemStackEditor = nbtEditor.of(new ItemStack(material)).setName(itemName);
+    private @NotNull ItemStack createMenuItem(
+        Material material,
+        Component itemName,
+        @Nullable String tag
+    ) {
+        var itemStackEditor = nbtEditor
+            .of(new ItemStack(material))
+            .setName(itemName);
 
         if (tag != null) {
             itemStackEditor.addTag(PersistentDataType.STRING, "menu", tag);
@@ -129,7 +149,7 @@ public class InventoryManager implements IInventoryManager {
 
         var bottomRowStart = inventory.getSize() - 9;
 
-        for(var i = 0; i < 9; ++i) {
+        for (var i = 0; i < 9; ++i) {
             inventory.setItem(i, item);
             inventory.setItem(bottomRowStart + i, item);
         }
@@ -144,22 +164,29 @@ public class InventoryManager implements IInventoryManager {
         inventory.setItem(inventory.getSize() - 5, closeButtonItem);
     }
 
-    private void drawPageMoveButtons(@NotNull Inventory inventory, @NotNull InventoryPlayerContext ipc, Player player) {
+    private void drawPageMoveButtons(
+        @NotNull Inventory inventory,
+        @NotNull InventoryPlayerContext ipc,
+        Player player
+    ) {
         int currentPage = ipc.getCurrentPage();
         int maxPage = ipc.getMaxPage();
 
-        var borderMaterial = configRetriever.getValue(ConfigReference.GUI_BORDER_MATERIAL, DEFAULT_BORDER_MATERIAL);
+        var borderMaterial = configRetriever.getValue(
+            ConfigReference.GUI_BORDER_MATERIAL,
+            DEFAULT_BORDER_MATERIAL
+        );
 
         // Previous page
         var material = configRetriever.getValue(ConfigReference.GUI_PREV_PAGE_MATERIAL, DEFAULT_PREV_PAGE_MATERIAL);
         var text = messageRetriever.getMessage(player, MessageReference.GUI_PREV);
         var prevItem = createPageButton(
-                currentPage > 1,
-                currentPage - 1,
-                material,
-                text,
-                PREV_TAG,
-                borderMaterial
+            currentPage > 1,
+            currentPage - 1,
+            material,
+            text,
+            PREV_TAG,
+            borderMaterial
         );
 
         inventory.setItem(inventory.getSize() - 6, prevItem);
@@ -168,24 +195,24 @@ public class InventoryManager implements IInventoryManager {
         material = configRetriever.getValue(ConfigReference.GUI_NEXT_PAGE_MATERIAL, DEFAULT_NEXT_PAGE_MATERIAL);
         text = messageRetriever.getMessage(player, MessageReference.GUI_NEXT);
         var nextItem = createPageButton(
-                currentPage < maxPage,
-                currentPage + 1,
-                material,
-                text,
-                NEXT_TAG,
-                borderMaterial
+            currentPage < maxPage,
+            currentPage + 1,
+            material,
+            text,
+            NEXT_TAG,
+            borderMaterial
         );
 
         inventory.setItem(inventory.getSize() - 4, nextItem);
     }
 
     private @NotNull ItemStack createPageButton(
-            boolean isActive,
-            int pageNumber,
-            Material material,
-            String buttonName,
-            String tag,
-            Material borderMaterial
+        boolean isActive,
+        int pageNumber,
+        Material material,
+        String buttonName,
+        String tag,
+        Material borderMaterial
     ) {
         if (isActive) {
             var text = Component.text(ChatColor.AQUA + buttonName + ChatColor.DARK_GRAY + pageNumber);
@@ -203,5 +230,70 @@ public class InventoryManager implements IInventoryManager {
         }
 
         return rows;
+    }
+
+    private Set<ItemStack> buildCosmeticItems(Player player) {
+        return CosmeticLoader.load()
+            .stream()
+            .map(c -> createCosmeticItem(c, player))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private @NotNull ItemStack createCosmeticItem(
+        @NotNull Cosmetic cosmetic,
+        Player player
+    ) {
+        var baseItem = new ItemStack(cosmetic.material());
+        var modelDataItem = customModelData.appendModelData(baseItem,cosmetic.customModelData());
+
+        var meta = modelDataItem.getItemMeta();
+        if (meta != null) {
+            var displayName = Component.text(ChatColor.translateAlternateColorCodes('&', cosmetic.displayName()));
+            meta.displayName(displayName);
+
+            var lore = new ArrayList<Component>();
+            for (var line : cosmetic.description()) {
+                lore.add(Component.text(ChatColor.translateAlternateColorCodes('&', line)));
+            }
+
+            lore.add(Component.empty());
+
+            var inventoryEquipMessage = ChatColor.translateAlternateColorCodes(
+                '&',
+                messageRetriever.getMessage(
+                    player,
+                    MessageReference.COSMETIC_INVENTORY_EQUIP
+                )
+            );
+            lore.add(Component.text(inventoryEquipMessage));
+
+            meta.lore(lore);
+            modelDataItem.setItemMeta(meta);
+        }
+
+        return cosmeticTagManager.addCosmeticTag(
+            modelDataItem,
+            cosmetic.name()
+        );
+    }
+
+    private void drawCosmetics(
+        @NotNull Inventory inventory,
+        @NotNull InventoryPlayerContext ipc,
+        Player player
+    ) {
+        var cosmetics = new ArrayList<>(ipc.getCosmetics());
+        var hatRows = ipc.getHatRowsPerPage();
+        var pageIndex = (ipc.getCurrentPage() - 1) * hatRows * 9;
+
+        var slot = 9;
+        for (
+            var i = pageIndex;
+            i < cosmetics.size() && slot - 8 <= hatRows * 9;
+            i++
+        ) {
+            inventory.setItem(slot, cosmetics.get(i));
+            slot++;
+        }
     }
 }
