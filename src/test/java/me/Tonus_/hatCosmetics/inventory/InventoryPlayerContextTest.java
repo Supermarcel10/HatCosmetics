@@ -87,17 +87,85 @@ class InventoryPlayerContextTest {
     })
     @DisplayName("maxPage is calculated correctly based on item count")
     void maxPage_calculation(int itemCount, int expectedMaxPage) throws Exception {
+        // Arrange
         var context = createContextWithItems(itemCount);
+
+        // Act & Assert
         assertEquals(expectedMaxPage, context.getMaxPage());
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "0, 1, 1",
+        "1, 1, 1",
+        "9, 1, 1",
+        "10, 1, 2",
+        "18, 1, 2",
+        "19, 1, 3",
+    })
+    @DisplayName("maxPage is calculated correctly for 1 hat row per page")
+    void maxPage_calculationWithOneHatRow(int itemCount, int hatRowsPerPage, int expectedMaxPage) throws Exception {
+        // Arrange
+        var context = createContextWithItems(itemCount, hatRowsPerPage);
+
+        // Act & Assert
+        assertEquals(expectedMaxPage, context.getMaxPage());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0, 2, 1",
+        "18, 2, 1",
+        "19, 2, 2",
+        "36, 2, 2",
+        "37, 2, 3",
+    })
+    @DisplayName("maxPage is calculated correctly for 2 hat rows per page")
+    void maxPage_calculationWithTwoHatRows(int itemCount, int hatRowsPerPage, int expectedMaxPage) throws Exception {
+        // Arrange
+        var context = createContextWithItems(itemCount, hatRowsPerPage);
+
+        // Act & Assert
+        assertEquals(expectedMaxPage, context.getMaxPage());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0, 4, 1",
+        "36, 4, 1",
+        "37, 4, 2",
+        "72, 4, 2",
+        "73, 4, 3",
+    })
+    @DisplayName("maxPage is calculated correctly for 4 hat rows per page")
+    void maxPage_calculationWithFourHatRows(int itemCount, int hatRowsPerPage, int expectedMaxPage) throws Exception {
+        // Arrange
+        var context = createContextWithItems(itemCount, hatRowsPerPage);
+
+        // Act & Assert
+        assertEquals(expectedMaxPage, context.getMaxPage());
+    }
+
+    @Test
+    void maxPage_itemsHatRowsCalculatesAndDoesNotDefaultToThree() throws Exception {
+        // Arrange
+        var context = createContextWithItems(19, 2);
+
+        // Act & Assert
+        assertEquals(2, context.getMaxPage());
+    }
+
     private InventoryPlayerContext createContextWithItems(int count) {
+        return createContextWithItems(count, 3);
+    }
+
+    private InventoryPlayerContext createContextWithItems(int count, int hatRowsPerPage) {
         var cosmetics = new HashSet<ItemStack>();
 
         for (int i = 0; i < count; i++) {
             cosmetics.add(mock(ItemStack.class));
         }
 
-        return new InventoryPlayerContext(cosmetics, 3);
+        return new InventoryPlayerContext(cosmetics, hatRowsPerPage);
     }
 }
