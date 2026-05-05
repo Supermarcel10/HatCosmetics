@@ -20,9 +20,10 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
     private final CustomModelData customModelData;
     private final CosmeticTagManager cosmeticTagManager;
     private final IMessageRetriever messageRetriever;
+    private final ICosmeticLoader cosmeticLoader;
 
     public Set<ItemStack> createAll(@NotNull Player player) {
-        return CosmeticLoader.load().stream()
+        return cosmeticLoader.load().stream()
                 .map(c -> create(c, player))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }

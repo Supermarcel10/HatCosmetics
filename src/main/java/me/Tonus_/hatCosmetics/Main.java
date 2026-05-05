@@ -5,6 +5,7 @@ import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
+import me.Tonus_.hatCosmetics.cosmetic.CosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
 import me.Tonus_.hatCosmetics.inventory.InventoryManager;
 import me.Tonus_.hatCosmetics.message.color.ColorParser;
@@ -38,7 +39,8 @@ public class Main extends JavaPlugin {
         var messageRetriever = new MessageRetriever(this, configRetriever, colorParser, translationRetriever, stringFormatter);
         var cosmeticTagManager = new CosmeticTagManager(nbtEditor);
         var customModelData = new CustomModelData(getLogger());
-        var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever);
+        var cosmeticLoader = new CosmeticLoader();
+        var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever, cosmeticLoader);
         var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory);
 
 		// Register commands

@@ -2,10 +2,12 @@ package me.Tonus_.hatCosmetics.cosmetic;
 
 import java.util.List;
 import org.bukkit.Material;
+import lombok.RequiredArgsConstructor;
 
 
-public class CosmeticLoader {
-    public static List<Cosmetic> load() {
+@RequiredArgsConstructor
+public class CosmeticLoader implements ICosmeticLoader {
+    public List<Cosmetic> load() {
         // TODO: Update to implement proper loading
         return List.of(
             new Cosmetic(
