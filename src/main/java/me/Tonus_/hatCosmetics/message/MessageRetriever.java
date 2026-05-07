@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -75,11 +76,17 @@ public class MessageRetriever implements IMessageRetriever {
 		sender.sendMessage(Component.text(formattedMessage));
 	}
 
-	public void sendMessage(@NotNull CommandSender sender, @NotNull MessageReference messageReference, Map<String, String> formatArgs) {
-		var message = getMessage(sender, messageReference);
-        var formattedMessage = stringFormatter.format(message, formatArgs);
-		sender.sendMessage(Component.text(formattedMessage));
-	}
+    public void sendMessage(@NotNull CommandSender sender, @NotNull MessageReference messageReference, Map<String, String> formatArgs) {
+        var message = getMessage(sender, messageReference);
+
+        var parsedArgs = formatArgs.entrySet()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> colorParser.parse(e.getValue())));
+
+        var formattedMessage = stringFormatter.format(message, parsedArgs);
+
+        sender.sendMessage(Component.text(formattedMessage));
+    }
 
 	/**
 	 * Gets a message in the specified locale
