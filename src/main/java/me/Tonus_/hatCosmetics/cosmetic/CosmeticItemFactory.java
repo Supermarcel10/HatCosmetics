@@ -35,21 +35,7 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-	private @NotNull ItemStack getActionMessage(Player player, Optional<String> wornCosmeticName, Cosmetic cosmetic) {
-		if (wornCosmeticName.isEmpty()) return create(cosmetic, player);
-
-		var actionMessage = cosmetic.name().equals(wornCosmeticName.get())
-		        ? MessageReference.COSMETIC_INVENTORY_UNEQUIP
-		        : MessageReference.COSMETIC_INVENTORY_EQUIP;
-
-		return create(cosmetic, player, actionMessage);
-	}
-
-    public @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player) {
-        return create(cosmetic, player, MessageReference.COSMETIC_INVENTORY_EQUIP);
-    }
-
-    private @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player, @NotNull MessageReference actionMessage) {
+    public @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player, @NotNull MessageReference actionMessage) {
         var baseItem = new ItemStack(cosmetic.material());
         var modelDataItem = customModelData.appendModelData(baseItem, cosmetic.customModelData());
 
@@ -71,5 +57,15 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
         }
 
         return cosmeticTagManager.addCosmeticTag(modelDataItem, cosmetic.name());
+    }
+
+    private @NotNull ItemStack getActionMessage(Player player, Optional<String> wornCosmeticName, Cosmetic cosmetic) {
+        if (wornCosmeticName.isEmpty()) return create(cosmetic, player, MessageReference.COSMETIC_INVENTORY_EQUIP);
+
+        var actionMessage = cosmetic.name().equals(wornCosmeticName.get())
+                ? MessageReference.COSMETIC_INVENTORY_UNEQUIP
+                : MessageReference.COSMETIC_INVENTORY_EQUIP;
+
+        return create(cosmetic, player, actionMessage);
     }
 }

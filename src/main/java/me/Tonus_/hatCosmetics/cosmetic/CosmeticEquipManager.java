@@ -39,7 +39,7 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
             return false;
         }
 
-        var hatItem = cosmeticItemFactory.create(cosmetic, player);
+        var hatItem = cosmeticItemFactory.create(cosmetic, player, MessageReference.COSMETIC_INVENTORY_UNEQUIP);
 
         equipment.setHelmet(hatItem);
 
