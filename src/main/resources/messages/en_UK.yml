@@ -23,6 +23,8 @@ command:
   cosmetic_equip_success: "&bYou equipped {cosmetic}&b!"
   cosmetic_equip_success_other_invoker: "{player}&b equipped {cosmetic}&b!"
   cosmetic_equip_success_other_target: "An admin equipped you a cosmetic!"
+  cosmetic_equip_fail: "&bYou don't have a cosmetic equipped!"
+  cosmetic_equip_fail_other: "{player}&b doesn't have a cosmetic equipped!"
 
   cosmetic_unequip_success: "&bYou unequipped {cosmetic}&b!"
   cosmetic_unequip_fail: "&bYou don't have a cosmetic equipped!"

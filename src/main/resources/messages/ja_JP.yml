@@ -23,6 +23,8 @@ command:
   cosmetic_equip_success: "&4MISSING_TRANSLATION"
   cosmetic_equip_success_other_invoker: "&4MISSING_TRANSLATION"
   cosmetic_equip_success_other_target: "&4MISSING_TRANSLATION"
+  cosmetic_equip_fail: "&4MISSING_TRANSLATION"
+  cosmetic_equip_fail_other: "&4MISSING_TRANSLATION"
 
   cosmetic_unequip_success: "&4MISSING_TRANSLATION"
   cosmetic_unequip_fail: "&4MISSING_TRANSLATION"

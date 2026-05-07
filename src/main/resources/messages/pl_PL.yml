@@ -23,6 +23,8 @@ command:
   cosmetic_equip_success: "&bZałożyłeś(aś) {cosmetic}&b!"
   cosmetic_equip_success_other_invoker: "&bGracz {player} założył(a) {cosmetic}&b!"
   cosmetic_equip_success_other_target: "&bAdmin założył ci nakrycie głowy!"
+  cosmetic_equip_fail: "&bNie masz nałożonego żadnego nakrycia głowy!"
+  cosmetic_equip_fail_other: "&bGracz {player}&b nie ma nałożonego nakrycia głowy!"
 
   cosmetic_unequip_success: "&bZdjąłeś(aś) {cosmetic}&b!"
   cosmetic_unequip_fail: "&bNie masz nałożonego żadnego nakrycia głowy!"
