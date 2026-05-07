@@ -64,7 +64,6 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
             }
 
             lore.add(Component.empty());
-            lore.add(Component.text(messageRetriever.getMessage(player, MessageReference.COSMETIC_INVENTORY_EQUIP)));
             lore.add(Component.text(messageRetriever.getMessage(player, actionMessage)));
 
             meta.lore(lore);
