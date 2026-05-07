@@ -17,8 +17,8 @@ gui:
   prev: "&f&lPágina Anterior"
 
   cosmetic_inv_equip: "&bClique para equipar"
-  cosmetic_inv_unequip: "&bClique para remover"
-  cosmetic_inv_unequip_overlayed: "&4Right click to remove cosmetic!"
+  cosmetic_inv_unequip: "&cClique para remover"
+  cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
 
   cosmetic_list_empty: "&4MISSING TRANSLATION"
 

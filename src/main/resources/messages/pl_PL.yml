@@ -14,8 +14,8 @@ gui:
   prev: "&f&lPoprzednia Strona"
 
   cosmetic_inv_equip: "&bKliknij, aby założyć"
-  cosmetic_inv_unequip: "&bKliknij, aby zdjąć"
-  cosmetic_inv_unequip_overlayed: "&4Kliknij prawym, aby usunąć nakrycie głowy!"
+  cosmetic_inv_unequip: "&cKliknij, aby zdjąć"
+  cosmetic_inv_unequip_overlayed: "&cKliknij prawym, aby usunąć nakrycie głowy!"
 
   cosmetic_list_empty: "&bNie masz dostępu do żadnych nakryć głowy!"
 

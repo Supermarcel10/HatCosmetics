@@ -14,8 +14,8 @@ gui:
   prev: "&f&lPrevious Page"
 
   cosmetic_inv_equip: "&bClick to equip"
-  cosmetic_inv_unequip: "&bClick to unequip"
-  cosmetic_inv_unequip_overlayed: "&4Right click to remove cosmetic!"
+  cosmetic_inv_unequip: "&cClick to unequip"
+  cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
 
   cosmetic_list_empty: "&bYou don't have access to any cosmetics!"
 
