@@ -2,11 +2,15 @@ package me.Tonus_.hatCosmetics.inventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
+import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticItemFactory;
+import me.Tonus_.hatCosmetics.cosmetic.ICosmeticTagManager;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
@@ -38,12 +42,14 @@ public class InventoryManager implements IInventoryManager {
     private final IConfigRetriever configRetriever;
     private final IMessageRetriever messageRetriever;
     private final ICosmeticItemFactory cosmeticItemFactory;
+    private final ICosmeticTagManager cosmeticTagManager;
+    private final ICosmeticEquipManager equipManager;
 
     private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
 
     public void openInventory(@NotNull Player player) {
         var hatRows = getValidatedHatRows();
-        var cosmetics = cosmeticItemFactory.createAll(player);
+        var cosmetics = buildCosmeticItems(player);
         var ipc = new InventoryPlayerContext(player, hatRows, cosmetics);
         playerContexts.put(player, ipc);
 
@@ -71,10 +77,38 @@ public class InventoryManager implements IInventoryManager {
             return;
         }
 
-        nbtEditor
-            .of(event.getCurrentItem())
-            .getTag(PersistentDataType.STRING, "menu")
-            .ifPresent(tag -> handleMenuTag(player, tag));
+        var currentItem = event.getCurrentItem();
+        if (currentItem == null) return;
+
+        var menuTag = nbtEditor.of(currentItem).getTag(PersistentDataType.STRING, "menu");
+        if (menuTag.isPresent()) {
+            handleMenuTag(player, menuTag.get());
+            return;
+        }
+
+        cosmeticTagManager.getCosmeticTag(currentItem)
+            .ifPresent(cosmeticName -> handleHatClick(player, cosmeticName, currentItem));
+    }
+
+    private void handleHatClick(@NotNull Player player, @NotNull String cosmeticName, @NotNull ItemStack clickedItem) {
+        var wornName = equipManager.getWornCosmeticName(player);
+
+        // Same hat already worn => unequip
+        if (cosmeticName.equals(wornName)) {
+            equipManager.unequip(player);
+
+            playerContexts.remove(player);
+            player.closeInventory();
+
+            return;
+        }
+
+        // Equip new hat
+        var success = equipManager.equip(player, cosmeticName);
+        if (success) {
+            playerContexts.remove(player);
+            player.closeInventory();
+        }
     }
 
     private void handleMenuTag(@NotNull Player player, @NotNull String tag) {
@@ -210,6 +244,11 @@ public class InventoryManager implements IInventoryManager {
         } else {
             return createMenuItem(borderMaterial, Component.empty(), null);
         }
+    }
+
+    private Set<ItemStack> buildCosmeticItems(Player player) {
+        var wornCosmetic = equipManager.getWornCosmeticName(player);
+        return cosmeticItemFactory.createAll(player, Optional.ofNullable(wornCosmetic));
     }
 
     private int getValidatedHatRows() {

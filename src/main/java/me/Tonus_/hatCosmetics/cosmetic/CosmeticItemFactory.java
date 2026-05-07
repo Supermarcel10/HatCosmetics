@@ -2,6 +2,7 @@ package me.Tonus_.hatCosmetics.cosmetic;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,31 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
 
     public Set<ItemStack> createAll(@NotNull Player player) {
         return cosmeticLoader.load().stream()
-                .map(c -> create(c, player))
+                .map(c -> create(c, player, MessageReference.COSMETIC_INVENTORY_EQUIP))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    public Set<ItemStack> createAll(@NotNull Player player, @NotNull Optional<String> wornCosmeticName) {
+        return cosmeticLoader.load().stream()
+                .map(cosmetic -> getActionMessage(player, wornCosmeticName, cosmetic))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+	private @NotNull ItemStack getActionMessage(Player player, Optional<String> wornCosmeticName, Cosmetic cosmetic) {
+		if (wornCosmeticName.isEmpty()) return create(cosmetic, player);
+
+		var actionMessage = cosmetic.name().equals(wornCosmeticName.get())
+		        ? MessageReference.COSMETIC_INVENTORY_UNEQUIP
+		        : MessageReference.COSMETIC_INVENTORY_EQUIP;
+
+		return create(cosmetic, player, actionMessage);
+	}
+
     public @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player) {
+        return create(cosmetic, player, MessageReference.COSMETIC_INVENTORY_EQUIP);
+    }
+
+    private @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player, @NotNull MessageReference actionMessage) {
         var baseItem = new ItemStack(cosmetic.material());
         var modelDataItem = customModelData.appendModelData(baseItem, cosmetic.customModelData());
 
@@ -43,9 +64,8 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
             }
 
             lore.add(Component.empty());
-
-            var inventoryEquipMessage = ChatColor.translateAlternateColorCodes('&', messageRetriever.getMessage(player, MessageReference.COSMETIC_INVENTORY_EQUIP));
-            lore.add(Component.text(inventoryEquipMessage));
+            lore.add(Component.text(messageRetriever.getMessage(player, MessageReference.COSMETIC_INVENTORY_EQUIP)));
+            lore.add(Component.text(messageRetriever.getMessage(player, actionMessage)));
 
             meta.lore(lore);
             modelDataItem.setItemMeta(meta);

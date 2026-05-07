@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import lombok.RequiredArgsConstructor;
+import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
 import me.Tonus_.hatCosmetics.inventory.IInventoryManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandAlias("hatcosmetics|hats|hc")
 public class MainCommand extends BaseCommand {
     private final IInventoryManager inventoryManager;
+    private final ICosmeticEquipManager equipManager;
 
     @Default
     public void onDefault(@NotNull Player player) {
@@ -22,11 +24,11 @@ public class MainCommand extends BaseCommand {
 
     @Subcommand("equip|e")
     public void onEquip(@NotNull Player player, String hatName) {
-
+        equipManager.equip(player, hatName);
     }
 
     @Subcommand("unequip|u")
     public void onUnequip(@NotNull Player player) {
-
+        equipManager.unequip(player);
     }
 }

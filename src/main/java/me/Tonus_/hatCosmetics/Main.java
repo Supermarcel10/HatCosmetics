@@ -4,6 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
+import me.Tonus_.hatCosmetics.cosmetic.CosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
@@ -41,10 +42,11 @@ public class Main extends JavaPlugin {
         var customModelData = new CustomModelData(getLogger());
         var cosmeticLoader = new CosmeticLoader();
         var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever, cosmeticLoader);
-        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory);
+        var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticLoader, messageRetriever);
+        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager);
 
-		// Register commands
-        var commandListener = new MainCommand(inventoryManager);
+        // Register commands
+        var commandListener = new MainCommand(inventoryManager, equipManager);
 
 		var commandManager = new PaperCommandManager(this);
 		commandManager.enableUnstableAPI("help");
