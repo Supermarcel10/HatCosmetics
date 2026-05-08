@@ -26,4 +26,9 @@ public class CosmeticLoader implements ICosmeticLoader {
             )
         );
     }
+
+    @Override
+    public void reload() {
+        // TODO: Reload cosmetics from config when file-based loading is implemented
+    }
 }

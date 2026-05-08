@@ -13,25 +13,29 @@ import java.io.File;
 
 public class ConfigRetriever implements IConfigRetriever {
     private final Logger logger;
-    private final FileConfiguration config;
+    private final Plugin plugin;
     private final ITypeMapperRegistry typeMapperRegistry;
+    private FileConfiguration config;
 
     public ConfigRetriever(@NotNull Plugin plugin, ITypeMapperRegistry typeMapperRegistry) {
-        var configFile = new File(plugin.getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
-            plugin.saveResource("config.yml", false);
-        }
-
+        this.plugin = plugin;
         this.logger = plugin.getSLF4JLogger();
-        this.config = YamlConfiguration.loadConfiguration(configFile);
+        this.config = loadConfigFile();
         this.typeMapperRegistry = typeMapperRegistry;
     }
 
     @TestOnly
-    ConfigRetriever(Logger logger, FileConfiguration config, ITypeMapperRegistry typeMapperRegistry) {
+    ConfigRetriever(Plugin plugin, Logger logger, FileConfiguration config, ITypeMapperRegistry typeMapperRegistry) {
+        this.plugin = plugin;
         this.logger = logger;
         this.config = config;
         this.typeMapperRegistry = typeMapperRegistry;
+    }
+
+    @Override
+    public void reload() {
+        this.config = loadConfigFile();
+        logger.info("Config reloaded.");
     }
 
     @SuppressWarnings("unchecked")
@@ -67,5 +71,14 @@ public class ConfigRetriever implements IConfigRetriever {
     private <T> @Nullable T mapValue(@NotNull String value, @NotNull Class<T> desiredType) {
         var mapper = typeMapperRegistry.getMapper(desiredType);
         return mapper != null ? mapper.map(value) : null;
+    }
+
+    private FileConfiguration loadConfigFile() {
+        var configFile = new File(plugin.getDataFolder(), "config.yml");
+        if (!configFile.exists()) {
+            plugin.saveResource("config.yml", false);
+        }
+
+        return YamlConfiguration.loadConfiguration(configFile);
     }
 }

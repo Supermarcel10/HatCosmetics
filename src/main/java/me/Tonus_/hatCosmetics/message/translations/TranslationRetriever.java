@@ -32,6 +32,12 @@ public class TranslationRetriever implements ITranslationRetriever {
         this.translations = translations;
     }
 
+    @Override
+    public void reload() {
+        translations = null;
+        plugin.getSLF4JLogger().info("Translations reloaded.");
+    }
+
     private void loadTranslations() {
         loadLocalTranslations();
         loadAllTranslations();

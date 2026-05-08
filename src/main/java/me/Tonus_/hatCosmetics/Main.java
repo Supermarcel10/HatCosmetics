@@ -14,6 +14,7 @@ import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
 import me.Tonus_.hatCosmetics.player.PlayerEventManager;
 import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
+import me.Tonus_.hatCosmetics.reload.PluginReloader;
 import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
 import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
@@ -45,8 +46,24 @@ public class Main extends JavaPlugin {
         var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticLoader, messageRetriever);
         var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager);
 
+        Runnable versionCheck = () -> {
+            var modrinthApiClient = new ModrinthUpstreamAPIClient(getSLF4JLogger(), "4h6EFh3D");
+            var pluginVersionRetriever = new PluginVersionRetriever(this);
+            new SemanticVersionChecker(getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever, true)
+                    .checkForUpdates();
+        };
+
+        var pluginReloader = new PluginReloader(
+            inventoryManager,
+            configRetriever,
+            translationRetriever,
+            cosmeticLoader,
+            versionCheck,
+            messageRetriever
+        );
+
         // Register commands
-        var commandListener = new MainCommand(inventoryManager, equipManager);
+        var commandListener = new MainCommand(inventoryManager, equipManager, pluginReloader);
 
 		var commandManager = new PaperCommandManager(this);
 		commandManager.enableUnstableAPI("help");
@@ -62,10 +79,7 @@ public class Main extends JavaPlugin {
 		metricService = new Metrics(this, 11075);
 
 		// Check for updates
-		var modrinthApiClient = new ModrinthUpstreamAPIClient(getSLF4JLogger(), "4h6EFh3D");
-		var pluginVersionRetriever = new PluginVersionRetriever(this);
-		new SemanticVersionChecker(getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever, true)
-				.checkForUpdates();
+		versionCheck.run();
 	}
 
 	/**

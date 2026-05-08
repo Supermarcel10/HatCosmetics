@@ -68,6 +68,16 @@ public class InventoryManager implements IInventoryManager {
         playerContexts.remove(player);
     }
 
+    @Override
+    public void closeAllInventories() {
+        playerContexts
+            .keySet()
+            .stream()
+            .forEach(Player::closeInventory);
+
+        playerContexts.clear();
+    }
+
     public void handleCosmeticsSelectionClick(@NotNull InventoryClickEvent event) {
         event.setCancelled(true);
 

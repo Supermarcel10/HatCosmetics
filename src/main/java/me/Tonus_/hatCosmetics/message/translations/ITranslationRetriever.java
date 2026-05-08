@@ -7,4 +7,5 @@ import java.util.Locale;
 
 public interface ITranslationRetriever {
     @Nullable String tryGetTranslation(Locale locale, MessageReference messageReference);
+    void reload();
 }

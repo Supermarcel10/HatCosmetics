@@ -4,6 +4,7 @@ import me.Tonus_.hatCosmetics.config.mapper.TypeMapper;
 import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
@@ -13,10 +14,11 @@ import static org.mockito.Mockito.*;
 
 
 public class ConfigRetrieverTests {
+    private final Plugin plugin = mock();
     private final Logger logger = mock();
     private final FileConfiguration configuration = mock();
     private final TypeMapperRegistry typeMapperRegistry = mock();
-    private final ConfigRetriever sut = new ConfigRetriever(logger, configuration, typeMapperRegistry);
+    private final ConfigRetriever sut = new ConfigRetriever(plugin, logger, configuration, typeMapperRegistry);
 
     @Test
     void getValue_whenValueExists_shouldReturnValueCast() {

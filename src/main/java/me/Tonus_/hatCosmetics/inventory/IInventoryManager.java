@@ -9,4 +9,5 @@ public interface IInventoryManager {
     void openInventory(@NotNull Player player);
     void closeInventory(@NotNull Player player);
     void handleCosmeticsSelectionClick(@NotNull InventoryClickEvent event);
+    void closeAllInventories();
 }
