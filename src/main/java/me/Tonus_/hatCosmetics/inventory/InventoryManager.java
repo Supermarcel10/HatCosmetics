@@ -55,6 +55,12 @@ public class InventoryManager implements IInventoryManager {
     public void openInventory(@NotNull Player player) {
         var hatRows = getValidatedHatRows();
         var cosmetics = buildCosmeticItems(player);
+
+        if (cosmetics.isEmpty()) {
+            messageRetriever.sendMessage(player, MessageReference.COSMETIC_LIST_EMPTY);
+            return;
+        }
+
         var ipc = new InventoryPlayerContext(player, hatRows, cosmetics);
         playerContexts.put(player, ipc);
 
