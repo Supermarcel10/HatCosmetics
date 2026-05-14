@@ -6,4 +6,5 @@ import org.bukkit.entity.Player;
 
 public interface ICosmeticPermissionChecker {
     boolean canUseCosmetic(Player player, Cosmetic cosmetic);
+    boolean hasWildcard(Player player);
 }

@@ -272,7 +272,7 @@ public class InventoryManager implements IInventoryManager {
         var allCosmetics = cosmeticLoader.load();
         var hideHats = configRetriever.getValue(ConfigReference.GUI_HIDE_HATS, false);
 
-        var cosmetics = hideHats
+        var cosmetics = hideHats && !permissionChecker.hasWildcard(player)
             ? allCosmetics.stream()
                 .filter(c -> permissionChecker.canUseCosmetic(player, c))
                 .collect(Collectors.toList())

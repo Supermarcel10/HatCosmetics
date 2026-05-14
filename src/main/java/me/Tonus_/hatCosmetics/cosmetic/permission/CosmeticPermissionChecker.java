@@ -13,4 +13,9 @@ public class CosmeticPermissionChecker implements ICosmeticPermissionChecker {
         return player.hasPermission(PermissionNode.HAT_WILDCARD)
             || player.hasPermission(cosmetic.getPermissionNode());
     }
+
+    @Override
+    public boolean hasWildcard(Player player) {
+        return player.hasPermission(PermissionNode.HAT_WILDCARD);
+    }
 }
