@@ -46,7 +46,7 @@ public class Main extends JavaPlugin {
         var permissionChecker = new CosmeticPermissionChecker();
         var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever, permissionChecker);
         var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticLoader, messageRetriever, configRetriever, permissionChecker);
-        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager);
+        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager, cosmeticLoader, permissionChecker);
 
         Runnable versionCheck = () -> {
             var modrinthApiClient = new ModrinthUpstreamAPIClient(getSLF4JLogger(), "4h6EFh3D");

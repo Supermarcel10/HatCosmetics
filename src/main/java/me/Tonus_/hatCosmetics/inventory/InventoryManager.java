@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticItemFactory;
+import me.Tonus_.hatCosmetics.cosmetic.ICosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticTagManager;
+import me.Tonus_.hatCosmetics.cosmetic.permission.ICosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
@@ -44,6 +47,8 @@ public class InventoryManager implements IInventoryManager {
     private final ICosmeticItemFactory cosmeticItemFactory;
     private final ICosmeticTagManager cosmeticTagManager;
     private final ICosmeticEquipManager equipManager;
+    private final ICosmeticLoader cosmeticLoader;
+    private final ICosmeticPermissionChecker permissionChecker;
 
     private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
 
@@ -258,7 +263,16 @@ public class InventoryManager implements IInventoryManager {
 
     private Set<ItemStack> buildCosmeticItems(Player player) {
         var wornCosmetic = equipManager.getWornCosmeticName(player);
-        return cosmeticItemFactory.createAll(player, Optional.ofNullable(wornCosmetic));
+        var allCosmetics = cosmeticLoader.load();
+        var hideHats = configRetriever.getValue(ConfigReference.GUI_HIDE_HATS, false);
+
+        var cosmetics = hideHats
+            ? allCosmetics.stream()
+                .filter(c -> permissionChecker.canUseCosmetic(player, c))
+                .collect(Collectors.toList())
+            : allCosmetics;
+
+        return cosmeticItemFactory.createItems(player, cosmetics, Optional.ofNullable(wornCosmetic));
     }
 
     private int getValidatedHatRows() {
