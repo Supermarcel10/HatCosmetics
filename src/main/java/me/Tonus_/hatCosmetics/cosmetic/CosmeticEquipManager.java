@@ -3,6 +3,9 @@ package me.Tonus_.hatCosmetics.cosmetic;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import me.Tonus_.hatCosmetics.config.ConfigReference;
+import me.Tonus_.hatCosmetics.config.IConfigRetriever;
+import me.Tonus_.hatCosmetics.cosmetic.permission.ICosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import org.bukkit.entity.Player;
@@ -17,6 +20,8 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
     private final ICosmeticTagManager cosmeticTagManager;
     private final ICosmeticLoader cosmeticLoader;
     private final IMessageRetriever messageRetriever;
+    private final IConfigRetriever configRetriever;
+    private final ICosmeticPermissionChecker permissionChecker;
 
     public boolean equip(@NotNull Player player, @NotNull String cosmeticName) {
         var cosmetic = cosmeticLoader.load().stream()
@@ -26,6 +31,13 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
 
         if (cosmetic == null) {
             messageRetriever.sendMessage(player, MessageReference.COSMETIC_NOT_FOUND);
+            return false;
+        }
+
+        if (!permissionChecker.canUseCosmetic(player, cosmetic)) {
+            var hideHats = configRetriever.getValue(ConfigReference.GUI_HIDE_HATS, false);
+            var msg = hideHats ? MessageReference.COSMETIC_NOT_FOUND : MessageReference.COSMETIC_NO_PERMISSION_LONG;
+            messageRetriever.sendMessage(player, msg);
             return false;
         }
 
