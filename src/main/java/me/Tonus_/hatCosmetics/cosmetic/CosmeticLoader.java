@@ -15,14 +15,16 @@ public class CosmeticLoader implements ICosmeticLoader {
                 "&fStaff Hat",
                 Material.FEATHER,
                 "1000101",
-                List.of("&7A fancy staff hat")
+                List.of("&7A fancy staff hat"),
+                null
             ),
             new Cosmetic(
                 "disguise",
                 "&aDisguise",
                 Material.FEATHER,
                 "1000102",
-                List.of("&7Glasses and a moustache")
+                List.of("&7Glasses and a moustache"),
+                null
             )
         );
     }
