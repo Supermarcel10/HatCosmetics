@@ -27,6 +27,7 @@ public class ConfigReference<T> {
     public static ConfigReference<Material> GUI_NEXT_PAGE_MATERIAL = cr("gui.items.next-page", Material.class);
     public static ConfigReference<Material> GUI_PREV_PAGE_MATERIAL = cr("gui.items.previous-page", Material.class);
     public static ConfigReference<Material> GUI_CLOSE_MATERIAL = cr("gui.items.close", Material.class);
+    public static ConfigReference<Boolean> GUI_HIDE_HATS = cr("gui.hide-hats", Boolean.class);
 
     public static ConfigReference<Boolean> HATS_KEEP_ON_DEATH = cr("hats.keep-on-death", Boolean.class);
 
