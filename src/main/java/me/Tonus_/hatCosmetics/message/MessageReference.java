@@ -24,6 +24,7 @@ public class MessageReference {
     public static MessageReference COSMETIC_INVENTORY_UNEQUIP = cr("gui.cosmetic_inv_unequip");
     public static MessageReference COSMETIC_INVENTORY_UNEQUIP_OVERLAYED = cr("gui.cosmetic_inv_unequip_overlayed");
 
+    public static MessageReference COSMETIC_NO_PERMISSION_SHORT = cr("gui.cosmetic_no_permission");
     public static MessageReference COSMETIC_LIST_EMPTY = cr("gui.cosmetic_list_empty");
 
 
@@ -41,7 +42,7 @@ public class MessageReference {
     public static MessageReference COSMETIC_UNEQUIP_OTHER_FAIL = cr("command.cosmetic_unequip_fail_other");
 
     public static MessageReference COSMETIC_NOT_FOUND = cr("command.cosmetic_not_found");
-    public static MessageReference COSMETIC_NO_PERMISSION = cr("command.cosmetic_no_permission");
+    public static MessageReference COSMETIC_NO_PERMISSION_LONG = cr("command.cosmetic_no_permission");
     public static MessageReference COSMETIC_ARG_NOT_GIVEN = cr("command.cosmetic_arg_not_given");
 
 

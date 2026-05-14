@@ -17,6 +17,7 @@ gui:
   cosmetic_inv_unequip: "&cKliknij, aby zdjąć"
   cosmetic_inv_unequip_overlayed: "&cKliknij prawym, aby usunąć nakrycie głowy!"
 
+  cosmetic_no_permission: "&bNie dostępne"
   cosmetic_list_empty: "&bNie masz dostępu do żadnych nakryć głowy!"
 
 command:

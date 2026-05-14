@@ -17,6 +17,7 @@ gui:
   cosmetic_inv_unequip: "&cClick to unequip"
   cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
 
+  cosmetic_no_permission: "&bNo permission"
   cosmetic_list_empty: "&bYou don't have access to any cosmetics!"
 
 command:

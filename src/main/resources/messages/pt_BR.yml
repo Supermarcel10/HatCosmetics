@@ -20,6 +20,7 @@ gui:
   cosmetic_inv_unequip: "&cClique para remover"
   cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
 
+  cosmetic_no_permission: "&4MISSING TRANSLATION"
   cosmetic_list_empty: "&4MISSING TRANSLATION"
 
 command:

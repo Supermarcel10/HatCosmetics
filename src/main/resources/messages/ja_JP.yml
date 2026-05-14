@@ -17,6 +17,7 @@ gui:
   cosmetic_inv_unequip: "&4MISSING_TRANSLATION"
   cosmetic_inv_unequip_overlayed: "&4MISSING_TRANSLATION"
 
+  cosmetic_no_permission: "&4MISSING_TRANSLATION"
   cosmetic_list_empty: "&4MISSING_TRANSLATION"
 
 command:
