@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Subcommand;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
 import me.Tonus_.hatCosmetics.inventory.IInventoryManager;
+import me.Tonus_.hatCosmetics.permissions.PermissionNode;
 import me.Tonus_.hatCosmetics.reload.IPluginReloader;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +38,7 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("reload|r")
-    @CommandPermission("hatcosmetics.reload")
+    @CommandPermission(PermissionNode.RELOAD)
     public void onReload(@NotNull CommandSender sender) {
         pluginReloader.reload(sender);
     }
