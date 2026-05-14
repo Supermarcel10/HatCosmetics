@@ -73,7 +73,7 @@ public class Main extends JavaPlugin {
 
         // Register listener
         getServer().getPluginManager().registerEvents(
-                new PlayerEventManager(inventoryManager, configRetriever, cosmeticTagManager),
+                new PlayerEventManager(inventoryManager, configRetriever, cosmeticTagManager, equipManager),
                 this
         );
 
