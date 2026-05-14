@@ -36,6 +36,7 @@ command:
   cosmetic_unequip_fail_other: "&4MISSING TRANSLATION"
 
   cosmetic_not_found: "&4MISSING TRANSLATION"
+  cosmetic_no_permission: "&4MISSING TRANSLATION"
   cosmetic_arg_not_given: "&4MISSING TRANSLATION"
 
 player_not_online: "&b{player} não está online!"

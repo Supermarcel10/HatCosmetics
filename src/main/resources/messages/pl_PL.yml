@@ -33,6 +33,7 @@ command:
   cosmetic_unequip_fail_other: "&bGracz {player}&b nie ma nałożonego nakrycia głowy!"
 
   cosmetic_not_found: "&bTo nakrycie głowy nie istnieje, lub nie masz dostępu do niego!"
+  cosmetic_no_permission: "&bNie masz uprawnień do założenia tego nakrycia głowy!"
   cosmetic_arg_not_given: "&bMusisz podać nazwę nakrycia głowy do założenia!"
 
 player_not_online: "{player}&b nie jest online!"

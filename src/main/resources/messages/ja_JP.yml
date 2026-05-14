@@ -33,6 +33,7 @@ command:
   cosmetic_unequip_fail_other: "&4MISSING_TRANSLATION"
 
   cosmetic_not_found: "&4MISSING_TRANSLATION"
+  cosmetic_no_permission: "&4MISSING_TRANSLATION"
   cosmetic_arg_not_given: "&4MISSING_TRANSLATION"
 
 player_not_online: "{player}&bはオンラインじゃない!"

@@ -41,6 +41,7 @@ public class MessageReference {
     public static MessageReference COSMETIC_UNEQUIP_OTHER_FAIL = cr("command.cosmetic_unequip_fail_other");
 
     public static MessageReference COSMETIC_NOT_FOUND = cr("command.cosmetic_not_found");
+    public static MessageReference COSMETIC_NO_PERMISSION = cr("command.cosmetic_no_permission");
     public static MessageReference COSMETIC_ARG_NOT_GIVEN = cr("command.cosmetic_arg_not_given");
 
 

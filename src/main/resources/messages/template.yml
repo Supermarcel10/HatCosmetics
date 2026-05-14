@@ -41,6 +41,7 @@ command:
   cosmetic_unequip_fail_other: "{player}&b doesn't have a cosmetic equipped!"
 
   cosmetic_not_found: "&bNo cosmetic by this name exists, or you do not have access to it!"
+  cosmetic_no_permission: "&bYou do not have permission to equip this cosmetic!"
   cosmetic_arg_not_given: "&bYou must specify a cosmetic to equip!"
 
 player_not_online: "{player}&b is not online!"
