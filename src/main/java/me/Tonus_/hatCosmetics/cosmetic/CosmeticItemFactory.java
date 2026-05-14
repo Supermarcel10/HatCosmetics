@@ -2,10 +2,10 @@ package me.Tonus_.hatCosmetics.cosmetic;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
+import me.Tonus_.hatCosmetics.cosmetic.permission.ICosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import lombok.RequiredArgsConstructor;
 
 
 @RequiredArgsConstructor
@@ -21,18 +22,21 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
     private final CustomModelData customModelData;
     private final CosmeticTagManager cosmeticTagManager;
     private final IMessageRetriever messageRetriever;
-    private final ICosmeticLoader cosmeticLoader;
+    private final ICosmeticPermissionChecker permissionChecker;
 
-    public Set<ItemStack> createAll(@NotNull Player player) {
-        return cosmeticLoader.load().stream()
-                .map(c -> create(c, player, MessageReference.COSMETIC_INVENTORY_EQUIP))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
+    @Override
+    public Set<ItemStack> createItems(
+        @NotNull Player player,
+        @NotNull List<Cosmetic> cosmetics,
+        @NotNull Optional<String> wornCosmeticName
+    ) {
+        var result = new LinkedHashSet<ItemStack>();
+        for (var cosmetic : cosmetics) {
+            var actionMessage = getActionMessage(player, cosmetic, wornCosmeticName);
+            result.add(create(cosmetic, player, actionMessage));
+        }
 
-    public Set<ItemStack> createAll(@NotNull Player player, @NotNull Optional<String> wornCosmeticName) {
-        return cosmeticLoader.load().stream()
-                .map(cosmetic -> getActionMessage(player, wornCosmeticName, cosmetic))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return result;
     }
 
     public @NotNull ItemStack create(@NotNull Cosmetic cosmetic, Player player, @NotNull MessageReference actionMessage) {
@@ -59,13 +63,19 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
         return cosmeticTagManager.addCosmeticTag(modelDataItem, cosmetic.name());
     }
 
-    private @NotNull ItemStack getActionMessage(Player player, Optional<String> wornCosmeticName, Cosmetic cosmetic) {
-        if (wornCosmeticName.isEmpty()) return create(cosmetic, player, MessageReference.COSMETIC_INVENTORY_EQUIP);
+    private @NotNull MessageReference getActionMessage(
+        Player player,
+        Cosmetic cosmetic,
+        Optional<String> wornCosmeticName
+    ) {
+        if (!permissionChecker.canUseCosmetic(player, cosmetic))
+            return MessageReference.COSMETIC_NO_PERMISSION_SHORT;
 
-        var actionMessage = cosmetic.name().equals(wornCosmeticName.get())
+        if (wornCosmeticName.isEmpty())
+            return MessageReference.COSMETIC_INVENTORY_EQUIP;
+
+        return cosmetic.name().equals(wornCosmeticName.get())
                 ? MessageReference.COSMETIC_INVENTORY_UNEQUIP
                 : MessageReference.COSMETIC_INVENTORY_EQUIP;
-
-        return create(cosmetic, player, actionMessage);
     }
 }
