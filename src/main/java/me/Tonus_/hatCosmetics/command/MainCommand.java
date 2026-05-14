@@ -2,6 +2,7 @@ package me.Tonus_.hatCosmetics.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
@@ -28,6 +29,7 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("equip|e")
+    @CommandCompletion("@hats")
     public void onEquip(@NotNull Player player, String hatName) {
         equipManager.equip(player, hatName);
     }

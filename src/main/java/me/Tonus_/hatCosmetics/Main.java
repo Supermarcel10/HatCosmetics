@@ -1,9 +1,11 @@
 package me.Tonus_.hatCosmetics;
 
+import java.util.stream.Collectors;
 import co.aikar.commands.PaperCommandManager;
 import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
+import me.Tonus_.hatCosmetics.cosmetic.Cosmetic;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticLoader;
@@ -70,6 +72,21 @@ public class Main extends JavaPlugin {
 		var commandManager = new PaperCommandManager(this);
 		commandManager.enableUnstableAPI("help");
 		commandManager.registerCommand(commandListener);
+
+		// Register command completions
+        commandManager.getCommandCompletions().registerCompletion("hats", c -> {
+            var player = c.getPlayer();
+            var cosmetics = cosmeticLoader.load();
+
+            if (permissionChecker.hasWildcard(player)) {
+                return cosmetics.stream().map(Cosmetic::name).collect(Collectors.toList());
+            }
+
+            return cosmetics.stream()
+                .filter(cosmetic -> permissionChecker.canUseCosmetic(player, cosmetic))
+                .map(Cosmetic::name)
+                .collect(Collectors.toList());
+        });
 
         // Register listener
         getServer().getPluginManager().registerEvents(
