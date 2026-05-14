@@ -8,6 +8,7 @@ import me.Tonus_.hatCosmetics.cosmetic.CosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
+import me.Tonus_.hatCosmetics.cosmetic.permission.CosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.inventory.InventoryManager;
 import me.Tonus_.hatCosmetics.message.color.ColorParser;
 import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
@@ -42,8 +43,9 @@ public class Main extends JavaPlugin {
         var cosmeticTagManager = new CosmeticTagManager(nbtEditor);
         var customModelData = new CustomModelData(getLogger());
         var cosmeticLoader = new CosmeticLoader();
-        var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever, cosmeticLoader);
-        var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticLoader, messageRetriever);
+        var permissionChecker = new CosmeticPermissionChecker();
+        var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever, permissionChecker);
+        var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticLoader, messageRetriever, configRetriever, permissionChecker);
         var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager);
 
         Runnable versionCheck = () -> {
