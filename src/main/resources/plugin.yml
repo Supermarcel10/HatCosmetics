@@ -8,3 +8,11 @@ description: A simple plugin that allows players to wear hats.
 authors:
   - Supermarcel10
   - Tonus_
+
+permissions:
+  hatcosmetics.reload:
+    description: Allows reloading the plugin configuration and hats.
+    default: op
+  hatcosmetics.hat.*:
+    description: Grants access to all cosmetics.
+    default: true
