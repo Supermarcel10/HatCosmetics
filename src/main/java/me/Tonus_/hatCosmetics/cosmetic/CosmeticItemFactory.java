@@ -44,21 +44,19 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
         var modelDataItem = customModelData.appendModelData(baseItem, cosmetic.customModelData());
 
         var meta = modelDataItem.getItemMeta();
-        if (meta != null) {
-            var displayName = Component.text(ChatColor.translateAlternateColorCodes('&', cosmetic.displayName()));
-            meta.displayName(displayName);
+        var displayName = Component.text(ChatColor.translateAlternateColorCodes('&', cosmetic.displayName()));
+        meta.displayName(displayName);
 
-            var lore = new ArrayList<Component>();
-            for (var line : cosmetic.description()) {
-                lore.add(Component.text(ChatColor.translateAlternateColorCodes('&', line)));
-            }
-
-            lore.add(Component.empty());
-            lore.add(Component.text(messageRetriever.getMessage(player, actionMessage)));
-
-            meta.lore(lore);
-            modelDataItem.setItemMeta(meta);
+        var lore = new ArrayList<Component>();
+        for (var line : cosmetic.description()) {
+            lore.add(Component.text(ChatColor.translateAlternateColorCodes('&', line)));
         }
+
+        lore.add(Component.empty());
+        lore.add(Component.text(messageRetriever.getMessage(player, actionMessage)));
+
+        meta.lore(lore);
+        modelDataItem.setItemMeta(meta);
 
         return cosmeticTagManager.addCosmeticTag(modelDataItem, cosmetic.name());
     }
