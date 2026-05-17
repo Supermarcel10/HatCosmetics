@@ -23,11 +23,13 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
     private final IConfigRetriever configRetriever;
     private final ICosmeticPermissionChecker permissionChecker;
 
-    public boolean equip(@NotNull Player player, @NotNull String cosmeticName) {
-        var cosmetic = cosmeticLoader.load().stream()
-                .filter(c -> c.name().equalsIgnoreCase(cosmeticName))
-                .findFirst()
-                .orElse(null);
+    public boolean equip(@NotNull Player player, @NotNull String cosmeticName, boolean silentDeny) {
+        var cosmetic = cosmeticLoader
+            .load()
+            .stream()
+            .filter(c -> c.name().equalsIgnoreCase(cosmeticName))
+            .findFirst()
+            .orElse(null);
 
         if (cosmetic == null) {
             messageRetriever.sendMessage(player, MessageReference.COSMETIC_NOT_FOUND);
@@ -35,9 +37,12 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
         }
 
         if (!permissionChecker.canUseCosmetic(player, cosmetic)) {
-            var hideHats = configRetriever.getValue(ConfigReference.GUI_HIDE_HATS, false);
-            var msg = hideHats ? MessageReference.COSMETIC_NOT_FOUND : MessageReference.COSMETIC_NO_PERMISSION_LONG;
-            messageRetriever.sendMessage(player, msg);
+            if (!silentDeny) {
+                var hideHats = configRetriever.getValue(ConfigReference.GUI_HIDE_HATS, false);
+                var msg = hideHats ? MessageReference.COSMETIC_NOT_FOUND : MessageReference.COSMETIC_NO_PERMISSION_LONG;
+                messageRetriever.sendMessage(player, msg);
+            }
+
             return false;
         }
 

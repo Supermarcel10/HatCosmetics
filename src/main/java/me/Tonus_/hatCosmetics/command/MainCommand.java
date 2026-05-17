@@ -39,7 +39,7 @@ public class MainCommand extends BaseCommand {
             return;
         }
 
-        equipManager.equip(player, hatName);
+        equipManager.equip(player, hatName, false);
     }
 
     @Subcommand("unequip|u")

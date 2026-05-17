@@ -125,7 +125,7 @@ public class InventoryManager implements IInventoryManager {
         }
 
         // Equip new hat
-        var success = equipManager.equip(player, cosmeticName);
+        var success = equipManager.equip(player, cosmeticName, true);
         if (success) {
             playerContexts.remove(player);
             player.closeInventory();

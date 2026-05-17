@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 
 public interface ICosmeticEquipManager {
-    boolean equip(@NotNull Player player, @NotNull String cosmeticName);
+    boolean equip(@NotNull Player player, @NotNull String cosmeticName, boolean silentDeny);
     boolean unequip(@NotNull Player player);
     @Nullable String getWornCosmeticName(@NotNull Player player);
 }
