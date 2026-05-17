@@ -9,6 +9,8 @@ import co.aikar.commands.annotation.Subcommand;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
 import me.Tonus_.hatCosmetics.inventory.IInventoryManager;
+import me.Tonus_.hatCosmetics.message.IMessageRetriever;
+import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.permissions.PermissionNode;
 import me.Tonus_.hatCosmetics.reload.IPluginReloader;
 import org.bukkit.command.CommandSender;
@@ -22,6 +24,7 @@ public class MainCommand extends BaseCommand {
     private final IInventoryManager inventoryManager;
     private final ICosmeticEquipManager equipManager;
     private final IPluginReloader pluginReloader;
+    private final IMessageRetriever messageRetriever;
 
     @Default
     public void onDefault(@NotNull Player player) {
@@ -31,6 +34,11 @@ public class MainCommand extends BaseCommand {
     @Subcommand("equip|e")
     @CommandCompletion("@hats")
     public void onEquip(@NotNull Player player, String hatName) {
+        if (hatName == null || hatName.isBlank()) {
+            messageRetriever.sendMessage(player, MessageReference.COSMETIC_ARG_NOT_GIVEN);
+            return;
+        }
+
         equipManager.equip(player, hatName);
     }
 
