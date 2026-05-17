@@ -72,7 +72,7 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
         if (wornCosmeticName.isEmpty())
             return MessageReference.COSMETIC_INVENTORY_EQUIP;
 
-        return cosmetic.name().equals(wornCosmeticName.get())
+        return cosmetic.name().equalsIgnoreCase(wornCosmeticName.get())
                 ? MessageReference.COSMETIC_INVENTORY_UNEQUIP
                 : MessageReference.COSMETIC_INVENTORY_EQUIP;
     }
