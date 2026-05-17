@@ -1,0 +1,8 @@
+material: FEATHER
+custom-model-data: "1000101"
+permission: null
+display:
+  en_US:
+    name: "&fStaff Hat"
+    description:
+      - "&7A fancy staff hat"
