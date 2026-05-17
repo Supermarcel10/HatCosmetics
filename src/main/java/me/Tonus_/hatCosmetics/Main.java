@@ -67,7 +67,7 @@ public class Main extends JavaPlugin {
         );
 
         // Register commands
-        var commandListener = new MainCommand(inventoryManager, equipManager, pluginReloader);
+        var commandListener = new MainCommand(inventoryManager, equipManager, pluginReloader, messageRetriever);
 
 		var commandManager = new PaperCommandManager(this);
 		commandManager.enableUnstableAPI("help");
