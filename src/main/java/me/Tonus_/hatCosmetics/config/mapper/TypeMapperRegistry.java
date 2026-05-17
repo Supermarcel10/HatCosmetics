@@ -12,6 +12,7 @@ public class TypeMapperRegistry implements ITypeMapperRegistry {
     public TypeMapperRegistry() {
         register(new LocaleMapper());
         register(new MaterialMapper());
+        register(new StorageFormatMapper());
     }
 
     @SuppressWarnings("unchecked")
