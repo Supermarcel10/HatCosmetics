@@ -16,7 +16,7 @@ public class ConfigReference<T> {
     public static ConfigReference<String> VERSION = cr("version", String.class);
 
     public static ConfigReference<Locale> SERVER_LOCALE = cr("locale.server-locale", Locale.class);
-    public static ConfigReference<Boolean> FORCED_LOCALE = cr("locale.forced-locale", Boolean.class);
+    public static ConfigReference<Boolean> FORCED_LOCALE = cr("locale.force-locale", Boolean.class);
 
     public static ConfigReference<StorageFormat> STORAGE_FORMAT = cr("storage.format", StorageFormat.class);
 
