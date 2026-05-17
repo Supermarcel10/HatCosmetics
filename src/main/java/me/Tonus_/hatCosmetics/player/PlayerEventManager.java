@@ -2,13 +2,13 @@ package me.Tonus_.hatCosmetics.player;
 
 import java.util.HashMap;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
+import me.Tonus_.hatCosmetics.cosmetic.ICosmeticLoader;
 import me.Tonus_.hatCosmetics.inventory.IInventoryManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -31,6 +32,7 @@ public class PlayerEventManager implements Listener {
     private final IConfigRetriever configRetriever;
     private final CosmeticTagManager tagManager;
     private final ICosmeticEquipManager equipManager;
+    private final ICosmeticLoader cosmeticLoader;
 
     private final HashMap<Player, ItemStack> droppedCosmetic = new HashMap<>();
 
@@ -109,6 +111,23 @@ public class PlayerEventManager implements Listener {
         player.spigot().respawn();
         var cosmetic = droppedCosmetic.remove(player);
         player.getInventory().setHelmet(cosmetic);
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        var player = event.getPlayer();
+        var helmet = player.getEquipment().getHelmet();
+        var cosmeticTag = tagManager.getCosmeticTag(helmet);
+
+        if (cosmeticTag.isEmpty()) return;
+
+        var exists = cosmeticLoader.load().stream()
+            .anyMatch(c -> c.name().equals(cosmeticTag.get()));
+
+        // Unequip any hats no longer present
+        if (!exists) {
+            player.getEquipment().setHelmet(null);
+        }
     }
 
     private void handlePlayerInventoryClick(InventoryClickEvent event) {
