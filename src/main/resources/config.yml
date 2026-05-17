@@ -69,4 +69,4 @@ hats:
 #  default-hat: NONE # TODO: Implement this
 
   # Will player keep their hat on death?
-  keep-on-death: true # TODO: Test this!
+  keep-on-death: true
