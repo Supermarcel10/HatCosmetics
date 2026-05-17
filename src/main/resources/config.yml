@@ -19,7 +19,7 @@ locale:
 # ----------------------------------------
 storage:
   # The data pattern/format to save files in
-  format: JSON
+  format: YML
 
 
 # ----------------------------------------
