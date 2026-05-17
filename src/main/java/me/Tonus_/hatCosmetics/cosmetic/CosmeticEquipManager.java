@@ -77,7 +77,7 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
         }
 
         var cosmetic = cosmeticLoader.load().stream()
-                .filter(c -> c.name().equals(cosmeticTag.get()))
+                .filter(c -> c.name().equalsIgnoreCase(cosmeticTag.get()))
                 .findFirst()
                 .orElse(null);
 

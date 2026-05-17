@@ -122,7 +122,7 @@ public class PlayerEventManager implements Listener {
         if (cosmeticTag.isEmpty()) return;
 
         var exists = cosmeticLoader.load().stream()
-            .anyMatch(c -> c.name().equals(cosmeticTag.get()));
+            .anyMatch(c -> c.name().equalsIgnoreCase(cosmeticTag.get()));
 
         // Unequip any hats no longer present
         if (!exists) {
