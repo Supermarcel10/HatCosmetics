@@ -44,11 +44,11 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
         var modelDataItem = customModelData.appendModelData(baseItem, cosmetic.customModelData());
 
         var meta = modelDataItem.getItemMeta();
-        var displayName = Component.text(ChatColor.translateAlternateColorCodes('&', cosmetic.displayName()));
+        var displayName = Component.text(ChatColor.translateAlternateColorCodes('&', cosmetic.displayName(player.locale())));
         meta.displayName(displayName);
 
         var lore = new ArrayList<Component>();
-        for (var line : cosmetic.description()) {
+        for (var line : cosmetic.description(player.locale())) {
             lore.add(Component.text(ChatColor.translateAlternateColorCodes('&', line)));
         }
 

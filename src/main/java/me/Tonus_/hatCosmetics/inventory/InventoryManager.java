@@ -11,11 +11,11 @@ import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticItemFactory;
-import me.Tonus_.hatCosmetics.cosmetic.ICosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticTagManager;
 import me.Tonus_.hatCosmetics.cosmetic.permission.ICosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
+import me.Tonus_.hatCosmetics.storage.ICosmeticStorage;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -47,7 +47,7 @@ public class InventoryManager implements IInventoryManager {
     private final ICosmeticItemFactory cosmeticItemFactory;
     private final ICosmeticTagManager cosmeticTagManager;
     private final ICosmeticEquipManager equipManager;
-    private final ICosmeticLoader cosmeticLoader;
+    private final ICosmeticStorage cosmeticStorage;
     private final ICosmeticPermissionChecker permissionChecker;
 
     private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
@@ -269,7 +269,7 @@ public class InventoryManager implements IInventoryManager {
 
     private Set<ItemStack> buildCosmeticItems(Player player) {
         var wornCosmetic = equipManager.getWornCosmeticName(player);
-        var allCosmetics = cosmeticLoader.load();
+        var allCosmetics = cosmeticStorage.loadAll();
         var hideHats = configRetriever.getValue(ConfigReference.GUI_HIDE_HATS, false);
 
         var cosmetics = hideHats && !permissionChecker.hasWildcard(player)

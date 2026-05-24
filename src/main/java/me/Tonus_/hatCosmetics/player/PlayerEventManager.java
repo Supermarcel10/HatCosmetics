@@ -8,8 +8,8 @@ import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticSelectionInventoryHolder;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
-import me.Tonus_.hatCosmetics.cosmetic.ICosmeticLoader;
 import me.Tonus_.hatCosmetics.inventory.IInventoryManager;
+import me.Tonus_.hatCosmetics.storage.ICosmeticStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +32,7 @@ public class PlayerEventManager implements Listener {
     private final IConfigRetriever configRetriever;
     private final CosmeticTagManager tagManager;
     private final ICosmeticEquipManager equipManager;
-    private final ICosmeticLoader cosmeticLoader;
+    private final ICosmeticStorage cosmeticStorage;
 
     private final HashMap<Player, ItemStack> droppedCosmetic = new HashMap<>();
 
@@ -121,7 +121,9 @@ public class PlayerEventManager implements Listener {
 
         if (cosmeticTag.isEmpty()) return;
 
-        var exists = cosmeticLoader.load().stream()
+        var exists = cosmeticStorage
+            .loadAll()
+            .stream()
             .anyMatch(c -> c.name().equalsIgnoreCase(cosmeticTag.get()));
 
         // Unequip any hats no longer present

@@ -8,10 +8,11 @@ import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
 import me.Tonus_.hatCosmetics.cosmetic.Cosmetic;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
-import me.Tonus_.hatCosmetics.cosmetic.CosmeticLoader;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
 import me.Tonus_.hatCosmetics.cosmetic.permission.CosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.inventory.InventoryManager;
+import me.Tonus_.hatCosmetics.storage.CosmeticStorageFactory;
+import me.Tonus_.hatCosmetics.storage.YmlCosmeticStorage;
 import me.Tonus_.hatCosmetics.message.color.ColorParser;
 import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
@@ -44,11 +45,13 @@ public class Main extends JavaPlugin {
         var messageRetriever = new MessageRetriever(this, configRetriever, colorParser, translationRetriever, stringFormatter);
         var cosmeticTagManager = new CosmeticTagManager(nbtEditor);
         var customModelData = new CustomModelData(getLogger());
-        var cosmeticLoader = new CosmeticLoader();
+        var ymlStorage = new YmlCosmeticStorage(this, getSLF4JLogger());
+        var storageFactory = new CosmeticStorageFactory(configRetriever, ymlStorage);
+        var cosmeticStorage = storageFactory.createFromConfig();
         var permissionChecker = new CosmeticPermissionChecker();
         var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever, permissionChecker);
-        var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticLoader, messageRetriever, configRetriever, permissionChecker);
-        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager, cosmeticLoader, permissionChecker);
+        var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticStorage, messageRetriever, configRetriever, permissionChecker);
+        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager, cosmeticStorage, permissionChecker);
 
         Runnable versionCheck = () -> {
             var modrinthApiClient = new ModrinthUpstreamAPIClient(getSLF4JLogger(), "4h6EFh3D");
@@ -61,7 +64,7 @@ public class Main extends JavaPlugin {
             inventoryManager,
             configRetriever,
             translationRetriever,
-            cosmeticLoader,
+            cosmeticStorage,
             versionCheck,
             messageRetriever
         );
@@ -76,7 +79,7 @@ public class Main extends JavaPlugin {
 		// Register command completions
         commandManager.getCommandCompletions().registerCompletion("hats", c -> {
             var player = c.getPlayer();
-            var cosmetics = cosmeticLoader.load();
+            var cosmetics = cosmeticStorage.loadAll();
 
             if (permissionChecker.hasWildcard(player)) {
                 return cosmetics.stream().map(Cosmetic::name).collect(Collectors.toList());
@@ -90,7 +93,7 @@ public class Main extends JavaPlugin {
 
         // Register listener
         getServer().getPluginManager().registerEvents(
-                new PlayerEventManager(inventoryManager, configRetriever, cosmeticTagManager, equipManager, cosmeticLoader),
+                new PlayerEventManager(inventoryManager, configRetriever, cosmeticTagManager, equipManager, cosmeticStorage),
                 this
         );
 

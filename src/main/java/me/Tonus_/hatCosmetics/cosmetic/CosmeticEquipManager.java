@@ -8,6 +8,7 @@ import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.cosmetic.permission.ICosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
+import me.Tonus_.hatCosmetics.storage.ICosmeticStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -18,14 +19,14 @@ import org.jetbrains.annotations.Nullable;
 public class CosmeticEquipManager implements ICosmeticEquipManager {
     private final ICosmeticItemFactory cosmeticItemFactory;
     private final ICosmeticTagManager cosmeticTagManager;
-    private final ICosmeticLoader cosmeticLoader;
+    private final ICosmeticStorage cosmeticStorage;
     private final IMessageRetriever messageRetriever;
     private final IConfigRetriever configRetriever;
     private final ICosmeticPermissionChecker permissionChecker;
 
     public boolean equip(@NotNull Player player, @NotNull String cosmeticName, boolean silentDeny) {
-        var cosmetic = cosmeticLoader
-            .load()
+        var cosmetic = cosmeticStorage
+            .loadAll()
             .stream()
             .filter(c -> c.name().equalsIgnoreCase(cosmeticName))
             .findFirst()
@@ -63,7 +64,7 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
         messageRetriever.sendMessage(
             player,
             MessageReference.COSMETIC_EQUIP_SUCCESS,
-            Map.of("cosmetic", cosmetic.displayName())
+            Map.of("cosmetic", cosmetic.displayName(player.locale()))
         );
 
         return true;
@@ -81,13 +82,15 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
             return false;
         }
 
-        var cosmetic = cosmeticLoader.load().stream()
-                .filter(c -> c.name().equalsIgnoreCase(cosmeticTag.get()))
-                .findFirst()
-                .orElse(null);
+        var cosmetic = cosmeticStorage
+            .loadAll()
+            .stream()
+            .filter(c -> c.name().equalsIgnoreCase(cosmeticTag.get()))
+            .findFirst()
+            .orElse(null);
 
         var parsedName = cosmetic != null
-                ? cosmetic.displayName()
+                ? cosmetic.displayName(player.locale())
                 : cosmeticTag.get();
 
         equipment.setHelmet(null);
