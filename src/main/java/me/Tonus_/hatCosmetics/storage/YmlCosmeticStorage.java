@@ -1,11 +1,13 @@
 package me.Tonus_.hatCosmetics.storage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.jar.JarFile;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.cosmetic.Cosmetic;
 import org.bukkit.Material;
@@ -139,10 +141,32 @@ public class YmlCosmeticStorage implements ICosmeticStorage {
     }
 
     private void saveExampleFiles(File dir) {
-        var examples = List.of("staffHat.yml", "disguise.yml");
-
-        for (var example : examples) {
-            plugin.saveResource(COSMETICS_DIR + "/" + example, false);
+        for (var example : discoverExampleResources()) {
+            plugin.saveResource(example, false);
         }
+    }
+
+    private List<String> discoverExampleResources() {
+        var prefix = COSMETICS_DIR + "/";
+
+        var resources = new ArrayList<String>();
+        var codeSource = plugin.getClass().getProtectionDomain().getCodeSource();
+        if (codeSource == null) {
+            return resources;
+        }
+
+        try (var jar = new JarFile(codeSource.getLocation().getPath())) {
+            var entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                var name = entries.nextElement().getName();
+                if (name.startsWith(prefix) && name.endsWith(".yml") && !name.equals(prefix)) {
+                    resources.add(name);
+                }
+            }
+        } catch (IOException e) {
+            logger.warn("Could not scan plugin JAR for example cosmetics.", e);
+        }
+
+        return resources;
     }
 }
