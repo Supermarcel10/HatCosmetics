@@ -94,7 +94,6 @@ shadowJar {
     manifest {
         attributes("Supported-Config-Version": configVersion)
         attributes("Supported-Message-Version": messageVersion)
-        attributes("Supported-Generics-Version": genericsVersion)
     }
 }
 
