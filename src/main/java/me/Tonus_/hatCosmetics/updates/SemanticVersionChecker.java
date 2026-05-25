@@ -13,6 +13,16 @@ public class SemanticVersionChecker implements IVersionChecker {
 	private final IPluginVersionRetriever pluginVersionRetriever;
 
 	public void checkForUpdates() {
+		if (!isStableRelease()) {
+		logger.warn(
+                """
+                You are running a pre-release version of HatCosmetics ({})! Report all issues to:
+                               - GitHub: https://github.com/Supermarcel10/HatCosmetics
+                               - Discord: https://discord.com/invite/3ruhs6Artc""",
+                pluginVersionRetriever.getVersion()
+            );
+		}
+
 		String remoteVersion = apiClient.getLatestVersion(isStableRelease());
 		if (remoteVersion == null) {
 			logger.warn("Failed to check for updates.");

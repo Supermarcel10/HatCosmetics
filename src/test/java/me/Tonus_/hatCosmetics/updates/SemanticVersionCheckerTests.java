@@ -100,12 +100,23 @@ public class SemanticVersionCheckerTests {
     }
 
     @Test
-    void checkForUpdates_whenVersionIsPreRelease_shouldCallGetLatestVersionWithFalse() {
+    void checkForUpdates_whenVersionIsPreRelease_shouldLogWarningAndCallGetLatestVersionWithFalse() {
+        // Arrange
         var currentVersion = "1.0.0-alpha";
         doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
         doReturn(currentVersion).when(apiClient).getLatestVersion(false);
 
+        // Act
         sut.checkForUpdates();
+
+        // Assert
+        verify(logger).warn(
+            """
+            You are running a pre-release version of HatCosmetics ({})! Report all issues to:
+                           - GitHub: https://github.com/Supermarcel10/HatCosmetics
+                           - Discord: https://discord.com/invite/3ruhs6Artc""",
+            currentVersion
+        );
 
         verify(apiClient).getLatestVersion(false);
         verify(apiClient, never()).getLatestVersion(true);
@@ -113,12 +124,15 @@ public class SemanticVersionCheckerTests {
 
     @Test
     void checkForUpdates_whenVersionHasBuildMetadata_shouldCallGetLatestVersionWithTrue() {
+        // Arrange
         var currentVersion = "1.0.0+build123";
         doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
         doReturn(currentVersion).when(apiClient).getLatestVersion(true);
 
+        // Act
         sut.checkForUpdates();
 
+        // Assert
         verify(apiClient).getLatestVersion(true);
         verify(apiClient, never()).getLatestVersion(false);
     }
