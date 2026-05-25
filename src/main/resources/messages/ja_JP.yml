@@ -8,34 +8,9 @@ version: 4
 # {player} - Returns the name of the player
 
 gui:
-  title: "&4MISSING_TRANSLATION"
   close: "&c&lメニューを閉じる"
   next: "&f&l次ページ"
   prev: "&f&l前ページ"
-
-  cosmetic_inv_equip: "&4MISSING_TRANSLATION"
-  cosmetic_inv_unequip: "&4MISSING_TRANSLATION"
-  cosmetic_inv_unequip_overlayed: "&4MISSING_TRANSLATION"
-
-  cosmetic_no_permission: "&4MISSING_TRANSLATION"
-  cosmetic_list_empty: "&4MISSING_TRANSLATION"
-
-command:
-  cosmetic_equip_success: "&4MISSING_TRANSLATION"
-  cosmetic_equip_success_other_invoker: "&4MISSING_TRANSLATION"
-  cosmetic_equip_success_other_target: "&4MISSING_TRANSLATION"
-  cosmetic_equip_fail: "&4MISSING_TRANSLATION"
-  cosmetic_equip_fail_other: "&4MISSING_TRANSLATION"
-
-  cosmetic_unequip_success: "&4MISSING_TRANSLATION"
-  cosmetic_unequip_fail: "&4MISSING_TRANSLATION"
-  cosmetic_unequip_success_other_invoker: "&4MISSING_TRANSLATION"
-  cosmetic_unequip_success_other_target: "&4MISSING_TRANSLATION"
-  cosmetic_unequip_fail_other: "&4MISSING_TRANSLATION"
-
-  cosmetic_not_found: "&4MISSING_TRANSLATION"
-  cosmetic_no_permission: "&4MISSING_TRANSLATION"
-  cosmetic_arg_not_given: "&4MISSING_TRANSLATION"
 
 player_not_online: "{player}&bはオンラインじゃない!"
 

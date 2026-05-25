@@ -11,7 +11,6 @@ version: 4
 # {player} - Returns the name of the target player
 
 gui:
-  title: "&b&lMISSING_TRANSLATION"
   close: "&c&lFechar Menu"
   next: "&f&lPróxima Página"
   prev: "&f&lPágina Anterior"
@@ -19,26 +18,6 @@ gui:
   cosmetic_inv_equip: "&bClique para equipar"
   cosmetic_inv_unequip: "&cClique para remover"
   cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
-
-  cosmetic_no_permission: "&4MISSING TRANSLATION"
-  cosmetic_list_empty: "&4MISSING TRANSLATION"
-
-command:
-  cosmetic_equip_success: "&4MISSING TRANSLATION"
-  cosmetic_equip_success_other_invoker: "&4MISSING TRANSLATION"
-  cosmetic_equip_success_other_target: "&4MISSING TRANSLATION"
-  cosmetic_equip_fail: "&4MISSING TRANSLATION"
-  cosmetic_equip_fail_other: "&4MISSING TRANSLATION"
-
-  cosmetic_unequip_success: "&4MISSING TRANSLATION"
-  cosmetic_unequip_fail: "&4MISSING TRANSLATION"
-  cosmetic_unequip_success_other_invoker: "&4MISSING TRANSLATION"
-  cosmetic_unequip_success_other_target: "&4MISSING TRANSLATION"
-  cosmetic_unequip_fail_other: "&4MISSING TRANSLATION"
-
-  cosmetic_not_found: "&4MISSING TRANSLATION"
-  cosmetic_no_permission: "&4MISSING TRANSLATION"
-  cosmetic_arg_not_given: "&4MISSING TRANSLATION"
 
 player_not_online: "&b{player} não está online!"
 
