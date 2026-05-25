@@ -232,6 +232,7 @@ class ModrinthUpstreamAPIClientTests {
             // Assert
             assertNull(latestVersion);
             verify(logger, atLeastOnce()).warn("Failed to retrieve data. Response code {}", 404);
+            verify(connection, atLeastOnce()).disconnect();
         }
     }
 
@@ -260,6 +261,7 @@ class ModrinthUpstreamAPIClientTests {
             // Assert
             assertNull(latestVersion);
             verify(logger).warn("Failed to retrieve version details for ID {}. {}", "version-id-1", "Network Error");
+            verify(connection).disconnect();
         }
     }
 

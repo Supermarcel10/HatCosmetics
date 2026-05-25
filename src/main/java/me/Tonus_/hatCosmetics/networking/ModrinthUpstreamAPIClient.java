@@ -107,15 +107,19 @@ public class ModrinthUpstreamAPIClient implements IUpstreamAPIClient {
 	 */
 	private @Nullable JsonObject makeRequest(String url) throws IOException {
 		var connection = (HttpURLConnection) URI.create(url).toURL().openConnection();
-		connection.setRequestMethod("GET");
+		try {
+			connection.setRequestMethod("GET");
 
-		var responseCode = connection.getResponseCode();
-		if (responseCode != HttpURLConnection.HTTP_OK) {
-			logger.warn("Failed to retrieve data. Response code {}", responseCode);
-			return null;
+			var responseCode = connection.getResponseCode();
+			if (responseCode != HttpURLConnection.HTTP_OK) {
+				logger.warn("Failed to retrieve data. Response code {}", responseCode);
+				return null;
+			}
+
+			return readResponse(connection);
+		} finally {
+			connection.disconnect();
 		}
-
-		return readResponse(connection);
 	}
 
 	/**
