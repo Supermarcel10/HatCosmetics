@@ -39,6 +39,9 @@ public class SemanticVersionChecker implements IVersionChecker {
 	}
 
 	private static int compareVersions(@NotNull String v1, @NotNull String v2) {
+		v1 = v1.split("-")[0].split("\\+")[0];
+		v2 = v2.split("-")[0].split("\\+")[0];
+
 		String[] v1Parts = v1.split("\\.");
 		String[] v2Parts = v2.split("\\.");
 
