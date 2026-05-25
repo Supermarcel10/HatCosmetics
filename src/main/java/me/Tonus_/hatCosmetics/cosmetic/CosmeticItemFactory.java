@@ -10,7 +10,7 @@ import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +19,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CosmeticItemFactory implements ICosmeticItemFactory {
-    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
-
     private final CustomModelData customModelData;
     private final CosmeticTagManager cosmeticTagManager;
     private final IMessageRetriever messageRetriever;
@@ -46,11 +44,12 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
         var modelDataItem = customModelData.appendModelData(baseItem, cosmetic.customModelData());
 
         var meta = modelDataItem.getItemMeta();
-        meta.displayName(LEGACY.deserialize(cosmetic.displayName(player.locale())));
+        var displayName = Component.text(ChatColor.translateAlternateColorCodes('&', cosmetic.displayName(player.locale())));
+        meta.displayName(displayName);
 
         var lore = new ArrayList<Component>();
         for (var line : cosmetic.description(player.locale())) {
-            lore.add(LEGACY.deserialize(line));
+            lore.add(Component.text(ChatColor.translateAlternateColorCodes('&', line)));
         }
 
         lore.add(Component.empty());
