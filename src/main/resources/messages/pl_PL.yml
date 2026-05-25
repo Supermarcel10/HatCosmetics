@@ -1,0 +1,42 @@
+version: 4
+# HatCosmetics messages version: 4
+
+# Translation by: devMarcel
+
+# Placeholders:
+# {cosmetic} - Returns the name of the equipped/unequipped cosmetic
+# {player} - Returns the name of the player
+
+gui:
+  title: "&b&lNakrycia Głowy"
+  close: "&c&lZamknij Menu"
+  next: "&f&lNastępna Strona"
+  prev: "&f&lPoprzednia Strona"
+
+  cosmetic_inv_equip: "&bKliknij, aby założyć"
+  cosmetic_inv_unequip: "&cKliknij, aby zdjąć"
+  cosmetic_inv_unequip_overlayed: "&cKliknij prawym, aby usunąć nakrycie głowy!"
+
+  cosmetic_no_permission: "&bNie dostępne"
+  cosmetic_list_empty: "&bNie masz dostępu do żadnych nakryć głowy!"
+
+command:
+  cosmetic_equip_success: "&bZałożyłeś(aś) {cosmetic}&b!"
+  cosmetic_equip_success_other_invoker: "&bGracz {player} założył(a) {cosmetic}&b!"
+  cosmetic_equip_success_other_target: "&bAdmin założył ci nakrycie głowy!"
+  cosmetic_equip_fail: "&bNie masz nałożonego żadnego nakrycia głowy!"
+  cosmetic_equip_fail_other: "&bGracz {player}&b nie ma nałożonego nakrycia głowy!"
+
+  cosmetic_unequip_success: "&bZdjąłeś(aś) {cosmetic}&b!"
+  cosmetic_unequip_fail: "&bNie masz nałożonego żadnego nakrycia głowy!"
+  cosmetic_unequip_success_other_invoker: "&bGracz {player}&b zdjął(a) {cosmetic}&b!"
+  cosmetic_unequip_success_other_target: "&bTwoje nakrycie głowy zostało zdjęte przez admina!"
+  cosmetic_unequip_fail_other: "&bGracz {player}&b nie ma nałożonego nakrycia głowy!"
+
+  cosmetic_not_found: "&bTo nakrycie głowy nie istnieje, lub nie masz dostępu do niego!"
+  cosmetic_no_permission: "&bNie masz uprawnień do założenia tego nakrycia głowy!"
+  cosmetic_arg_not_given: "&bMusisz podać nazwę nakrycia głowy do założenia!"
+
+player_not_online: "{player}&b nie jest online!"
+
+reload_success: "&bGracz {player}&b nie jest online!"

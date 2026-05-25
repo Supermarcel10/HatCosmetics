@@ -1,0 +1,17 @@
+version: 4
+# HatCosmetics messages version: 4
+
+# Translation by: AVeryRedCabbage
+
+# Placeholders:
+# {cosmetic} - Returns the name of the equipped/unequipped cosmetic
+# {player} - Returns the name of the player
+
+gui:
+  close: "&c&lメニューを閉じる"
+  next: "&f&l次ページ"
+  prev: "&f&l前ページ"
+
+player_not_online: "{player}&bはオンラインじゃない!"
+
+reload_success: "&bプラグインをリロードした!"

@@ -1,0 +1,42 @@
+version: 4
+# HatCosmetics messages version: 4
+
+# Translation by: devMarcel, Tonus_
+
+# Placeholders:
+# {cosmetic} - Returns the name of the equipped/unequipped cosmetic
+# {player} - Returns the name of the player
+
+gui:
+  title: "&b&lCosmetics"
+  close: "&c&lClose Menu"
+  next: "&f&lNext Page"
+  prev: "&f&lPrevious Page"
+
+  cosmetic_inv_equip: "&bClick to equip"
+  cosmetic_inv_unequip: "&cClick to unequip"
+  cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
+
+  cosmetic_no_permission: "&bNo permission"
+  cosmetic_list_empty: "&bYou don't have access to any cosmetics!"
+
+command:
+  cosmetic_equip_success: "&bYou equipped {cosmetic}&b!"
+  cosmetic_equip_success_other_invoker: "{player}&b equipped {cosmetic}&b!"
+  cosmetic_equip_success_other_target: "An admin equipped you a cosmetic!"
+  cosmetic_equip_fail: "&bYou don't have a cosmetic equipped!"
+  cosmetic_equip_fail_other: "{player}&b doesn't have a cosmetic equipped!"
+
+  cosmetic_unequip_success: "&bYou unequipped {cosmetic}&b!"
+  cosmetic_unequip_fail: "&bYou don't have a cosmetic equipped!"
+  cosmetic_unequip_success_other_invoker: "{player}&b unequipped {cosmetic}&b!"
+  cosmetic_unequip_success_other_target: "&bYour cosmetic was unequipped by an admin!"
+  cosmetic_unequip_fail_other: "{player}&b doesn't have a cosmetic equipped!"
+
+  cosmetic_not_found: "&bNo cosmetic by this name exists, or you do not have access to it!"
+  cosmetic_no_permission: "&bYou don't have permission to equip this cosmetic!"
+  cosmetic_arg_not_given: "&bYou must specify a cosmetic to equip!"
+
+player_not_online: "{player}&b is not online!"
+
+reload_success: "&bPlugin reloaded!"

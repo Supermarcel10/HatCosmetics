@@ -1,0 +1,24 @@
+version: 4
+# HatCosmetics messages version: 4
+
+# Colour codes are supported. Use '&' followed by a number or letter to change the format of the text.
+# See https://minecraft.gamepedia.com/Formatting_codes for more information.
+
+# Translation by: AVeryRedCabbage
+
+# Placeholders:
+# {cosmetic} - Returns the name of the equipped/unequipped cosmetic
+# {player} - Returns the name of the target player
+
+gui:
+  close: "&c&lFechar Menu"
+  next: "&f&lPróxima Página"
+  prev: "&f&lPágina Anterior"
+
+  cosmetic_inv_equip: "&bClique para equipar"
+  cosmetic_inv_unequip: "&cClique para remover"
+  cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
+
+player_not_online: "&b{player} não está online!"
+
+reload_success: "&bPlugin recarregado!"

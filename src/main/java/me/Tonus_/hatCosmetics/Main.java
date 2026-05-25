@@ -1,103 +1,104 @@
 package me.Tonus_.hatCosmetics;
 
-import me.Tonus_.hatCosmetics.events.InventoryEvents;
-import me.Tonus_.hatCosmetics.events.MainHatsCommand;
-import me.Tonus_.hatCosmetics.manager.ConfigManager;
-import me.Tonus_.hatCosmetics.manager.InventoryManager;
-import me.Tonus_.hatCosmetics.manager.MessageManager;
-import me.Tonus_.hatCosmetics.networking.ModrinthAPIClient;
-import me.Tonus_.hatCosmetics.networking.SemanticVersionChecker;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
+import co.aikar.commands.PaperCommandManager;
+import me.Tonus_.hatCosmetics.command.CosmeticCompletions;
+import me.Tonus_.hatCosmetics.command.MainCommand;
+import me.Tonus_.hatCosmetics.config.ConfigRetriever;
+import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
+import me.Tonus_.hatCosmetics.cosmetic.CosmeticEquipManager;
+import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
+import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
+import me.Tonus_.hatCosmetics.cosmetic.permission.CosmeticPermissionChecker;
+import me.Tonus_.hatCosmetics.inventory.InventoryManager;
+import me.Tonus_.hatCosmetics.storage.CosmeticStorageFactory;
+import me.Tonus_.hatCosmetics.storage.YmlCosmeticStorage;
+import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
+import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
+import me.Tonus_.hatCosmetics.player.PlayerEventManager;
+import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
+import me.Tonus_.hatCosmetics.reload.PluginReloader;
+import me.Tonus_.hatCosmetics.updates.SemanticVersionChecker;
+import me.Tonus_.hatCosmetics.message.MessageRetriever;
+import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
+import me.Tonus_.hatCosmetics.utility.jar.JarAccessor;
+import me.Tonus_.hatCosmetics.utility.string.StringFormatter;
+import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.logging.Logger;
 
-public class Main extends JavaPlugin implements Listener {
-    private final HashMap<Player, ItemStack> droppedCosmetic = new HashMap<>();
-    public static HashMap<String, ItemStack> hats = new HashMap<>();
+public class Main extends JavaPlugin {
+	private Metrics metricService;
 
-    private InventoryManager inventoryManager;
+	/**
+	 * Plugin enable
+	 */
+	@Override
+	public void onEnable() {
+        var typeMapperRegistry = new TypeMapperRegistry();
+        var configRetriever = new ConfigRetriever(this, typeMapperRegistry);
+        var nbtEditor = new NBTEditor(this);
+        var stringFormatter = new StringFormatter(getSLF4JLogger());
+        var jarAccessor = new JarAccessor(this.getClass());
+        var translationRetriever = new TranslationRetriever(this, jarAccessor);
+        var messageRetriever = new MessageRetriever(this, configRetriever, translationRetriever, stringFormatter);
+        var cosmeticTagManager = new CosmeticTagManager(nbtEditor);
+        var customModelData = new CustomModelData(getLogger());
+        var ymlStorage = new YmlCosmeticStorage(this, getSLF4JLogger(), jarAccessor);
+        var storageFactory = new CosmeticStorageFactory(configRetriever, ymlStorage);
+        var cosmeticStorage = storageFactory.createFromConfig();
+        var permissionChecker = new CosmeticPermissionChecker();
+        var cosmeticItemFactory = new CosmeticItemFactory(customModelData, cosmeticTagManager, messageRetriever, permissionChecker);
+        var equipManager = new CosmeticEquipManager(cosmeticItemFactory, cosmeticTagManager, cosmeticStorage, messageRetriever, configRetriever, permissionChecker);
+        var inventoryManager = new InventoryManager(nbtEditor, configRetriever, messageRetriever, cosmeticItemFactory, cosmeticTagManager, equipManager, cosmeticStorage, permissionChecker);
 
-    public InventoryManager getInventoryManager() { return inventoryManager; }
+        Runnable versionCheck = () -> {
+            var modrinthApiClient = new ModrinthUpstreamAPIClient(getSLF4JLogger(), "4h6EFh3D");
+            var pluginVersionRetriever = new PluginVersionRetriever(this);
+            new SemanticVersionChecker(getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever)
+                .checkForUpdates();
+        };
 
-    private MessageManager messageManager;
+        var pluginReloader = new PluginReloader(
+            inventoryManager,
+            configRetriever,
+            translationRetriever,
+            cosmeticStorage,
+            versionCheck,
+            messageRetriever
+        );
 
-    public MessageManager getMessageManager() { return messageManager; }
+        // Register commands
+        var commandListener = new MainCommand(inventoryManager, equipManager, pluginReloader, messageRetriever);
 
-    private ConfigManager configManager;
+		var commandManager = new PaperCommandManager(this);
+		commandManager.enableUnstableAPI("help");
+		commandManager.registerCommand(commandListener);
 
-    public ConfigManager getConfigManager() { return configManager; }
+		// Register command completions
+        var completions = new CosmeticCompletions(cosmeticStorage, permissionChecker);
+        commandManager.getCommandCompletions().registerCompletion("hats", completions::hats);
+        commandManager.getCommandCompletions().registerCompletion("playerTarget", completions::playerTarget);
 
-    public static @NotNull Main getInstance() {
-        return getPlugin(Main.class);
-    }
+        // Register listener
+        getServer().getPluginManager().registerEvents(
+                new PlayerEventManager(inventoryManager, configRetriever, cosmeticTagManager, equipManager, cosmeticStorage),
+                this
+        );
 
-    public @NotNull Logger getLogger() {
-        return super.getLogger();
-    }
+		// Enable bStats
+		metricService = new Metrics(this, 11075);
 
-    @Override
-    public void onEnable() {
-        getServer().getPluginManager().registerEvents(this, this);
-        this.saveDefaultConfig();
-        configManager = new ConfigManager(this);
-        messageManager = new MessageManager(this);
-        inventoryManager = new InventoryManager(this);
-        getServer().getPluginManager().registerEvents(new InventoryEvents(this), this);
-        Objects.requireNonNull(getCommand("hatcosmetics")).setTabCompleter(new HatCosmeticTab(this));
-        Objects.requireNonNull(getCommand("hatcosmetics")).setExecutor(new MainHatsCommand(this));
-        new Metrics(this, 11075);
+		// Check for updates
+		versionCheck.run();
+	}
 
-        var modrinthApiClient = new ModrinthAPIClient(this.getLogger(), "4h6EFh3D");
-        new SemanticVersionChecker(this, modrinthApiClient, true).checkForUpdates();
-    }
-
-    // Ensure cosmetics don't drop if the player dies
-    @EventHandler
-    public void onDrop(PlayerDeathEvent event) {
-        // Check if player had cosmetic before trying to remove drop
-        if(event.getKeepInventory()) return;
-        if(event.getEntity().getEquipment() == null) return;
-        if(event.getEntity().getEquipment().getHelmet() == null) return;
-        if(event.getEntity().getEquipment().getHelmet().getItemMeta() == null) return;
-        if(event.getEntity().getEquipment().getHelmet().getItemMeta().getLore() == null) return;
-        if(event.getEntity().getEquipment().getHelmet().getItemMeta().getLore().get(0).contains("Hat Cosmetic")) {
-            // Find cosmetic location and remove drop
-            int i = 0;
-            for(ItemStack item : event.getDrops()) {
-                if(item.getItemMeta() == null) {
-                    i++;
-                    continue;
-                }
-                if(item.getItemMeta().getLore() == null) {
-                    i++;
-                    continue;
-                }
-                if(item.getItemMeta().getLore().get(0).contains("Hat Cosmetic")) {
-                    event.getDrops().remove(i);
-                    // Prepare for retrieval
-                    droppedCosmetic.put(event.getEntity(), item);
-                    return;
-                }
-                else i++;
-            }
-        }
-    }
-
-    @EventHandler
-    public void onRespawn(PlayerRespawnEvent event) {
-        if(!droppedCosmetic.containsKey(event.getPlayer())) return;
-        Player player = event.getPlayer();
-        if(player.getEquipment() == null) return;
-        player.getEquipment().setHelmet(droppedCosmetic.get(player));
-        droppedCosmetic.remove(player);
-    }
+	/**
+	 * Plugin disable
+	 */
+	@Override
+	public void onDisable() {
+		metricService.shutdown();
+		super.onDisable();
+	}
 }

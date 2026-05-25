@@ -1,0 +1,8 @@
+material: FEATHER
+custom-model-data: "1000102"
+permission: null
+display:
+  en_US:
+    name: "&aDisguise"
+    description:
+      - "&7Glasses and a moustache"

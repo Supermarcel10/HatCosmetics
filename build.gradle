@@ -1,16 +1,22 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
+    id "java"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8"
 }
 
-group = 'me.Tonus_'
-version = '2.2.0'
+group = "me.Tonus_"
+version = "3.0.0-alpha-1"
+
+var configVersion = "5"
+var messageVersion = "4"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
 
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 sourceSets {
@@ -24,36 +30,71 @@ sourceSets {
     }
 }
 
+idea {
+    module {
+        excludeDirs = [
+                file(".gradle"),
+                file("build"),
+                file("gradle"),
+                file("gradlew"),
+                file("gradlew.bat")
+        ]
+    }
+}
+
 repositories {
     mavenCentral()
-    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    maven { url = 'https://repo.codemc.org/repository/maven-public/' }
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     mavenLocal()
 }
 
 dependencies {
     // Build
-    implementation 'org.jetbrains:annotations:24.1.0'
-    compileOnly 'de.tr7zw:item-nbt-api-plugin:2.12.3'
-    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
-    compileOnly 'com.google.code.gson:gson:2.13.1' // CVE mitigation: spigot-api
-    compileOnly 'com.google.guava:guava:33.2.1-jre' // CVE mitigation: spigot-api
-    compileOnly 'org.yaml:snakeyaml:2.2' // CVE mitigation: spigot-api
+    implementation "org.bstats:bstats-bukkit:3.0.2"
+    implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
+    implementation "org.reflections:reflections:0.10.2"
+    compileOnly "org.jetbrains:annotations:24.1.0"
+    compileOnly "org.yaml:snakeyaml:2.2"
+    compileOnly "org.projectlombok:lombok:1.18.32"
+    annotationProcessor "org.projectlombok:lombok:1.18.32"
+
+    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+    compileOnly "com.google.code.gson:gson:2.11.0" // CVE mitigation: spigot-api
+    compileOnly "com.google.guava:guava:33.2.1-jre" // CVE mitigation: spigot-api
+    compileOnly 'junit:junit:4.13.2' // CVE mitigation: spigot-api
 
     // Testing
     testImplementation platform("org.junit:junit-bom:5.13.1")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     testImplementation "org.mockito:mockito-core:5.18.0"
+    testImplementation "org.jetbrains:annotations:24.1.0"
 
-    testImplementation 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+    testImplementation "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
     testImplementation "com.google.code.gson:gson:2.13.1"
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+    options.encoding = "UTF-8"
+}
+
+build.dependsOn shadowJar
+shadowJar {
+    relocate "org.bstats", "${project.group}.shaded.org.bstats"
+    archiveFileName.set("${project.name}-${project.version}.jar")
+
+    processResources {
+        filesMatching("plugin.yml") {
+            println "Expanding plugin.yml"
+            expand(pluginVersion: project.version)
+        }
+    }
+
+    manifest {
+        attributes("Supported-Config-Version": configVersion)
+        attributes("Supported-Message-Version": messageVersion)
+    }
 }
 
 test {
@@ -68,4 +109,22 @@ test {
         }
         if (mockitoJar) jvmArgs "-javaagent:${mockitoJar}", "-Xshare:off"
     }
+}
+
+tasks.register("copyToTestServer", Sync) {
+    dependsOn "build"
+    mustRunAfter "build"
+
+    from(fileTree("${project.buildDir}/libs") {
+        include("*.jar")
+    })
+    into("${project.projectDir}/src/test/server/plugins")
+}
+
+tasks.register("runOnTestServer", Exec) {
+    dependsOn "copyToTestServer"
+    mustRunAfter "copyToTestServer"
+
+    workingDir "${project.layout.projectDirectory}/src/test/server/"
+    commandLine "java", "-Xms1G", "-Xmx1G", "-Dpaper.log-level=WARN", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "paper-1.20.4-496.jar", "--nogui"
 }
