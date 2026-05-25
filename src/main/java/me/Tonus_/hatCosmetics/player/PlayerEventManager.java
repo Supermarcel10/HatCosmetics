@@ -116,20 +116,8 @@ public class PlayerEventManager implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         var player = event.getPlayer();
-        var helmet = player.getEquipment().getHelmet();
-        var cosmeticTag = tagManager.getCosmeticTag(helmet);
-
-        if (cosmeticTag.isEmpty()) return;
-
-        var exists = cosmeticStorage
-            .loadAll()
-            .stream()
-            .anyMatch(c -> c.name().equalsIgnoreCase(cosmeticTag.get()));
-
-        // Unequip any hats no longer present
-        if (!exists) {
-            player.getEquipment().setHelmet(null);
-        }
+        unequipStaleCosmetic(player);
+        equipDefaultCosmetic(player);
     }
 
     private void handlePlayerInventoryClick(InventoryClickEvent event) {
@@ -156,5 +144,30 @@ public class PlayerEventManager implements Listener {
     private boolean isCosmetic(ItemStack item) {
         return item != null && !item.getType().isAir()
             && tagManager.getCosmeticTag(item).isPresent();
+    }
+
+    private void unequipStaleCosmetic(Player player) {
+        var helmet = player.getEquipment().getHelmet();
+        var cosmeticTag = tagManager.getCosmeticTag(helmet);
+        if (cosmeticTag.isEmpty()) return;
+
+        var exists = cosmeticStorage
+            .loadAll()
+            .stream()
+            .anyMatch(c -> c.name().equalsIgnoreCase(cosmeticTag.get()));
+
+        if (!exists) {
+            player.getEquipment().setHelmet(null);
+        }
+    }
+
+    private void equipDefaultCosmetic(Player player) {
+        var helmet = player.getEquipment().getHelmet();
+        if (helmet != null && !helmet.getType().isAir()) return;
+
+        var defaultHat = configRetriever.getValue(ConfigReference.HATS_DEFAULT_HAT, "NONE");
+        if (defaultHat == null || defaultHat.isBlank() || "NONE".equalsIgnoreCase(defaultHat)) return;
+
+        equipManager.equip(player, defaultHat, true);
     }
 }
