@@ -3,7 +3,6 @@ package me.Tonus_.hatCosmetics.messages;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
-import me.Tonus_.hatCosmetics.message.color.IColorParser;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageRetriever;
 import me.Tonus_.hatCosmetics.message.translations.ITranslationRetriever;
@@ -28,19 +27,16 @@ public class MessageRetrieverTests {
 
     private final Plugin plugin = mock();
     private final IConfigRetriever configRetriever = mock();
-    private final IColorParser colorParser = mock();
     private final ITranslationRetriever translationRetriever = mock();
     private final IStringFormatter stringFormatter = mock();
 
-    private final IMessageRetriever sut = new MessageRetriever(plugin, configRetriever, colorParser, translationRetriever, stringFormatter);
+    private final IMessageRetriever sut = new MessageRetriever(plugin, configRetriever, translationRetriever, stringFormatter);
 
     MessageRetrieverTests() {
         // Mock player logger
         doReturn(mock(Logger.class)).when(plugin).getSLF4JLogger();
 
         // Mock default responses
-        doAnswer(invocation -> invocation.getArgument(0)).when(colorParser).parse(anyString());
-
         doReturn(SERVER_LOCALE).when(configRetriever).getValue(ConfigReference.SERVER_LOCALE, FALLBACK_LOCALE);
         doReturn(false).when(configRetriever).getValue(ConfigReference.FORCED_LOCALE);
 

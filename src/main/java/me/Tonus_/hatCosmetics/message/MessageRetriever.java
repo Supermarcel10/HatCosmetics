@@ -3,10 +3,10 @@ package me.Tonus_.hatCosmetics.message;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.config.ConfigReference;
 import me.Tonus_.hatCosmetics.config.IConfigRetriever;
-import me.Tonus_.hatCosmetics.message.color.IColorParser;
 import me.Tonus_.hatCosmetics.message.translations.ITranslationRetriever;
 import me.Tonus_.hatCosmetics.utility.string.IStringFormatter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -23,7 +23,6 @@ public class MessageRetriever implements IMessageRetriever {
 
 	private final Plugin plugin;
 	private final IConfigRetriever configRetriever;
-	private final IColorParser colorParser;
 	private final ITranslationRetriever translationRetriever;
 	private final IStringFormatter stringFormatter;
 
@@ -81,7 +80,7 @@ public class MessageRetriever implements IMessageRetriever {
 
         var parsedArgs = formatArgs.entrySet()
             .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> colorParser.parse(e.getValue())));
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> ChatColor.translateAlternateColorCodes('&', e.getValue())));
 
         var formattedMessage = stringFormatter.format(message, parsedArgs);
 
@@ -116,7 +115,7 @@ public class MessageRetriever implements IMessageRetriever {
 	 */
 	private @Nullable String getFormattedTranslation(Locale locale, MessageReference messageReference) {
 		var msg = translationRetriever.tryGetTranslation(locale, messageReference);
-		return msg != null ? colorParser.parse(msg) : null;
+		return msg != null ? ChatColor.translateAlternateColorCodes('&', msg) : null;
 	}
 
 	private boolean isForcedLocale() {
