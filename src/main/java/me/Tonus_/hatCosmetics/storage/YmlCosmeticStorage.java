@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.jar.JarFile;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.cosmetic.Cosmetic;
+import me.Tonus_.hatCosmetics.utility.jar.IJarAccessor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -25,6 +25,7 @@ public class YmlCosmeticStorage implements ICosmeticStorage {
 
     private final Plugin plugin;
     private final Logger logger;
+    private final IJarAccessor jarAccessor;
 
     private List<Cosmetic> cached = null;
 
@@ -150,12 +151,7 @@ public class YmlCosmeticStorage implements ICosmeticStorage {
         var prefix = COSMETICS_DIR + "/";
 
         var resources = new ArrayList<String>();
-        var codeSource = plugin.getClass().getProtectionDomain().getCodeSource();
-        if (codeSource == null) {
-            return resources;
-        }
-
-        try (var jar = new JarFile(codeSource.getLocation().getPath())) {
+        try (var jar = jarAccessor.open()) {
             var entries = jar.entries();
             while (entries.hasMoreElements()) {
                 var name = entries.nextElement().getName();

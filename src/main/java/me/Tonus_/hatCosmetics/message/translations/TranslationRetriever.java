@@ -2,6 +2,7 @@ package me.Tonus_.hatCosmetics.message.translations;
 
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.message.MessageReference;
+import me.Tonus_.hatCosmetics.utility.jar.IJarAccessor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -16,19 +17,20 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 
 // TODO: Instead of loading all translations, load only the server locale, and then load the rest when needed (e.g. when a player joins)
 @RequiredArgsConstructor
 public class TranslationRetriever implements ITranslationRetriever {
     private final Plugin plugin;
+    private final IJarAccessor jarAccessor;
 
     private Map<String, FileConfiguration> translations = null;
 
     @TestOnly
-    public TranslationRetriever(Plugin plugin, Map<String, FileConfiguration> translations) {
+    public TranslationRetriever(Plugin plugin, Map<String, FileConfiguration> translations, IJarAccessor jarAccessor) {
         this.plugin = plugin;
+        this.jarAccessor = jarAccessor;
         this.translations = translations;
     }
 
@@ -89,7 +91,7 @@ public class TranslationRetriever implements ITranslationRetriever {
      * Loads all generic translations from the JAR file
      */
     private void loadAllTranslations() {
-        try (var jarFile = new JarFile(plugin.getClass().getProtectionDomain().getCodeSource().getLocation().getPath())) {
+        try (var jarFile = jarAccessor.open()) {
             var entries = jarFile.entries();
 
             while (entries.hasMoreElements()) {
@@ -108,7 +110,7 @@ public class TranslationRetriever implements ITranslationRetriever {
     private void loadTranslationFile(@NotNull JarEntry entry) {
         var entryName = entry.getName();
 
-        try (var inputStream = plugin.getClass().getResourceAsStream("/" + entryName)) {
+        try (var inputStream = jarAccessor.getResource("/" + entryName)) {
             if (inputStream != null) {
                 var locale = entry.getName().replace("messages/", "").replace(".yml", "");
                 var language = YamlConfiguration.loadConfiguration(new InputStreamReader(inputStream, StandardCharsets.UTF_8));

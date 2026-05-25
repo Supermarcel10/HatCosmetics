@@ -2,6 +2,7 @@ package me.Tonus_.hatCosmetics.messages.translations;
 
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
+import me.Tonus_.hatCosmetics.utility.jar.IJarAccessor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ public class TranslationRetrieverTests {
     private final static MessageReference existingPath = MessageReference.VERSION;
 
     private final Plugin plugin = mock();
+    private final IJarAccessor jarAccessor = mock();
 
     @Test
     void tryGetTranslation_whenLocaleValidAndKeyNotPresent_shouldReturnNull() {
@@ -27,7 +29,7 @@ public class TranslationRetrieverTests {
         var yamlFile = mock(FileConfiguration.class);
         translations.put(locale.toString(), yamlFile);
 
-        var sut = new TranslationRetriever(plugin, translations);
+        var sut = new TranslationRetriever(plugin, translations, jarAccessor);
 
         // Act
         var result = sut.tryGetTranslation(locale, existingPath);
@@ -47,7 +49,7 @@ public class TranslationRetrieverTests {
         doReturn(expectedResult).when(yamlFile).getString(existingPath.getYamlPath());
         translations.put(locale.toString(), yamlFile);
 
-        var sut = new TranslationRetriever(plugin, translations);
+        var sut = new TranslationRetriever(plugin, translations, jarAccessor);
 
         // Act
         var result = sut.tryGetTranslation(locale, existingPath);
