@@ -30,6 +30,7 @@ public class ConfigReference<T> {
     public static ConfigReference<Boolean> GUI_HIDE_HATS = cr("gui.hide-hats", Boolean.class);
 
     public static ConfigReference<Boolean> HATS_KEEP_ON_DEATH = cr("hats.keep-on-death", Boolean.class);
+    public static ConfigReference<String> HATS_DEFAULT_HAT = cr("hats.default-hat", String.class);
 
     private final String yamlPath;
     private final Class<T> type;

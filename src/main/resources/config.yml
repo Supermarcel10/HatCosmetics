@@ -65,8 +65,9 @@ gui:
 # Hat Configuration
 # ----------------------------------------
 hats:
-  # The default hat
-#  default-hat: NONE # TODO: Implement this
+  # The default hat to equip when a player joins without one.
+  # Set to a cosmetic name (e.g. "staff_hat") or "NONE" to disable.
+  default-hat: NONE
 
   # Will player keep their hat on death?
   keep-on-death: true
