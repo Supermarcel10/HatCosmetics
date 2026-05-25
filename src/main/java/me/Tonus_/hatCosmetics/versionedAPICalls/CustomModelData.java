@@ -208,11 +208,6 @@ public class CustomModelData {
             | InvocationTargetException
             | NoSuchFieldException e
         ) {
-            logger.log(
-                Level.WARNING,
-                "Failed to initialize Data Components API reflection"
-            );
-
             return ReflectionCache.INVALID;
         }
     }
