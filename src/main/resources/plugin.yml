@@ -13,6 +13,12 @@ permissions:
   hatcosmetics.reload:
     description: Allows reloading the plugin configuration and hats.
     default: op
+  hatcosmetics.admin.equip.other:
+    description: Allows equipping cosmetics on other players.
+    default: op
+  hatcosmetics.admin.unequip.other:
+    description: Allows unequipping cosmetics from other players.
+    default: op
   hatcosmetics.hat.*:
     description: Grants access to all cosmetics.
     default: true

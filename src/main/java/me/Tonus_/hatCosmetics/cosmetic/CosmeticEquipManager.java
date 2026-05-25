@@ -9,6 +9,7 @@ import me.Tonus_.hatCosmetics.cosmetic.permission.ICosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.storage.ICosmeticStorage;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +25,9 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
     private final IConfigRetriever configRetriever;
     private final ICosmeticPermissionChecker permissionChecker;
 
-    public boolean equip(@NotNull Player player, @NotNull String cosmeticName, boolean silentDeny) {
+    @Override
+    public boolean equip(@NotNull Player target, @NotNull String cosmeticName, @Nullable CommandSender invoker, boolean silentDeny) {
+        var isAdminInvokation = invoker != null && invoker != target;
         var cosmetic = cosmeticStorage
             .loadAll()
             .stream()
@@ -33,52 +36,85 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
             .orElse(null);
 
         if (cosmetic == null) {
-            messageRetriever.sendMessage(player, MessageReference.COSMETIC_NOT_FOUND);
+            messageRetriever.sendMessage(target, MessageReference.COSMETIC_NOT_FOUND);
             return false;
         }
 
-        if (!permissionChecker.canUseCosmetic(player, cosmetic)) {
+        if (!permissionChecker.canUseCosmetic(target, cosmetic)) {
             if (!silentDeny) {
                 var hideHats = configRetriever.getValue(ConfigReference.GUI_HIDE_HATS, false);
                 var msg = hideHats ? MessageReference.COSMETIC_NOT_FOUND : MessageReference.COSMETIC_NO_PERMISSION_LONG;
-                messageRetriever.sendMessage(player, msg);
+                messageRetriever.sendMessage(target, msg);
             }
 
             return false;
         }
 
-        var equipment = player.getEquipment();
+        var equipment = target.getEquipment();
         if (equipment == null) return false;
 
         var helmet = equipment.getHelmet();
 
         if (helmet != null && !helmet.getType().isAir() && getEquippedCosmetic(helmet).isEmpty()) {
-            messageRetriever.sendMessage(player, MessageReference.COSMETIC_EQUIP_FAIL);
+            if (isAdminInvokation) {
+                messageRetriever.sendMessage(
+                    invoker,
+                    MessageReference.COSMETIC_EQUIP_FAIL_OTHER,
+                    Map.of("player", target.getName())
+                );
+            }
+
+            messageRetriever.sendMessage(target, MessageReference.COSMETIC_EQUIP_FAIL);
             return false;
         }
 
-        var hatItem = cosmeticItemFactory.create(cosmetic, player, MessageReference.COSMETIC_INVENTORY_UNEQUIP);
+        var hatItem = cosmeticItemFactory.create(cosmetic, target, MessageReference.COSMETIC_INVENTORY_UNEQUIP);
 
         equipment.setHelmet(hatItem);
 
-        messageRetriever.sendMessage(
-            player,
-            MessageReference.COSMETIC_EQUIP_SUCCESS,
-            Map.of("cosmetic", cosmetic.displayName(player.locale()))
-        );
+        if (isAdminInvokation) {
+            messageRetriever.sendMessage(
+                invoker,
+                MessageReference.COSMETIC_EQUIP_SUCCESS_INVOKER,
+                Map.of("player", target.getName(), "cosmetic", cosmetic.displayName(target.locale()))
+            );
+            messageRetriever.sendMessage(
+                target,
+                MessageReference.COSMETIC_EQUIP_SUCCESS_TARGET,
+                Map.of("cosmetic", cosmetic.displayName(target.locale()))
+            );
+        } else {
+            messageRetriever.sendMessage(
+                target,
+                MessageReference.COSMETIC_EQUIP_SUCCESS,
+                Map.of("cosmetic", cosmetic.displayName(target.locale()))
+            );
+        }
 
         return true;
     }
 
-	public boolean unequip(@NotNull Player player) {
-        var equipment = player.getEquipment();
+    @Override
+    public boolean unequip(@NotNull Player target, @Nullable CommandSender invoker) {
+        var isAdminInvokation = invoker != null && invoker != target;
+
+        var equipment = target.getEquipment();
         if (equipment == null) return false;
 
         var helmet = equipment.getHelmet();
         var cosmeticTag = getEquippedCosmetic(helmet);
 
         if (cosmeticTag.isEmpty()) {
-            messageRetriever.sendMessage(player, MessageReference.COSMETIC_UNEQUIP_FAIL);
+            if (isAdminInvokation) {
+                messageRetriever.sendMessage(
+                    invoker,
+                    MessageReference.COSMETIC_UNEQUIP_OTHER_FAIL,
+                    Map.of("player", target.getName())
+                );
+            }
+
+            messageRetriever.sendMessage(target, MessageReference.COSMETIC_UNEQUIP_FAIL);
+
             return false;
         }
 
@@ -90,16 +126,29 @@ public class CosmeticEquipManager implements ICosmeticEquipManager {
             .orElse(null);
 
         var parsedName = cosmetic != null
-                ? cosmetic.displayName(player.locale())
+                ? cosmetic.displayName(target.locale())
                 : cosmeticTag.get();
 
         equipment.setHelmet(null);
 
-        messageRetriever.sendMessage(
-            player,
-            MessageReference.COSMETIC_UNEQUIP_SUCCESS,
-            Map.of("cosmetic", parsedName)
-        );
+        if (isAdminInvokation) {
+            messageRetriever.sendMessage(
+                invoker,
+                MessageReference.COSMETIC_UNEQUIP_SUCCESS_INVOKER,
+                Map.of("player", target.getName(), "cosmetic", parsedName)
+            );
+            messageRetriever.sendMessage(
+                target,
+                MessageReference.COSMETIC_UNEQUIP_SUCCESS_TARGET,
+                Map.of("cosmetic", parsedName)
+            );
+        } else {
+            messageRetriever.sendMessage(
+                target,
+                MessageReference.COSMETIC_UNEQUIP_SUCCESS,
+                Map.of("cosmetic", parsedName)
+            );
+        }
 
         return true;
     }

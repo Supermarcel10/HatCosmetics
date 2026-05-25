@@ -132,7 +132,7 @@ public class PlayerEventManager implements Listener {
             var helmetTag = tagManager.getCosmeticTag(helmet);
 
             if (isClickedItemCurrentEquippedCosmetic(currentTag, helmetTag)) {
-                equipManager.unequip(player);
+                equipManager.unequip(player, null);
             }
         }
     }
@@ -168,6 +168,6 @@ public class PlayerEventManager implements Listener {
         var defaultHat = configRetriever.getValue(ConfigReference.HATS_DEFAULT_HAT, "NONE");
         if (defaultHat == null || defaultHat.isBlank() || "NONE".equalsIgnoreCase(defaultHat)) return;
 
-        equipManager.equip(player, defaultHat, true);
+        equipManager.equip(player, defaultHat, player, true);
     }
 }

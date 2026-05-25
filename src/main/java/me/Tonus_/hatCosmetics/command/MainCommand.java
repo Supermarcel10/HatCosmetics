@@ -39,12 +39,26 @@ public class MainCommand extends BaseCommand {
             return;
         }
 
-        equipManager.equip(player, hatName, false);
+        equipManager.equip(player, hatName, player, false);
+    }
+
+    @Subcommand("equip|e")
+    @CommandCompletion("@players @hats")
+    @CommandPermission(PermissionNode.ADMIN_EQUIP_OTHER)
+    public void onEquipAdmin(@NotNull Player sender, Player target, String hatName) {
+        equipManager.equip(target, hatName, sender, false);
     }
 
     @Subcommand("unequip|u")
     public void onUnequip(@NotNull Player player) {
-        equipManager.unequip(player);
+        equipManager.unequip(player, null);
+    }
+
+    @Subcommand("unequip|u")
+    @CommandCompletion("@players")
+    @CommandPermission(PermissionNode.ADMIN_UNEQUIP_OTHER)
+    public void onUnequipAdmin(@NotNull Player sender, Player target) {
+        equipManager.unequip(target, sender);
     }
 
     @Subcommand("reload|r")

@@ -116,7 +116,7 @@ public class InventoryManager implements IInventoryManager {
 
         // Same hat already worn => unequip
         if (cosmeticName.equals(wornName)) {
-            equipManager.unequip(player);
+            equipManager.unequip(player, null);
 
             playerContexts.remove(player);
             player.closeInventory();
@@ -125,7 +125,7 @@ public class InventoryManager implements IInventoryManager {
         }
 
         // Equip new hat
-        var success = equipManager.equip(player, cosmeticName, true);
+        var success = equipManager.equip(player, cosmeticName, player, true);
         if (success) {
             playerContexts.remove(player);
             player.closeInventory();
