@@ -18,7 +18,7 @@ import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.storage.ICosmeticStorage;
 import me.Tonus_.hatCosmetics.utility.editor.NBTEditor;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -174,18 +174,15 @@ public class InventoryManager implements IInventoryManager {
     }
 
     private @NotNull Component getTitleTextComponent(@NotNull InventoryPlayerContext ipc, Player player) {
-        var baseText = new StringBuilder(messageRetriever.getMessage(player, MessageReference.GUI_TITLE));
+        var component = Component.text(messageRetriever.getMessage(player, MessageReference.GUI_TITLE));
 
         if (ipc.getMaxPage() > 1) {
-            baseText.append(ChatColor.DARK_GRAY);
-            baseText.append(" (");
-            baseText.append(ipc.getCurrentPage());
-            baseText.append("/");
-            baseText.append(ipc.getMaxPage());
-            baseText.append(")");
+            component = component.append(
+                Component.text(" (" + ipc.getCurrentPage() + "/" + ipc.getMaxPage() + ")", NamedTextColor.DARK_GRAY)
+            );
         }
 
-        return Component.text(baseText.toString());
+        return component;
     }
 
     private void drawBorder(Inventory inventory) {
@@ -260,7 +257,8 @@ public class InventoryManager implements IInventoryManager {
         Material borderMaterial
     ) {
         if (isActive) {
-            var text = Component.text(ChatColor.AQUA + buttonName + ChatColor.DARK_GRAY + pageNumber);
+            var text = Component.text(buttonName, NamedTextColor.AQUA)
+                .append(Component.text(String.valueOf(pageNumber), NamedTextColor.DARK_GRAY));
             return createMenuItem(material, text, tag);
         } else {
             return createMenuItem(borderMaterial, Component.empty(), null);

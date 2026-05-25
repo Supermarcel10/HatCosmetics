@@ -3,7 +3,7 @@ package me.Tonus_.hatCosmetics.config;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.Tonus_.hatCosmetics.config.structures.*;
+import me.Tonus_.hatCosmetics.config.structures.StorageFormat;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
