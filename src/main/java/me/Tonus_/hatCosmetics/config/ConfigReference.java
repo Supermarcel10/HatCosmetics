@@ -20,7 +20,7 @@ public class ConfigReference<T> {
 
     public static ConfigReference<StorageFormat> STORAGE_FORMAT = cr("storage.format", StorageFormat.class);
 
-    public static ConfigReference<CachingAggressiveness> PERFORMANCE_CACHING_AGGRESSIVNESS = cr("performance.caching-agressivness", CachingAggressiveness.class);
+    // public static ConfigReference<CachingAgressiveness> PERFORMANCE_CACHING_AGRESSIVNESS = cr("performance.caching-agressivness", CachingAgressiveness.class);
 
     public static ConfigReference<Integer> GUI_ROWS = cr("gui.rows", Integer.class);
     public static ConfigReference<Material> GUI_BORDER_MATERIAL = cr("gui.items.border", Material.class);

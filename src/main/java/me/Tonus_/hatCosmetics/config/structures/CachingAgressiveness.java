@@ -1,7 +1,7 @@
 package me.Tonus_.hatCosmetics.config.structures;
 
 
-public enum CachingAggressiveness {
+public enum CachingAgressiveness {
     MINIMAL,
     CONSERVATIVE,
     AGRESSIVE,

@@ -23,18 +23,6 @@ storage:
 
 
 # ----------------------------------------
-# Performance Configuration
-# ----------------------------------------
-performance:
-  # How agressive value caching is.
-  # The following options are available:
-  # - MINIMAL
-  # - CONSERVATIVE
-  # - AGRESSIVE
-  caching-agressivness: CONSERVATIVE
-
-
-# ----------------------------------------
 # GUI Configuration
 # ----------------------------------------
 gui:
