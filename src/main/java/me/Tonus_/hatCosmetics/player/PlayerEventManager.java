@@ -49,7 +49,10 @@ public class PlayerEventManager implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (isCosmetic(((Player) event.getWhoClicked()).getEquipment().getHelmet())) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+
+        var helmet = player.getEquipment().getHelmet();
+        if (isCosmetic(helmet)) {
             event.setCancelled(true);
         }
     }
@@ -126,8 +129,11 @@ public class PlayerEventManager implements Listener {
         event.setCancelled(true);
 
         if (event.isLeftClick() && isCosmetic(event.getCurrentItem())) {
-            var player = (Player) event.getWhoClicked();
-            var helmet = player.getEquipment().getHelmet();
+            if (!(event.getWhoClicked() instanceof Player player)) return;
+
+            var equipment = player.getEquipment();
+            var helmet = equipment.getHelmet();
+
             var currentTag = tagManager.getCosmeticTag(event.getCurrentItem());
             var helmetTag = tagManager.getCosmeticTag(helmet);
 
@@ -147,7 +153,9 @@ public class PlayerEventManager implements Listener {
     }
 
     private void unequipStaleCosmetic(Player player) {
-        var helmet = player.getEquipment().getHelmet();
+        var equipment = player.getEquipment();
+        var helmet = equipment.getHelmet();
+
         var cosmeticTag = tagManager.getCosmeticTag(helmet);
         if (cosmeticTag.isEmpty()) return;
 
@@ -157,12 +165,13 @@ public class PlayerEventManager implements Listener {
             .anyMatch(c -> c.name().equalsIgnoreCase(cosmeticTag.get()));
 
         if (!exists) {
-            player.getEquipment().setHelmet(null);
+            equipment.setHelmet(null);
         }
     }
 
     private void equipDefaultCosmetic(Player player) {
-        var helmet = player.getEquipment().getHelmet();
+        var equipment = player.getEquipment();
+        var helmet = equipment.getHelmet();
         if (helmet != null && !helmet.getType().isAir()) return;
 
         var defaultHat = configRetriever.getValue(ConfigReference.HATS_DEFAULT_HAT, "NONE");
