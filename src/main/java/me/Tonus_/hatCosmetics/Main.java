@@ -112,23 +112,4 @@ public class Main extends JavaPlugin {
 		metricService.shutdown();
 		super.onDisable();
 	}
-
-
-// TODO: Move template method somewhere else.
-//	/**
-//	 * Ensures that the template file exists
-//	 */
-//	private void ensureTemplateExists() {
-//		// Check if the messages directory exists
-//		File messageDir = new File(plugin.getDataFolder(), "messages");
-//		if (!messageDir.exists()) {
-//			plugin.saveResource("messages/", false);
-//		}
-//
-//		// Check if the template file exists
-//		File templateFile = new File(messageDir, "template.yml");
-//		if (!templateFile.exists()) {
-//			plugin.saveResource("messages/template.yml", false);
-//		}
-//	}
 }
