@@ -5,10 +5,10 @@ plugins {
 }
 
 group = "me.Tonus_"
-version = "3.0.0"
+version = "3.0.0-alpha-1"
+
 var configVersion = "5"
 var messageVersion = "4"
-var genericsVersion = "1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_16
