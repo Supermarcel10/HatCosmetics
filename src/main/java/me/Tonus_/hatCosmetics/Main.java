@@ -1,11 +1,10 @@
 package me.Tonus_.hatCosmetics;
 
-import java.util.stream.Collectors;
 import co.aikar.commands.PaperCommandManager;
+import me.Tonus_.hatCosmetics.command.CosmeticCompletions;
 import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
-import me.Tonus_.hatCosmetics.cosmetic.Cosmetic;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
@@ -77,19 +76,9 @@ public class Main extends JavaPlugin {
 		commandManager.registerCommand(commandListener);
 
 		// Register command completions
-        commandManager.getCommandCompletions().registerCompletion("hats", c -> {
-            var player = c.getPlayer();
-            var cosmetics = cosmeticStorage.loadAll();
-
-            if (permissionChecker.hasWildcard(player)) {
-                return cosmetics.stream().map(Cosmetic::name).collect(Collectors.toList());
-            }
-
-            return cosmetics.stream()
-                .filter(cosmetic -> permissionChecker.canUseCosmetic(player, cosmetic))
-                .map(Cosmetic::name)
-                .collect(Collectors.toList());
-        });
+        var completions = new CosmeticCompletions(cosmeticStorage, permissionChecker);
+        commandManager.getCommandCompletions().registerCompletion("hats", completions::hats);
+        commandManager.getCommandCompletions().registerCompletion("playerTarget", completions::playerTarget);
 
         // Register listener
         getServer().getPluginManager().registerEvents(

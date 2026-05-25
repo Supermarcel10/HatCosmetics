@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.cosmetic.ICosmeticEquipManager;
@@ -13,6 +14,7 @@ import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
 import me.Tonus_.hatCosmetics.permissions.PermissionNode;
 import me.Tonus_.hatCosmetics.reload.IPluginReloader;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,21 +34,28 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("equip|e")
-    @CommandCompletion("@hats")
-    public void onEquip(@NotNull Player player, String hatName) {
+    @CommandCompletion("@hats @playerTarget")
+    public void onEquip(@NotNull Player player, String hatName, @Optional String targetUsername) {
         if (hatName == null || hatName.isBlank()) {
             messageRetriever.sendMessage(player, MessageReference.COSMETIC_ARG_NOT_GIVEN);
             return;
         }
 
-        equipManager.equip(player, hatName, player, false);
-    }
+        if (targetUsername != null) {
+            var target = Bukkit.getPlayer(targetUsername);
+            if (target == null) {
+                messageRetriever.sendMessage(player, MessageReference.PLAYER_NOT_ONLINE);
+                return;
+            }
+            if (!player.hasPermission(PermissionNode.ADMIN_EQUIP_OTHER)) {
+                messageRetriever.sendMessage(player, MessageReference.COSMETIC_NO_PERMISSION_LONG);
+                return;
+            }
+            equipManager.equip(target, hatName, player, false);
+            return;
+        }
 
-    @Subcommand("equip|e")
-    @CommandCompletion("@players @hats")
-    @CommandPermission(PermissionNode.ADMIN_EQUIP_OTHER)
-    public void onEquipAdmin(@NotNull Player sender, Player target, String hatName) {
-        equipManager.equip(target, hatName, sender, false);
+        equipManager.equip(player, hatName, player, false);
     }
 
     @Subcommand("unequip|u")
