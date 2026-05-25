@@ -34,7 +34,7 @@ public class CustomModelData {
             );
         } else {
             this.applyFunction = this::applyOldMethod;
-            logger.warning(
+            logger.info(
                 "Failed to initialize Data Components API reflection. Falling back to ItemMeta API."
             );
         }
