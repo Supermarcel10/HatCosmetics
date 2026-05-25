@@ -210,9 +210,9 @@ public class CustomModelData {
         ) {
             logger.log(
                 Level.WARNING,
-                "Failed to initialize Data Components API reflection",
-                e
+                "Failed to initialize Data Components API reflection"
             );
+
             return ReflectionCache.INVALID;
         }
     }
