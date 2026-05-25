@@ -55,8 +55,8 @@ public class Main extends JavaPlugin {
         Runnable versionCheck = () -> {
             var modrinthApiClient = new ModrinthUpstreamAPIClient(getSLF4JLogger(), "4h6EFh3D");
             var pluginVersionRetriever = new PluginVersionRetriever(this);
-            new SemanticVersionChecker(getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever, true)
-                    .checkForUpdates();
+            new SemanticVersionChecker(getSLF4JLogger(), modrinthApiClient, pluginVersionRetriever)
+                .checkForUpdates();
         };
 
         var pluginReloader = new PluginReloader(

@@ -1,20 +1,19 @@
 package me.Tonus_.hatCosmetics.updates;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import me.Tonus_.hatCosmetics.networking.IUpstreamAPIClient;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SemanticVersionChecker implements IVersionChecker {
 	private final Logger logger;
 	private final IUpstreamAPIClient apiClient;
 	private final IPluginVersionRetriever pluginVersionRetriever;
-	private final boolean isStableRelease;
 
 	public void checkForUpdates() {
-		String remoteVersion = apiClient.getLatestVersion(isStableRelease);
+		String remoteVersion = apiClient.getLatestVersion(isStableRelease());
 		if (remoteVersion == null) {
 			logger.warn("Failed to check for updates.");
 			return;
@@ -54,5 +53,9 @@ public class SemanticVersionChecker implements IVersionChecker {
 		}
 
 		return 0;
+	}
+
+	private boolean isStableRelease() {
+		return pluginVersionRetriever.getVersion().split("-").length == 1;
 	}
 }

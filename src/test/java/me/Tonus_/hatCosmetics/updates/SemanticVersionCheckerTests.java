@@ -11,13 +11,13 @@ public class SemanticVersionCheckerTests {
     private final Logger logger = mock();
     private final IUpstreamAPIClient apiClient = mock();
     private final IPluginVersionRetriever pluginVersionRetriever = mock();
-    private final Boolean isStableRelease = true;
-    private final SemanticVersionChecker sut = new SemanticVersionChecker(logger, apiClient, pluginVersionRetriever, isStableRelease);
+    private final SemanticVersionChecker sut = new SemanticVersionChecker(logger, apiClient, pluginVersionRetriever);
 
     @Test
     void checkForUpdates_whenRemoteVersionFailedToRetrieve_shouldLogWarning() {
         // Arrange
-        doReturn(null).when(apiClient).getLatestVersion(isStableRelease);
+        doReturn("1.0.0").when(pluginVersionRetriever).getVersion();
+        doReturn(null).when(apiClient).getLatestVersion(true);
 
         // Act
         sut.checkForUpdates();
@@ -31,7 +31,7 @@ public class SemanticVersionCheckerTests {
     void checkForUpdates_whenUpToDate_shouldNotLogAnything() {
         // Arrange
         var remoteVersion = "1.0.0";
-        doReturn(remoteVersion).when(apiClient).getLatestVersion(isStableRelease);
+        doReturn(remoteVersion).when(apiClient).getLatestVersion(true);
 
         var currentVersion = "1.0.0";
         doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
@@ -47,7 +47,7 @@ public class SemanticVersionCheckerTests {
     void checkForUpdates_whenVersionNewer_shouldLogWarning() {
         // Arrange
         var remoteVersion = "1.0.0";
-        doReturn(remoteVersion).when(apiClient).getLatestVersion(isStableRelease);
+        doReturn(remoteVersion).when(apiClient).getLatestVersion(true);
 
         var currentVersion = "2.0.0";
         doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
@@ -64,7 +64,7 @@ public class SemanticVersionCheckerTests {
     void checkForUpdates_whenVersionOlderAndFailedToGetURL_shouldLogWarnings() {
         // Arrange
         var remoteVersion = "2.0.0";
-        doReturn(remoteVersion).when(apiClient).getLatestVersion(isStableRelease);
+        doReturn(remoteVersion).when(apiClient).getLatestVersion(true);
 
         var currentVersion = "1.0.0";
         doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
@@ -82,7 +82,7 @@ public class SemanticVersionCheckerTests {
     void checkForUpdates_whenVersionOlderAndURLRetrieved_shouldLogWarnings() {
         // Arrange
         var remoteVersion = "2.0.0";
-        doReturn(remoteVersion).when(apiClient).getLatestVersion(isStableRelease);
+        doReturn(remoteVersion).when(apiClient).getLatestVersion(true);
 
         var currentVersion = "1.0.0";
         doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
@@ -97,5 +97,29 @@ public class SemanticVersionCheckerTests {
         verify(logger).warn("A new version is available: {}", remoteVersion);
         verify(logger).warn("You are currently running: {}", currentVersion);
         verify(logger).warn("Update here: {}/version/latest", url);
+    }
+
+    @Test
+    void checkForUpdates_whenVersionIsPreRelease_shouldCallGetLatestVersionWithFalse() {
+        var currentVersion = "1.0.0-alpha";
+        doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
+        doReturn(currentVersion).when(apiClient).getLatestVersion(false);
+
+        sut.checkForUpdates();
+
+        verify(apiClient).getLatestVersion(false);
+        verify(apiClient, never()).getLatestVersion(true);
+    }
+
+    @Test
+    void checkForUpdates_whenVersionHasBuildMetadata_shouldCallGetLatestVersionWithTrue() {
+        var currentVersion = "1.0.0+build123";
+        doReturn(currentVersion).when(pluginVersionRetriever).getVersion();
+        doReturn(currentVersion).when(apiClient).getLatestVersion(true);
+
+        sut.checkForUpdates();
+
+        verify(apiClient).getLatestVersion(true);
+        verify(apiClient, never()).getLatestVersion(false);
     }
 }
