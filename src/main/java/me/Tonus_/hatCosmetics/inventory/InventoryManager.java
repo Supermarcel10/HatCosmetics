@@ -53,7 +53,6 @@ public class InventoryManager implements IInventoryManager {
     private final HashMap<Player, InventoryPlayerContext> playerContexts = new HashMap<>();
 
     public void openInventory(@NotNull Player player) {
-        var hatRows = getValidatedHatRows();
         var cosmetics = buildCosmeticItems(player);
 
         if (cosmetics.isEmpty()) {
@@ -61,6 +60,7 @@ public class InventoryManager implements IInventoryManager {
             return;
         }
 
+        var hatRows = getValidatedHatRows(cosmetics.size());
         var ipc = new InventoryPlayerContext(player, hatRows, cosmetics);
         playerContexts.put(player, ipc);
 
@@ -281,10 +281,18 @@ public class InventoryManager implements IInventoryManager {
         return cosmeticItemFactory.createItems(player, cosmetics, Optional.ofNullable(wornCosmetic));
     }
 
-    private int getValidatedHatRows() {
+    private int getValidatedHatRows(int cosmeticCount) {
         var rows = configRetriever.getValue(ConfigReference.GUI_ROWS);
-        if (rows == null || rows < 1 || rows > 4 || rows == -1) {
-            // TODO: Implement auto-calculation
+        if (rows == null) {
+            return DEFAULT_HAT_ROWS;
+        }
+
+        if (rows == -1) {
+            var neededRows = (cosmeticCount + 8) / 9;
+            return Math.max(1, Math.min(4, neededRows));
+        }
+
+        if (rows < 1 || rows > 4) {
             return DEFAULT_HAT_ROWS;
         }
 
