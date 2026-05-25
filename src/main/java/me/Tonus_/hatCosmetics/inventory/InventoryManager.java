@@ -61,7 +61,7 @@ public class InventoryManager implements IInventoryManager {
         }
 
         var hatRows = getValidatedHatRows(cosmetics.size());
-        var ipc = new InventoryPlayerContext(player, hatRows, cosmetics);
+        var ipc = new InventoryPlayerContext(hatRows, cosmetics);
         playerContexts.put(player, ipc);
 
         var titleText = getTitleTextComponent(ipc, player);

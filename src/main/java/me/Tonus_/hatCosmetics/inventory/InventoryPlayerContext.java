@@ -3,7 +3,6 @@ package me.Tonus_.hatCosmetics.inventory;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.TestOnly;
@@ -17,7 +16,7 @@ public class InventoryPlayerContext {
     private int currentPage = 1;
     private int maxPage;
 
-    public InventoryPlayerContext(Player player, int hatRowsPerPage, @NotNull Set<ItemStack> cosmetics) {
+    public InventoryPlayerContext(int hatRowsPerPage, @NotNull Set<ItemStack> cosmetics) {
         this.hatRowsPerPage = hatRowsPerPage;
         this.cosmetics.addAll(cosmetics);
         calculateMaxPage();
