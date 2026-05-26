@@ -1,6 +1,11 @@
 version: 4
 # HatCosmetics messages version: 4
 
+# This is a template file for all plugin's messages.
+# You can create a new file in the same directory and name it whatever you want, or rename this one.
+# The name of the file will be the name of the locale. For example, ABC.yml will be locale "ABC".
+# To make the plugin use your locale, change the "locale" options in the config.yml to the name of your locale.
+
 # Colour codes are supported. Use '&' followed by a number or letter to change the format of the text.
 # See https://minecraft.gamepedia.com/Formatting_codes for more information.
 
@@ -11,14 +16,35 @@ version: 4
 # {player} - Returns the name of the target player
 
 gui:
+  title: "&b&lChapéus"
   close: "&c&lFechar Menu"
   next: "&f&lPróxima Página"
   prev: "&f&lPágina Anterior"
 
   cosmetic_inv_equip: "&bClique para equipar"
   cosmetic_inv_unequip: "&cClique para remover"
-  cosmetic_inv_unequip_overlayed: "&cRight click to remove cosmetic!"
+  cosmetic_inv_unequip_overlayed: "&cClique direito para remover!"
 
+  cosmetic_no_permission: "&bSem permissão"
+  cosmetic_list_empty: "&bVocê não tem acesso a nenhum chapéu!"
+
+command:
+  cosmetic_equip_success: "&bVocê equipou {cosmetic}&b!"
+  cosmetic_equip_success_other_invoker: "{player}&b equipou {cosmetic}&b!"
+  cosmetic_equip_success_other_target: "Um administrador colocou um chapéu em você!"
+  cosmetic_equip_fail: "&bVocê não tem um chapéu equipado!"
+  cosmetic_equip_fail_other: "{player}&b não tem um chapéu equipado!"
+
+  cosmetic_unequip_success: "&bVocê removeu {cosmetic}&b!"
+  cosmetic_unequip_fail: "&bVocê não tem um chapéu equipado!"
+  cosmetic_unequip_success_other_invoker: "{player}&b removeu {cosmetic}&b!"
+  cosmetic_unequip_success_other_target: "&bSeu chapéu foi removido por um administrador!"
+  cosmetic_unequip_fail_other: "{player}&b não tem um chapéu equipado!"
+
+  cosmetic_not_found: "&bNão existe um chapéu com esse nome, ou você não tem acesso a ele!"
+  cosmetic_no_permission: "&bVocê não tem permissão para equipar esse chapéu!"
+  cosmetic_arg_not_given: "&bÉ necessário especificar um chapéu para equipar!"
+  
 player_not_online: "&b{player} não está online!"
 
 reload_success: "&bPlugin recarregado!"
