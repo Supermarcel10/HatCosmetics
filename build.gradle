@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "com.gradleup.shadow" version "8.3.9"
+    id "com.gradleup.shadow" version "9.4.1"
 }
 
 group = "me.Tonus_"
@@ -32,6 +32,7 @@ dependencies {
     compileOnly "org.jetbrains:annotations:24.1.0"
     compileOnly "org.projectlombok:lombok:1.18.32"
     compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
+    compileOnly "com.google.code.gson:gson:2.11.0" // CVE mitigation: spigot-api transitively pulls older gson
     annotationProcessor "org.projectlombok:lombok:1.18.32"
 
     // Testing
@@ -52,7 +53,6 @@ processResources {
     }
 }
 
-build.dependsOn shadowJar
 shadowJar {
     relocate "org.bstats", "${project.group}.shaded.org.bstats"
     archiveFileName.set("${project.name}-${project.version}.jar")
@@ -81,7 +81,7 @@ tasks.register("copyToTestServer", Sync) {
     dependsOn "build"
     mustRunAfter "build"
 
-    from(fileTree("${project.buildDir}/libs") {
+    from(fileTree(layout.buildDirectory.dir("libs")) {
         include("*.jar")
     })
     into("${project.projectDir}/src/test/server/plugins")
