@@ -4,6 +4,7 @@ website: https://github.com/Supermarcel10/HatCosmetics/
 version: ${pluginVersion}
 api-version: 1.16
 load: STARTUP
+folia-supported: true
 description: A simple plugin that allows players to wear hats.
 authors:
   - Supermarcel10
