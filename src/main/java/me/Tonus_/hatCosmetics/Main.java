@@ -5,6 +5,7 @@ import me.Tonus_.hatCosmetics.command.CosmeticCompletions;
 import me.Tonus_.hatCosmetics.command.MainCommand;
 import me.Tonus_.hatCosmetics.config.ConfigRetriever;
 import me.Tonus_.hatCosmetics.config.mapper.TypeMapperRegistry;
+import me.Tonus_.hatCosmetics.config.migration.ConfigMigrationManager;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticEquipManager;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticItemFactory;
 import me.Tonus_.hatCosmetics.cosmetic.CosmeticTagManager;
@@ -35,6 +36,8 @@ public class Main extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
+        new ConfigMigrationManager(this, getSLF4JLogger(), "5").runEligibleMigrations();
+
         var typeMapperRegistry = new TypeMapperRegistry();
         var configRetriever = new ConfigRetriever(this, typeMapperRegistry);
         var nbtEditor = new NBTEditor(this);
