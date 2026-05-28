@@ -1,11 +1,10 @@
 package me.Tonus_.hatCosmetics.permissions;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class PermissionNode {
+@UtilityClass
+public class PermissionNode {
     private static final String BASE = "hatcosmetics";
     private static final String ADMIN = BASE + ".admin";
     private static final String HAT_PREFIX = BASE + ".hat.";
