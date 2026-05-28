@@ -14,6 +14,7 @@ import me.Tonus_.hatCosmetics.storage.CosmeticStorageFactory;
 import me.Tonus_.hatCosmetics.storage.YmlCosmeticStorage;
 import me.Tonus_.hatCosmetics.message.translations.TranslationRetriever;
 import me.Tonus_.hatCosmetics.networking.ModrinthUpstreamAPIClient;
+import me.Tonus_.hatCosmetics.player.CosmeticReEquipManager;
 import me.Tonus_.hatCosmetics.player.PlayerEventManager;
 import me.Tonus_.hatCosmetics.updates.PluginVersionRetriever;
 import me.Tonus_.hatCosmetics.reload.PluginReloader;
@@ -80,11 +81,11 @@ public class Main extends JavaPlugin {
         commandManager.getCommandCompletions().registerCompletion("hats", completions::hats);
         commandManager.getCommandCompletions().registerCompletion("playerTarget", completions::playerTarget);
 
-        // Register listener
-        getServer().getPluginManager().registerEvents(
-                new PlayerEventManager(inventoryManager, configRetriever, cosmeticTagManager, equipManager, cosmeticStorage),
-                this
-        );
+        // Register listeners
+        var playerEventManager = new PlayerEventManager(inventoryManager, cosmeticTagManager, equipManager);
+        var reEquipManager = new CosmeticReEquipManager(this, inventoryManager, configRetriever, cosmeticTagManager, equipManager, cosmeticStorage, getLogger());
+        getServer().getPluginManager().registerEvents(playerEventManager, this);
+        getServer().getPluginManager().registerEvents(reEquipManager, this);
 
 		// Enable bStats
 		metricService = new Metrics(this, 11075);
