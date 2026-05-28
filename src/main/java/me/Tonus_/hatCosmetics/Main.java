@@ -102,7 +102,10 @@ public class Main extends JavaPlugin {
 	 */
 	@Override
 	public void onDisable() {
-		metricService.shutdown();
+		if (metricService != null) {
+			metricService.shutdown();
+		}
+
 		super.onDisable();
 	}
 }
