@@ -1,0 +1,17 @@
+version: 5
+locale:
+  server-locale: en_US
+  force-locale: false
+storage:
+  format: YML
+gui:
+  rows: 3
+  items:
+    border: LIGHT_BLUE_STAINED_GLASS_PANE
+    next-page: ARROW
+    previous-page: ARROW
+    close: BARRIER
+  hide-hats: false
+hats:
+  default-hat: NONE
+  keep-on-death: true
