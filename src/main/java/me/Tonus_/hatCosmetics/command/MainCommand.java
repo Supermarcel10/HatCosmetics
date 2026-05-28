@@ -59,15 +59,19 @@ public class MainCommand extends BaseCommand {
     }
 
     @Subcommand("unequip|u")
-    public void onUnequip(@NotNull Player player) {
-        equipManager.unequip(player, null);
-    }
-
-    @Subcommand("unequip|u")
     @CommandCompletion("@players")
-    @CommandPermission(PermissionNode.ADMIN_UNEQUIP_OTHER)
-    public void onUnequipAdmin(@NotNull Player sender, Player target) {
-        equipManager.unequip(target, sender);
+    public void onUnequip(@NotNull Player player, @Optional Player target) {
+        if (target != null) {
+            if (!player.hasPermission(PermissionNode.ADMIN_UNEQUIP_OTHER)) {
+                messageRetriever.sendMessage(player, MessageReference.COSMETIC_NO_PERMISSION_LONG);
+                return;
+            }
+
+            equipManager.unequip(target, player);
+            return;
+        }
+
+        equipManager.unequip(player, null);
     }
 
     @Subcommand("reload|r")
