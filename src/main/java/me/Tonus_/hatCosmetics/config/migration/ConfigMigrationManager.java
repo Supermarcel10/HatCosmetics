@@ -103,7 +103,7 @@ public class ConfigMigrationManager {
 
     private IConfigMigration findMigration(@NotNull String fromVersion) {
         if (migrations == null) {
-            createDefaultMigrations();
+            migrations = createDefaultMigrations();
         }
 
         for (var migration : migrations) {
