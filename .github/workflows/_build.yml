@@ -1,0 +1,26 @@
+name: Build
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Build with Gradle
+        run: ./gradlew shadowJar
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugin-jar
+          path: build/libs/*.jar

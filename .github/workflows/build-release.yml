@@ -9,24 +9,17 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    uses: ./.github/workflows/_build.yml
+  release:
+    needs: build
+    runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v5
-      - name: Set up JDK
-        uses: actions/setup-java@v5
+      - name: Download artifact
+        uses: actions/download-artifact@v8
         with:
-          java-version: "21"
-          distribution: "zulu"
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-
-      - name: Build with Gradle
-        run: gradle build
-
+          name: plugin-jar
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
-            build/libs/*.jar
+            *.jar
