@@ -2,9 +2,6 @@
 /.gradle
 /.settings
 /build
-/gradle
-gradlew
-gradlew.bat
 
 /bin
 
