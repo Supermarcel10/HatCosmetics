@@ -32,6 +32,7 @@ public class MessageReference {
     public static MessageReference COSMETIC_EQUIP_SUCCESS = cr("command.cosmetic_equip_success");
     public static MessageReference COSMETIC_EQUIP_SUCCESS_INVOKER = cr("command.cosmetic_equip_success_other_invoker");
     public static MessageReference COSMETIC_EQUIP_SUCCESS_TARGET = cr("command.cosmetic_equip_success_other_target");
+    public static MessageReference COSMETIC_EQUIP_SUCCESS_OVERLAY = cr("command.cosmetic_equip_success_overlay");
     public static MessageReference COSMETIC_EQUIP_FAIL = cr("command.cosmetic_equip_fail");
     public static MessageReference COSMETIC_EQUIP_FAIL_OTHER = cr("command.cosmetic_equip_fail_other");
 
@@ -39,6 +40,7 @@ public class MessageReference {
     public static MessageReference COSMETIC_UNEQUIP_FAIL = cr("command.cosmetic_unequip_fail");
     public static MessageReference COSMETIC_UNEQUIP_SUCCESS_INVOKER = cr("command.cosmetic_unequip_success_other_invoker");
     public static MessageReference COSMETIC_UNEQUIP_SUCCESS_TARGET = cr("command.cosmetic_unequip_success_other_target");
+    public static MessageReference COSMETIC_UNEQUIP_SUCCESS_OVERLAY = cr("command.cosmetic_unequip_success_overlay");
     public static MessageReference COSMETIC_UNEQUIP_OTHER_FAIL = cr("command.cosmetic_unequip_fail_other");
 
     public static MessageReference COSMETIC_NOT_FOUND = cr("command.cosmetic_not_found");

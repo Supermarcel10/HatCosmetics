@@ -32,6 +32,7 @@ command:
   cosmetic_equip_success: "&bVocê equipou {cosmetic}&b!"
   cosmetic_equip_success_other_invoker: "{player}&b equipou {cosmetic}&b!"
   cosmetic_equip_success_other_target: "Um administrador colocou um chapéu em você!"
+  # cosmetic_equip_success_overlay: "&bYou overlaid {cosmetic}&b on your armour!"
   cosmetic_equip_fail: "&bVocê não tem um chapéu equipado!" # MAY BE OUTDATED; TEMPLATE UPDATED IN 5ca042c3b46848f149c99c6cf86390f859569f3b
   cosmetic_equip_fail_other: "{player}&b não tem um chapéu equipado!"
 
@@ -39,6 +40,7 @@ command:
   cosmetic_unequip_fail: "&bVocê não tem um chapéu equipado!"
   cosmetic_unequip_success_other_invoker: "{player}&b removeu {cosmetic}&b!"
   cosmetic_unequip_success_other_target: "&bSeu chapéu foi removido por um administrador!"
+  # cosmetic_unequip_success_overlay: "&bYou removed the {cosmetic}&b overlay from your armour!"
   cosmetic_unequip_fail_other: "{player}&b não tem um chapéu equipado!"
 
   cosmetic_not_found: "&bNão existe um chapéu com esse nome, ou você não tem acesso a ele!"

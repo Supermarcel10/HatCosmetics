@@ -24,6 +24,7 @@ command:
   cosmetic_equip_success: "&bYou equipped {cosmetic}&b!"
   cosmetic_equip_success_other_invoker: "{player}&b equipped {cosmetic}&b!"
   cosmetic_equip_success_other_target: "An admin equipped you a cosmetic!"
+  cosmetic_equip_success_overlay: "&bYou overlaid {cosmetic}&b on your armor!"
   cosmetic_equip_fail: "&bCould not equip {cosmetic}&b!"
   cosmetic_equip_fail_other: "{player}&b doesn't have a cosmetic equipped!"
 
@@ -31,6 +32,7 @@ command:
   cosmetic_unequip_fail: "&bYou don't have a cosmetic equipped!"
   cosmetic_unequip_success_other_invoker: "{player}&b unequipped {cosmetic}&b!"
   cosmetic_unequip_success_other_target: "&bYour cosmetic was unequipped by an admin!"
+  cosmetic_unequip_success_overlay: "&bYou removed the {cosmetic}&b overlay from your armor!"
   cosmetic_unequip_fail_other: "{player}&b doesn't have a cosmetic equipped!"
 
   cosmetic_not_found: "&bNo cosmetic by this name exists, or you do not have access to it!"
