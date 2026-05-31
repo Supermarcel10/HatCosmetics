@@ -1,4 +1,5 @@
 material: FEATHER
+order: 2
 custom-model-data: "1000101"
 permission: null
 display:

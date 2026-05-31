@@ -62,6 +62,8 @@ public class V4ToV5Migration implements IConfigMigration {
         String globalItem,
         Logger logger
     ) {
+        var order = 0;
+
         for (var hatId : hatsSection.getKeys(false)) {
             var hatSection = hatsSection.getConfigurationSection(hatId);
             if (hatSection == null) continue;
@@ -72,10 +74,12 @@ public class V4ToV5Migration implements IConfigMigration {
             var hatItem = hatSection.getString("item", globalItem);
 
             if (data == null) {
-                createDisabledCosmetic(cosmeticsDir, hatId, hatItem, name, description, logger);
+                createDisabledCosmetic(cosmeticsDir, hatId, hatItem, name, description, order, logger);
             } else {
-                createCosmetic(cosmeticsDir, hatId, hatItem, String.valueOf(data), name, description, logger);
+                createCosmetic(cosmeticsDir, hatId, hatItem, String.valueOf(data), name, description, order, logger);
             }
+
+            order++;
         }
     }
 
@@ -103,6 +107,7 @@ public class V4ToV5Migration implements IConfigMigration {
         String modelData,
         String name,
         List<String> description,
+        int order,
         Logger logger
     ) {
         var file = new File(dir, id + ".yml");
@@ -112,10 +117,13 @@ public class V4ToV5Migration implements IConfigMigration {
         }
 
         var config = new YamlConfiguration();
+
         config.set("material", material);
+        config.set("order", order);
         config.set("custom-model-data", modelData);
         config.set("permission", null);
         config.set("display.en_US.name", name);
+
         if (!description.isEmpty()) {
             config.set("display.en_US.description", description);
         }
@@ -133,6 +141,7 @@ public class V4ToV5Migration implements IConfigMigration {
         String material,
         String name,
         List<String> description,
+        int order,
         Logger logger
     ) {
         var file = new File(dir, id + ".yml.disabled");
@@ -149,10 +158,13 @@ public class V4ToV5Migration implements IConfigMigration {
         """;
 
         var config = new YamlConfiguration();
+
         config.set("material", material);
+        config.set("order", order);
         config.set("custom-model-data", "0");
         config.set("permission", null);
         config.set("display.en_US.name", name);
+
         if (!description.isEmpty()) {
             config.set("display.en_US.description", description);
         }
