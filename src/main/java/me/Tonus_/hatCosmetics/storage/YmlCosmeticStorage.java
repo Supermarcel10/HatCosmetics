@@ -89,7 +89,7 @@ public class YmlCosmeticStorage implements ICosmeticStorage {
 
         var displaySection = config.getConfigurationSection("display");
         var rawDisplay = parseDisplayables(displaySection, name);
-        var order = config.getInt("order", 0);
+        var order = config.getInt("order", Integer.MAX_VALUE);
 
         return new Cosmetic(
             name,
