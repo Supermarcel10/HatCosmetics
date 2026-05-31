@@ -26,7 +26,7 @@ storage:
 # GUI Configuration
 # ----------------------------------------
 gui:
-  # The number of hat rows in the GUI (must be between 1 and 4, or -1 for auto)
+  # The number of cosmetic rows in the GUI (must be between 1 and 4, or -1 for auto)
   rows: 3
 
   # The GUI item configuration
@@ -50,12 +50,15 @@ gui:
 
 
 # ----------------------------------------
-# Hat Configuration
+# Cosmetic Configuration
 # ----------------------------------------
 hats:
   # The default hat to equip when a player joins without one.
   # Set to a cosmetic name (e.g. "staff_hat") or "NONE" to disable.
   default-hat: NONE
 
-  # Will player keep their hat on death?
+  # Allow cosmetics to be overlaid on top of armour?
+  allow-overlays: true
+
+  # Will player keep their cosmetic on death?
   keep-on-death: true
