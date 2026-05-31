@@ -1,0 +1,11 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    uses: ./.github/workflows/_test.yml
+  build:
+    uses: ./.github/workflows/_build.yml
