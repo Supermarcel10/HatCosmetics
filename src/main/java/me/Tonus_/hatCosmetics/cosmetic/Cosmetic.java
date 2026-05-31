@@ -13,7 +13,8 @@ public record Cosmetic(
     Material material,
     String customModelData,
     @Nullable String permission,
-    Map<String, DisplayData> rawDisplay
+    Map<String, DisplayData> rawDisplay,
+    int order
 ) {
     public record DisplayData(String name, List<String> description) {}
 

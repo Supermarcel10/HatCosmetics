@@ -75,6 +75,7 @@ class V4ToV5MigrationTests {
         );
 
         assertEquals("FEATHER", staffHat.getString("material"));
+        assertEquals(0, staffHat.getInt("order"));
         assertEquals("1000101", staffHat.getString("custom-model-data"));
         assertNull(staffHat.get("permission"));
         assertEquals("&fStaff Hat", staffHat.getString("display.en_US.name"));
@@ -85,6 +86,7 @@ class V4ToV5MigrationTests {
         );
 
         assertEquals("DIAMOND_HOE", coolHat.getString("material"));
+        assertEquals(1, coolHat.getInt("order"));
         assertEquals("2000202", coolHat.getString("custom-model-data"));
         assertEquals("&bCool Hat", coolHat.getString("display.en_US.name"));
     }
@@ -112,6 +114,7 @@ class V4ToV5MigrationTests {
         );
 
         assertEquals("NETHER_STAR", cosmetic.getString("material"));
+        assertEquals(0, cosmetic.getInt("order"));
     }
 
     @Test
@@ -136,6 +139,7 @@ class V4ToV5MigrationTests {
         );
 
         assertEquals("FEATHER", cosmetic.getString("material"));
+        assertEquals(0, cosmetic.getInt("order"));
     }
 
     @Test
@@ -170,6 +174,7 @@ class V4ToV5MigrationTests {
         );
 
         assertEquals("0", disabledConfig.getString("custom-model-data"));
+        assertEquals(0, disabledConfig.getInt("order"));
         assertEquals("&cBroken Hat", disabledConfig.getString("display.en_US.name"));
         assertEquals(List.of("&8No model data"), disabledConfig.getStringList("display.en_US.description"));
 
@@ -205,6 +210,7 @@ class V4ToV5MigrationTests {
         );
 
         assertEquals("unnamed", cosmetic.getString("display.en_US.name"));
+        assertEquals(0, cosmetic.getInt("order"));
     }
 
     @Test
@@ -330,6 +336,47 @@ class V4ToV5MigrationTests {
         );
 
         assertEquals(5, newConfig.getInt("version"));
+    }
+
+    @Test
+    void shouldPreserveOrderOfCosmetics() throws IOException {
+        // Arrange
+        writeV4Config(
+            """
+            version: 4
+            item: FEATHER
+            hats:
+              firstHat:
+                data: 1
+                name: "First"
+              secondHat:
+                data: 1
+                name: "Second"
+              thirdHat:
+                data: 1
+                name: "Third"
+            """
+        );
+
+        // Act
+        sut.run(plugin, logger);
+
+        // Assert
+        var first = YamlConfiguration.loadConfiguration(
+            tempDir.resolve("cosmetics/firstHat.yml").toFile()
+        );
+
+        var second = YamlConfiguration.loadConfiguration(
+            tempDir.resolve("cosmetics/secondHat.yml").toFile()
+        );
+
+        var third = YamlConfiguration.loadConfiguration(
+            tempDir.resolve("cosmetics/thirdHat.yml").toFile()
+        );
+
+        assertEquals(0, first.getInt("order"));
+        assertEquals(1, second.getInt("order"));
+        assertEquals(2, third.getInt("order"));
     }
 
     private void writeV4Config(String content) throws IOException {

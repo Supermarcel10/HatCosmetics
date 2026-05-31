@@ -3,6 +3,7 @@ package me.Tonus_.hatCosmetics.storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,8 @@ public class YmlCosmeticStorage implements ICosmeticStorage {
             }
         }
 
+        cosmetics.sort(Comparator.comparingInt(Cosmetic::order));
+
         logger.info(
             "Loaded {} cosmetics from cosmetics/ directory.",
             cosmetics.size()
@@ -86,13 +89,15 @@ public class YmlCosmeticStorage implements ICosmeticStorage {
 
         var displaySection = config.getConfigurationSection("display");
         var rawDisplay = parseDisplayables(displaySection, name);
+        var order = config.getInt("order", 0);
 
         return new Cosmetic(
             name,
             material.get(),
             modelData,
             permission,
-            rawDisplay
+            rawDisplay,
+            order
         );
     }
 
