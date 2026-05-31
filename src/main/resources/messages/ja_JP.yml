@@ -32,7 +32,7 @@ command:
   cosmetic_equip_success: "&b{cosmetic}&bを装備した！"
   cosmetic_equip_success_other_invoker: "{player}&bに{cosmetic}&bを装備された！"
   cosmetic_equip_success_other_target: "管理者に帽子を装備された！"
-  cosmetic_equip_fail: "&b帽子を装備していない！"
+  cosmetic_equip_fail: "&b帽子を装備していない！" # MAY BE OUTDATED; TEMPLATE UPDATED IN 5ca042c3b46848f149c99c6cf86390f859569f3b 
   cosmetic_equip_fail_other: "{player}&bは帽子を装備していない！"
 
   cosmetic_unequip_success: "&b{cosmetic}&bを外した！"

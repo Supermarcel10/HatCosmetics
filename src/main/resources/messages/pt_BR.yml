@@ -32,7 +32,7 @@ command:
   cosmetic_equip_success: "&bVocê equipou {cosmetic}&b!"
   cosmetic_equip_success_other_invoker: "{player}&b equipou {cosmetic}&b!"
   cosmetic_equip_success_other_target: "Um administrador colocou um chapéu em você!"
-  cosmetic_equip_fail: "&bVocê não tem um chapéu equipado!"
+  cosmetic_equip_fail: "&bVocê não tem um chapéu equipado!" # MAY BE OUTDATED; TEMPLATE UPDATED IN 5ca042c3b46848f149c99c6cf86390f859569f3b
   cosmetic_equip_fail_other: "{player}&b não tem um chapéu equipado!"
 
   cosmetic_unequip_success: "&bVocê removeu {cosmetic}&b!"
@@ -44,7 +44,7 @@ command:
   cosmetic_not_found: "&bNão existe um chapéu com esse nome, ou você não tem acesso a ele!"
   cosmetic_no_permission: "&bVocê não tem permissão para equipar esse chapéu!"
   cosmetic_arg_not_given: "&bÉ necessário especificar um chapéu para equipar!"
-  
+
 player_not_online: "&b{player} não está online!"
 
 reload_success: "&bPlugin recarregado!"
