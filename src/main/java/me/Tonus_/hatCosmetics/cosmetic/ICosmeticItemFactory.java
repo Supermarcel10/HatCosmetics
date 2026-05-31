@@ -13,7 +13,8 @@ public interface ICosmeticItemFactory {
     Set<ItemStack> createItems(
         @NotNull Player player,
         @NotNull List<Cosmetic> cosmetics,
-        @NotNull Optional<String> wornCosmeticName
+        @NotNull Optional<String> wornCosmeticName,
+        boolean isWornCosmeticOverlayed
     );
 
     @NotNull
@@ -22,4 +23,14 @@ public interface ICosmeticItemFactory {
         Player player,
         @NotNull MessageReference actionMessage
     );
+
+    @NotNull
+    ItemStack applyOverlay(
+        @NotNull ItemStack armor,
+        @NotNull Cosmetic cosmetic,
+        @NotNull Player player
+    );
+
+    @NotNull
+    ItemStack removeOverlay(@NotNull ItemStack armor);
 }

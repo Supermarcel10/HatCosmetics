@@ -1,10 +1,6 @@
 package me.Tonus_.hatCosmetics.cosmetic;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import me.Tonus_.hatCosmetics.cosmetic.permission.ICosmeticPermissionChecker;
 import me.Tonus_.hatCosmetics.message.IMessageRetriever;
 import me.Tonus_.hatCosmetics.message.MessageReference;
@@ -12,6 +8,7 @@ import me.Tonus_.hatCosmetics.versionedAPICalls.CustomModelData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +25,12 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
     public Set<ItemStack> createItems(
         @NotNull Player player,
         @NotNull List<Cosmetic> cosmetics,
-        @NotNull Optional<String> wornCosmeticName
+        @NotNull Optional<String> wornCosmeticName,
+        boolean isWornCosmeticOverlayed
     ) {
         var result = new LinkedHashSet<ItemStack>();
         for (var cosmetic : cosmetics) {
-            var actionMessage = getActionMessage(player, cosmetic, wornCosmeticName);
+            var actionMessage = getActionMessage(player, cosmetic, wornCosmeticName, isWornCosmeticOverlayed);
             result.add(create(cosmetic, player, actionMessage));
         }
 
@@ -61,19 +59,80 @@ public class CosmeticItemFactory implements ICosmeticItemFactory {
         return cosmeticTagManager.addCosmeticTag(modelDataItem, cosmetic.name());
     }
 
-    private @NotNull MessageReference getActionMessage(
-        Player player,
-        Cosmetic cosmetic,
-        Optional<String> wornCosmeticName
-    ) {
-        if (!permissionChecker.canUseCosmetic(player, cosmetic))
+    @Override
+    public @NotNull ItemStack applyOverlay(@NotNull ItemStack armor, @NotNull Cosmetic cosmetic, @NotNull Player player) {
+        var item = armor.clone();
+        var meta = item.getItemMeta();
+
+        if (meta.hasCustomModelData()) {
+            item = cosmeticTagManager.storeOriginalModelData(item, meta.getCustomModelData());
+        }
+
+        item = customModelData.appendModelData(item, cosmetic.customModelData());
+        meta = item.getItemMeta();
+
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        var lore = meta.hasLore() ? new ArrayList<>(meta.lore()) : new ArrayList<Component>();
+        lore.add(0, Component.text("Cosmetic: " + ChatColor.translateAlternateColorCodes('&', cosmetic.displayName(player.locale()))));
+        lore.add(Component.empty());
+        lore.add(Component.text(messageRetriever.getMessage(player, MessageReference.COSMETIC_INVENTORY_UNEQUIP_OVERLAYED)));
+        meta.lore(lore);
+        item.setItemMeta(meta);
+
+        item = cosmeticTagManager.addCosmeticTag(item, cosmetic.name());
+        item = cosmeticTagManager.setOverlayTag(item, true);
+
+        return item;
+    }
+
+    @Override
+    public @NotNull ItemStack removeOverlay(@NotNull ItemStack armor) {
+        var item = armor.clone();
+
+        var originalCmd = cosmeticTagManager.getOriginalModelData(item);
+
+        item = cosmeticTagManager.removeOverlayTags(item);
+
+        var meta = item.getItemMeta();
+        originalCmd.ifPresent(meta::setCustomModelData);
+
+        meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        if (meta.hasLore()) {
+            var lore = new ArrayList<>(meta.lore());
+            if (!lore.isEmpty()) {
+                lore.remove(0);
+            }
+            if (!lore.isEmpty()) {
+                lore.remove(lore.size() - 1);
+            }
+            if (!lore.isEmpty()) {
+                lore.remove(lore.size() - 1);
+            }
+            meta.lore(lore);
+        }
+
+        item.setItemMeta(meta);
+
+        return item;
+    }
+
+    private @NotNull MessageReference getActionMessage(Player player, Cosmetic cosmetic, Optional<String> wornCosmeticName, boolean isWornCosmeticOverlayed) {
+        if (!permissionChecker.canUseCosmetic(player, cosmetic)) {
             return MessageReference.COSMETIC_NO_PERMISSION_SHORT;
+        }
 
-        if (wornCosmeticName.isEmpty())
+        if (wornCosmeticName.isEmpty()) {
             return MessageReference.COSMETIC_INVENTORY_EQUIP;
+        }
 
-        return cosmetic.name().equalsIgnoreCase(wornCosmeticName.get())
-                ? MessageReference.COSMETIC_INVENTORY_UNEQUIP
-                : MessageReference.COSMETIC_INVENTORY_EQUIP;
+        if (cosmetic.name().equalsIgnoreCase(wornCosmeticName.get())) {
+            return isWornCosmeticOverlayed
+                ? MessageReference.COSMETIC_INVENTORY_UNEQUIP_OVERLAYED
+                : MessageReference.COSMETIC_INVENTORY_UNEQUIP;
+        }
+
+        return MessageReference.COSMETIC_INVENTORY_EQUIP;
     }
 }

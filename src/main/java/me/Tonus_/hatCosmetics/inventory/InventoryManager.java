@@ -278,7 +278,7 @@ public class InventoryManager implements IInventoryManager {
                 .collect(Collectors.toList())
             : allCosmetics;
 
-        return cosmeticItemFactory.createItems(player, cosmetics, Optional.ofNullable(wornCosmetic));
+        return cosmeticItemFactory.createItems(player, cosmetics, Optional.ofNullable(wornCosmetic), false);
     }
 
     private int getValidatedHatRows(int cosmeticCount) {

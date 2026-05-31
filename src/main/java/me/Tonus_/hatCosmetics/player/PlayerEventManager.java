@@ -40,7 +40,7 @@ public class PlayerEventManager implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
         var helmet = player.getEquipment().getHelmet();
-        if (isCosmetic(helmet)) {
+        if (isStandaloneCosmetic(helmet)) {
             event.setCancelled(true);
         }
     }
@@ -57,8 +57,9 @@ public class PlayerEventManager implements Listener {
     public void onPlayerDropItem(@NotNull PlayerDropItemEvent event) {
         var itemStack = event.getItemDrop().getItemStack();
 
-        var cosmeticTag = tagManager.getCosmeticTag(itemStack);
-        if (cosmeticTag.isPresent()) event.setCancelled(true);
+        if (isStandaloneCosmetic(itemStack)) {
+            event.setCancelled(true);
+        }
     }
 
     private void handlePlayerInventoryClick(InventoryClickEvent event) {
@@ -88,5 +89,9 @@ public class PlayerEventManager implements Listener {
     private boolean isCosmetic(ItemStack item) {
         return item != null && !item.getType().isAir()
             && tagManager.getCosmeticTag(item).isPresent();
+    }
+
+    private boolean isStandaloneCosmetic(ItemStack item) {
+        return isCosmetic(item) && !tagManager.hasOverlay(item);
     }
 }
